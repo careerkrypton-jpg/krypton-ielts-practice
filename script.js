@@ -1,220 +1,129 @@
-const skillData = {
-  listening: {
-    title: "Listening · Catch the detail",
-    heading: "A change of plan",
-    label: "TRANSCRIPT DRILL",
-    intro: "Read the short conversation, then answer the question. In a full listening session, try listening once before checking a transcript.",
-    passage: "MAYA: Are we still meeting at the library at two?\nLEO: I called them this morning. The study room is being painted, so it’s closed today.\nMAYA: Oh, that’s a shame. Should we try the café near the station?\nLEO: It gets noisy after lunch. There’s a quiet room at the community centre, and it’s free.\nMAYA: Great. Let’s meet there at half past two, then.",
-    question: "Where will Maya and Leo meet?",
-    options: ["At the library", "At a café near the station", "At the community centre"],
-    answer: 2,
-    explanation: "They change the plan because the library room is closed and agree to meet at the community centre."
-  },
-  reading: {
-    title: "Reading · Find the main idea",
-    heading: "Why urban trees matter",
-    label: "SHORT READING",
-    intro: "Read the passage and choose the best answer. Look for the central point rather than matching only one word.",
-    passage: "City trees do more than make streets attractive. Their shade can lower surface temperatures on hot days, while leaves catch some airborne particles. Trees also create routes for birds and insects through built-up areas. These benefits depend on thoughtful planning: young trees need care, and species must suit local conditions. For city planners, the challenge is to treat trees as useful infrastructure and protect them over the long term.",
-    question: "What is the passage mainly about?",
-    options: ["The history of city parks", "The benefits of urban trees and the need to plan for them", "How birds choose nesting sites"],
-    answer: 1,
-    explanation: "The passage describes several benefits and stresses that planning and long-term care matter."
-  },
-  writing: {
-    title: "Writing · Build a clear response",
-    heading: "Take a position, then support it",
-    label: "IELTS TASK 2 · PRACTICE PROMPT",
-    prompt: "Some people think public transport should be free in cities. To what extent do you agree or disagree? Give reasons and include examples from your own knowledge or experience.",
-    intro: "Write a short outline or begin your response. Aim for a clear position, two supporting ideas, and a relevant example.",
-    placeholder: "My position is…\n\nFirst, …\n\nFor example, …",
-  },
-  speaking: {
-    title: "Speaking · Tell a focused story",
-    heading: "Describe a place you enjoy visiting",
-    label: "PART 2 · CUE CARD",
-    prompt: "Describe a place you enjoy visiting. You should say where it is, when you go there, what you do there, and explain why you enjoy it.",
-    points: ["Where the place is", "When you usually visit", "What you do there", "Why it matters to you"],
-    intro: "Use the timer to prepare for one minute, then speak for up to two minutes. Record a few notes after you finish.",
-    placeholder: "Notes to remember: a detail, a feeling, a short story…",
-  }
+/* Krypton IELTS Practice — original practice material, no subscriptions. */
+const PACKS = {
+  listening: [
+    {id:"listen-campus",title:"Campus accommodation enquiry",level:"Intermediate",format:"Part 1 · Conversation",transcript:"STUDENT: Hello, I’m calling about the room advertised near the university.\\nOWNER: Yes, it’s a single room in a shared house, a ten-minute walk from campus.\\nSTUDENT: Is internet included in the rent?\\nOWNER: Yes. Electricity is separate, but water and internet are included.\\nSTUDENT: When could I move in?\\nOWNER: The room is available from the first of September.\\nSTUDENT: Great. I’d like to arrange a viewing for Saturday morning.",questions:[
+      {q:"How long does it take to walk to campus?",options:["Five minutes","Ten minutes","Fifteen minutes"],answer:1,why:"The owner says it is a ten-minute walk."},
+      {q:"Which cost is included in the rent?",options:["Electricity","Water and internet","All household bills"],answer:1,why:"Water and internet are included; electricity is separate."},
+      {q:"When is the room available?",options:["1 August","15 August","1 September"],answer:2,why:"The owner says the room is available from the first of September."},
+      {q:"What does the student want to arrange?",options:["A viewing","A payment plan","A key collection"],answer:0,why:"The student asks to arrange a viewing for Saturday morning."}
+    ]},
+    {id:"listen-library",title:"A new community library",level:"Intermediate",format:"Part 2 · Announcement",transcript:"Welcome to the Riverside Community Library. The building is open from nine until six on weekdays and from ten until four on Saturdays. We are closed on Sundays. Members can borrow up to eight books for three weeks. If you need a quiet place to study, rooms on the second floor may be booked at the front desk. A small café is located beside the main entrance. Please return books through the machine near the exit.",questions:[
+      {q:"When does the library open on Saturday?",options:["9 a.m.","10 a.m.","11 a.m."],answer:1,why:"The announcement gives the Saturday opening time as ten."},
+      {q:"How many books can a member borrow?",options:["Six","Eight","Ten"],answer:1,why:"Members may borrow up to eight books."},
+      {q:"Where can a study room be booked?",options:["At the front desk","By the café","On the third floor"],answer:0,why:"Study rooms are booked at the front desk."},
+      {q:"Where is the book return machine?",options:["Near the entrance","Beside the café","Near the exit"],answer:2,why:"The machine is near the exit."}
+    ]},
+    {id:"listen-research",title:"Planning a student research project",level:"Upper intermediate",format:"Part 3 · Student discussion",transcript:"TUTOR: Have you decided how to collect your data?\\nLINA: We first considered an online survey, but our sample would be too broad.\\nJAMES: We could interview twelve local shop owners instead.\\nTUTOR: That is manageable. Remember to ask the same core questions each time.\\nLINA: I’ll draft the questions by Thursday.\\nJAMES: And I can contact the shop owners next week.\\nTUTOR: Good. Your report should compare the responses, not just list them.",questions:[
+      {q:"Why did the students move away from an online survey?",options:["It would be too broad","It would cost too much","It required specialist software"],answer:0,why:"Lina says their sample would be too broad."},
+      {q:"How many people will they interview?",options:["Ten","Twelve","Twenty"],answer:1,why:"James suggests interviewing twelve shop owners."},
+      {q:"What will Lina do by Thursday?",options:["Contact the shop owners","Draft the questions","Write the report"],answer:1,why:"Lina agrees to draft the questions by Thursday."},
+      {q:"What should the report do with the responses?",options:["Compare them","Translate them","Publish them individually"],answer:0,why:"The tutor says to compare rather than merely list responses."}
+    ]}
+  ],
+  reading: [
+    {id:"read-gardens",title:"Green roofs in modern cities",level:"Intermediate",format:"Academic passage",passage:"A green roof is a layer of vegetation planted over a building. Some cities now encourage the practice because roofs can absorb rainwater, provide habitat for insects and reduce heat around buildings. The results depend on design: a shallow roof may support small plants, while deeper systems can sustain shrubs. Installation costs can be higher than those of conventional roofs, yet maintenance and energy savings may offset some of the initial expense. Researchers are still studying how these benefits vary across climates and building types.",questions:[
+      {q:"What is the passage mainly about?",options:["How cities can replace parks","Potential benefits and limits of green roofs","The history of architecture"],answer:1,why:"It outlines benefits, design differences, costs, and continuing research."},
+      {q:"What does the passage say about shallow green roofs?",options:["They can support small plants","They always need irrigation","They are cheaper to maintain"],answer:0,why:"The text states that shallow roofs may support small plants."},
+      {q:"What may offset some installation costs?",options:["Lower rent","Maintenance and energy savings","More parking"],answer:1,why:"The passage says maintenance and energy savings may offset initial expense."},
+      {q:"What are researchers still investigating?",options:["How benefits vary by climate and building","Whether plants can grow indoors","How to make roofs completely free"],answer:0,why:"The final sentence identifies climate and building type as open questions."}
+    ]},
+    {id:"read-museum",title:"Making museums more accessible",level:"Intermediate",format:"Academic passage",passage:"Museums have traditionally expected visitors to move through galleries at their own pace, reading labels and looking at objects. Some institutions are now testing quieter hours, tactile models and audio descriptions. These changes can help visitors with sensory or visual access needs, but they also benefit people who prefer different ways of learning. Planning such services requires consultation with the communities they are intended to support. A single solution rarely works for every visitor, so museums increasingly offer several ways to engage with the same collection.",questions:[
+      {q:"What is the passage mainly concerned with?",options:["Expanding access to museum collections","Reducing the number of gallery visitors","Replacing objects with digital displays"],answer:0,why:"The examples and conclusion focus on ways more people can engage with collections."},
+      {q:"Why do museums consult communities?",options:["To choose new buildings","To plan services for the people they support","To set ticket prices"],answer:1,why:"Consultation helps museums plan services that respond to access needs."},
+      {q:"What does the passage suggest about one universal solution?",options:["It is usually sufficient","It rarely suits everyone","It costs less"],answer:1,why:"The final sentence says a single solution rarely works for every visitor."},
+      {q:"Which is mentioned as an access measure?",options:["Tactile models","Free transport","Longer opening hours"],answer:0,why:"Tactile models are one of the measures listed."}
+    ]},
+    {id:"read-farming",title:"The value of urban gardens",level:"Upper intermediate",format:"Academic passage",passage:"Urban gardens are often valued for the food they produce, but their contribution can be broader. Shared growing spaces may give residents opportunities to exchange knowledge and meet neighbours. They can also introduce children to seasonal growing cycles. However, such projects depend on secure access to land, a reliable water supply and volunteers with time to maintain the plots. Short-term funding can make a garden vulnerable just as it becomes established. For this reason, some city programmes combine small grants with long-term agreements for community use.",questions:[
+      {q:"Which broader contribution of urban gardens is identified?",options:["They help residents share knowledge","They eliminate food imports","They create permanent jobs"],answer:0,why:"The passage says gardens can be places to exchange knowledge and meet neighbours."},
+      {q:"What can make a garden vulnerable?",options:["Short-term funding","Too many fruit trees","Nearby schools"],answer:0,why:"Short-term funding may end as a garden is becoming established."},
+      {q:"What approach do some city programmes take?",options:["They sell land to residents","They combine grants with long-term use agreements","They require gardens to be self-financing"],answer:1,why:"The last sentence names both small grants and long-term agreements."},
+      {q:"What does the passage say children may learn?",options:["Seasonal growing cycles","Food packaging","Water engineering"],answer:0,why:"The passage notes that gardens can introduce children to seasonal growing cycles."}
+    ]}
+  ],
+  writing: [
+    {id:"write-urban",title:"Transport and city life",level:"Academic · Task 2",format:"Essay practice",time:20,prompt:"Some people believe cities should invest more in public transport than in roads for private cars. To what extent do you agree or disagree? Give reasons and examples to support your answer.",hint:"State your position clearly. Develop two main reasons and support each with a relevant example."},
+    {id:"write-learning",title:"Learning beyond the classroom",level:"Academic · Task 2",format:"Essay practice",time:20,prompt:"Some people think online learning is more effective than studying in a classroom. Discuss both views and give your own opinion.",hint:"Compare access and flexibility with interaction and structure. Make your own position clear."},
+    {id:"write-chart",title:"Comparing weekly exercise",level:"Academic · Task 1",format:"Report practice",time:15,prompt:"The table shows the percentage of adults in three age groups who exercised at least three times a week: ages 18–29: 62% in 2015 and 70% in 2025; ages 30–49: 51% and 57%; ages 50+: 38% and 49%. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.",hint:"Write an overview, compare the largest and smallest figures, then describe the changes with accurate units."},
+    {id:"write-letter",title:"A letter to a course organiser",level:"General Training · Task 1",format:"Letter practice",time:15,prompt:"You recently attended a short course and found it useful. Write a letter to the organiser. In your letter, describe what you learned, explain which part was most useful, and suggest one improvement for future courses.",hint:"Use a suitable greeting and tone. Cover all three bullet points and close the letter appropriately."}
+  ],
+  speaking: [
+    {id:"speak-place",title:"A place you enjoy visiting",level:"Part 2 · Cue card",format:"Speaking practice",time:3,prompt:"Describe a place you enjoy visiting. You should say where it is, when you go there, what you do there, and explain why you enjoy it.",hint:"Take one minute to make notes, then speak for up to two minutes. Add a specific memory and explain your feelings."},
+    {id:"speak-skill",title:"A skill you would like to learn",level:"Part 2 · Cue card",format:"Speaking practice",time:3,prompt:"Describe a skill you would like to learn. You should say what it is, why you want to learn it, how you would learn it, and explain how it might help you in the future.",hint:"Organise your response as: skill, motivation, plan, future benefit."},
+    {id:"speak-technology",title:"Technology in daily life",level:"Part 3 · Discussion",format:"Discussion practice",time:5,prompt:"How has technology changed the way people communicate? Do you think people rely on technology too much? What communication skills will be important in the future?",hint:"Give a direct answer, explain why, and use a concrete example. Develop each answer rather than listing ideas."},
+    {id:"speak-event",title:"An event you remember",level:"Part 2 · Cue card",format:"Speaking practice",time:3,prompt:"Describe an event you attended that you remember well. You should say what the event was, where and when it happened, who was there, and explain why you remember it.",hint:"Build a short story with a beginning, a turning point, and a reflection."}
+  ]
 };
-const storageKey = "krypton-ielts-progress-v1";
-let progress = loadProgress();
-let timerInterval = null;
-let timerSeconds = 0;
-let timerMode = "";
-
-function loadProgress() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
-    return { minutes: Number(saved.minutes) || 0, sessions: Number(saved.sessions) || 0, days: Array.isArray(saved.days) ? saved.days : [], completed: saved.completed || {} };
-  } catch {
-    return { minutes: 0, sessions: 0, days: [], completed: {} };
-  }
+const MOCKS = [
+  {id:"mock-01",title:"Academic mini mock 01",type:"Academic",picks:[0,0,0,0]},
+  {id:"mock-02",title:"Academic mini mock 02",type:"Academic",picks:[1,1,1,1]},
+  {id:"mock-03",title:"General Training mini mock 03",type:"General Training",picks:[2,2,3,2]},
+  {id:"mock-04",title:"Academic mini mock 04",type:"Academic",picks:[2,0,2,3]},
+  {id:"mock-05",title:"General Training mini mock 05",type:"General Training",picks:[1,1,3,1]}
+];
+const SKILLS=["listening","reading","writing","speaking"];
+const SKILL_META={
+ listening:{label:"Listening",icon:"♫",description:"Hear a short original recording, catch details, and check your answers.",count:"3 practice sets"},
+ reading:{label:"Reading",icon:"▤",description:"Work through short passages and practise finding evidence.",count:"3 practice sets"},
+ writing:{label:"Writing",icon:"✎",description:"Practise Academic and General Training task types with timed drafts.",count:"4 task prompts"},
+ speaking:{label:"Speaking",icon:"◖",description:"Use cue cards, discussion questions, and a preparation timer.",count:"4 speaking prompts"}
+};
+const OFFICIAL_LINKS=[
+ {label:"Official IELTS test format",url:"https://ielts.org/take-a-test/test-types"},
+ {label:"British Council free practice",url:"https://takeielts.britishcouncil.org/prepare/ielts-free-practice-mock-tests"},
+ {label:"IDP familiarisation tests",url:"https://ielts.idp.com/about/ielts-familiarisation-tests"},
+ {label:"Cambridge IELTS preparation",url:"https://www.cambridgeenglish.org/exams-and-tests/ielts/preparation/"}
+];
+const config=window.KRYPTON_SUPABASE||{};
+const isConfigured=Boolean(config.url&&config.anonKey&&/^https:\/\/.+/.test(config.url)&&!config.anonKey.includes("YOUR_"));
+const db=isConfigured&&window.supabase?window.supabase.createClient(config.url,config.anonKey):null;
+let currentUser=null,profile=null,sessions=[],currentView="overview",activeSkill="listening",activeActivity=null,mockState=null,authMode="signin",selectedFilter="all",timerHandle=null;
+const root=document.querySelector("#view-root");
+const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const todayKey=()=>new Date().toISOString().slice(0,10);
+function toast(text){const t=document.querySelector("#toast");t.textContent=text;t.classList.add("show");clearTimeout(toast.handle);toast.handle=setTimeout(()=>t.classList.remove("show"),2800)}
+function setSync(label,ready){const s=document.querySelector("#sync-status");s.classList.toggle("ready",Boolean(ready));s.lastElementChild.textContent=label}
+function openAuth(mode){authMode=mode||"signin";document.querySelector("#auth-modal").hidden=false;renderAuthMode();document.querySelector("#auth-error").textContent=""}
+function closeAuth(){document.querySelector("#auth-modal").hidden=true}
+function renderAuthMode(){const signup=authMode==="signup";document.querySelector("#auth-title").textContent=signup?"Create your free account":"Welcome back.";document.querySelector("#auth-description").textContent=signup?"Create a student account to save practice and sync progress across devices.":"Sign in to continue your IELTS plan and see your saved progress.";document.querySelector("#name-field").hidden=!signup;document.querySelector("#auth-submit").textContent=signup?"Create free account":"Sign in";document.querySelector("#switch-prompt").textContent=signup?"Already have an account?":"New to Krypton?";document.querySelector("#auth-switch").textContent=signup?"Sign in":"Create a free account";document.querySelector('[name="password"]').autocomplete=signup?"new-password":"current-password"}
+async function loadSessions(){if(!db||!currentUser)return;const {data,error}=await db.from("practice_sessions").select("id,module,activity_id,title,score,total,duration_seconds,mock_id,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(100);if(error){console.error(error);setSync("Database setup needed",false);return}sessions=data||[]}
+async function loadProfile(){if(!db||!currentUser)return;let {data,error}=await db.from("profiles").select("full_name,target_band").eq("id",currentUser.id).maybeSingle();if(error){console.error(error);return}if(!data){const name=currentUser.user_metadata?.full_name||currentUser.email?.split("@")[0]||"Student";const result=await db.from("profiles").upsert({id:currentUser.id,full_name:name},{onConflict:"id"}).select("full_name,target_band").single();data=result.data}profile=data}
+async function refreshApp(){if(!db){currentUser=null;profile=null;sessions=[];setSync("Supabase setup needed",false);render();return}const {data}=await db.auth.getSession();currentUser=data?.session?.user||null;if(currentUser){await loadProfile();await loadSessions();setSync("Progress synced",true)}else{profile=null;sessions=[];setSync("Sign in to sync progress",false)}updateIdentity();render()}
+function updateIdentity(){const name=profile?.full_name||currentUser?.user_metadata?.full_name||currentUser?.email?.split("@")[0]||"Guest student";const letter=(name.trim()[0]||"K").toUpperCase();document.querySelector("#side-user").innerHTML='<span class="avatar">'+esc(letter)+'</span><span><strong>'+esc(name)+'</strong><small>'+(currentUser?"Free student account":"Sign in to sync progress")+'</small></span>';const open=document.querySelector("#auth-open"),signup=document.querySelector("#signup-open");if(currentUser){open.textContent="Sign out";open.dataset.action="signout";signup.hidden=true}else{open.textContent="Sign in";open.dataset.action="signin";signup.hidden=false}}
+function requireLogin(){if(!currentUser){openAuth("signin");toast("Sign in or create a free student account to start practice.");return false}return true}
+function setView(view){currentView=view;mockState=null;activeActivity=null;document.querySelectorAll(".nav-link").forEach(n=>n.classList.toggle("active",n.dataset.view===view));const labels={overview:"OVERVIEW",practice:"PRACTICE MODULES",mocks:"FREE MOCK TESTS",history:"MY PROGRESS",activity:"PRACTICE"};document.querySelector("#crumb-title").textContent=labels[view]||"PRACTICE";document.querySelector("#sidebar").classList.remove("open");render();window.scrollTo({top:0,behavior:"smooth"})}
+function render(){updateIdentity();if(currentView==="overview")renderOverview();else if(currentView==="practice")renderLibrary();else if(currentView==="mocks")renderMocks();else if(currentView==="history")renderHistory();else if(currentView==="activity")renderActivity()}
+function stats(){const totalMinutes=sessions.reduce((sum,s)=>sum+(Number(s.duration_seconds)||0),0);const days=new Set(sessions.map(s=>String(s.created_at||"").slice(0,10)));const todayMinutes=sessions.filter(s=>String(s.created_at||"").slice(0,10)===todayKey()).reduce((sum,s)=>sum+(Number(s.duration_seconds)||0),0);return {minutes:Math.round(totalMinutes/60),sessions:sessions.length,days:days.size,today:Math.round(todayMinutes/60)}}
+function formatDate(value){if(!value)return "Just now";return new Intl.DateTimeFormat(undefined,{month:"short",day:"numeric"}).format(new Date(value))}
+function renderOverview(){const s=stats(),greeting=currentUser?"Welcome back, "+(profile?.full_name?.split(" ")[0]||"student"):"Your IELTS practice starts here";root.innerHTML='<section class="hero-row"><div><p class="eyebrow">KRYPTON STUDENT SPACE</p><h1>'+esc(greeting)+' <span>✦</span></h1><p class="hero-copy">Free IELTS practice across all four skills. Your progress is yours to keep.</p></div><div class="hero-actions"><button class="button button-outline" data-action="go-practice">Explore practice</button><button class="button button-primary" data-action="go-mocks">Start a mock</button></div></section>'+(!db?'<div class="note-banner">Student sign-in is not connected yet. Add your Supabase project URL and anon key in <strong>config.js</strong>, then run <strong>supabase/schema.sql</strong> in the Supabase SQL editor.</div>':"")+'<section class="metrics"><article class="metric-card"><div class="metric-top"><span class="metric-icon">◷</span> PRACTICE TIME</div><strong class="metric-value">'+s.minutes+' min</strong><small class="metric-caption">saved in your account</small></article><article class="metric-card"><div class="metric-top"><span class="metric-icon blue">✓</span> SESSIONS</div><strong class="metric-value">'+s.sessions+'</strong><small class="metric-caption">completed practice sessions</small></article><article class="metric-card"><div class="metric-top"><span class="metric-icon green">✦</span> ACTIVE DAYS</div><strong class="metric-value">'+s.days+'</strong><small class="metric-caption">days with practice</small></article><article class="metric-card"><div class="metric-top"><span class="metric-icon amber">◎</span> DAILY GOAL</div><strong class="metric-value">'+Math.min(s.today,30)+' <small class="metric-caption">/ 30 min</small></strong><div class="goal-line"><span style="width:'+Math.min(s.today/30*100,100)+'%"></span></div></article></section><section class="section-head"><div><p class="eyebrow">FOUR SKILLS, ONE PLACE</p><h2>Choose a practice module</h2></div><button class="link-button" data-action="go-practice">Browse all practice →</button></section><section class="module-grid">'+SKILLS.map(skill=>moduleCard(skill)).join("")+'</section><section class="dashboard-grid"><article class="card"><div class="card-head"><div><p class="eyebrow">PICK UP YOUR ROUTINE</p><h2 class="card-title">Recent practice</h2><p class="card-subtitle">Your saved sessions appear here when you sign in.</p></div><button class="link-button" data-action="go-history">View all →</button></div><div class="recent-list">'+recentMarkup(sessions.slice(0,4))+'</div></article><article class="card"><p class="eyebrow">TRUSTED TEST GUIDANCE</p><h2 class="card-title">Know the test format</h2><p class="card-subtitle">Review free guidance from the official IELTS partners before your test.</p><div class="resource-list">'+OFFICIAL_LINKS.map(x=>'<a class="resource-link" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.label)+'<span>↗</span></a>').join("")+'</div></article></section><div class="note-banner">Krypton practice uses original questions designed around public IELTS task formats. It is independent preparation and does not reproduce official Cambridge, British Council, or IDP question banks.</div>'}
+function moduleCard(skill){const m=SKILL_META[skill];return '<button class="module-card" data-open-skill="'+skill+'"><span class="module-icon">'+m.icon+'</span><span class="module-label">'+skill.toUpperCase()+'</span><strong>'+m.label+' practice</strong><small>'+m.description+'</small><span class="module-enter">Explore '+m.count+' →</span></button>'}
+function recentMarkup(rows){if(!currentUser)return '<div class="empty-state">Sign in to keep your work and progress synced securely.</div>';if(!rows.length)return '<div class="empty-state">No sessions yet. Choose a skill above to begin your first practice.</div>';return rows.map(s=>'<div class="recent-item"><span class="recent-badge">'+(SKILL_META[s.module]?.icon||"✓")+'</span><span class="recent-info"><strong>'+esc(s.title||SKILL_META[s.module]?.label||"Practice session")+'</strong><small>'+esc(SKILL_META[s.module]?.label||s.module)+' · '+formatDate(s.created_at)+'</small></span>'+(s.score!==null&&s.total?'<span class="score-chip">'+s.score+'/'+s.total+'</span>':"")+'</div>').join("")}
+function renderLibrary(){const skills=selectedFilter==="all"?SKILLS:[selectedFilter];root.innerHTML='<section class="page-intro"><p class="eyebrow">PRACTICE AT YOUR OWN PACE</p><h1>Practice modules</h1><p>Short original exercises for Academic and General Training learners. All student practice is free.</p></section><div class="filters"><button class="filter-pill '+(selectedFilter==="all"?"selected":"")+'" data-filter="all">All skills</button>'+SKILLS.map(s=>'<button class="filter-pill '+(selectedFilter===s?"selected":"")+'" data-filter="'+s+'">'+SKILL_META[s].label+'</button>').join("")+'</div><section class="lesson-list">'+skills.map(skill=>(PACKS[skill]||[]).map(task=>lessonCard(skill,task)).join("")).join("")+'</section><div class="note-banner">Question sets are original Krypton practice content, not official test questions. Listening drills use browser speech synthesis where supported.</div>'}
+function lessonCard(skill,task){return '<article class="lesson-card"><div class="lesson-meta"><span>'+esc(task.format||"Practice")+'</span><span class="tag">'+esc(task.level||"Practice")+'</span></div><h3>'+esc(task.title)+'</h3><p>'+esc(skill==="listening"?"Listen to an original recording and answer detail questions.":skill==="reading"?"Read a short passage and choose evidence-based answers.":skill==="writing"?task.hint:task.hint)+'</p><div class="lesson-bottom"><small>'+((task.questions?.length||0)>0?task.questions.length+" questions":(task.time||3)+" min")+'</small><button class="button button-primary" data-start-skill="'+skill+'" data-task="'+task.id+'">Start practice</button></div></article>'}
+function renderMocks(){root.innerHTML='<section class="page-intro"><p class="eyebrow">NO PAYWALLS · NO SUBSCRIPTIONS</p><h1>Free mock test practice</h1><p>Guided short-form mock tests bring all four skills together. They are practice simulations and are shorter than a full official IELTS test.</p></section><div class="info-strip"><strong>Test format:</strong> Listening and Speaking are shared across Academic and General Training; Reading and Writing differ. Choose the test type that matches your goal. Check the official IELTS site if you are unsure which test to take.</div><section class="mock-grid">'+MOCKS.map((m,i)=>'<article class="mock-card"><span class="mock-type">'+m.type.toUpperCase()+'</span><h3>'+m.title+'</h3><p>One original Listening set, one Reading set, a timed Writing prompt, and a Speaking cue card.</p><div class="mock-steps" aria-label="Four skill sections"><i></i><i></i><i></i><i></i></div><div class="mock-label"><span>4 skill sections</span><span>Guided mini mock · Free</span></div><button class="button button-primary" data-start-mock="'+m.id+'">Start free mini mock</button></article>').join("")+'</section><div class="note-banner">These short-form simulations are not official IELTS mock tests and do not provide an official band score. Use official providers’ free familiarisation resources for current test-day interfaces and rules.</div>'}
+function renderHistory(){const counts={listening:0,reading:0,writing:0,speaking:0};sessions.forEach(s=>{if(counts[s.module]!==undefined)counts[s.module]++});root.innerHTML='<section class="page-intro"><p class="eyebrow">YOUR STUDY RECORD</p><h1>My progress</h1><p>Only your own sessions are visible to your account. Sign in to see your saved history across devices.</p></section>'+(!currentUser?'<div class="empty-large card"><div class="empty-mark">↗</div><h2>Sign in to see your progress</h2><p>Create a free student account to keep your mock results, writing practice, speaking notes, and study history together.</p><button class="button button-primary" data-action="open-signup">Create free account</button></div>':'<section class="metrics">'+SKILLS.map(s=>'<article class="metric-card"><div class="metric-top"><span class="metric-icon">'+SKILL_META[s].icon+'</span> '+SKILL_META[s].label.toUpperCase()+'</div><strong class="metric-value">'+counts[s]+'</strong><small class="metric-caption">saved sessions</small></article>').join("")+'</section><section class="card" style="margin-top:14px"><div class="card-head"><div><p class="eyebrow">SESSION HISTORY</p><h2 class="card-title">Your recent work</h2></div></div><div class="recent-list">'+recentMarkup(sessions)+'</div></section>')}
+function startActivity(skill,id,mockId){if(!requireLogin())return;const task=(PACKS[skill]||[]).find(t=>t.id===id);if(!task)return;activeSkill=skill;activeActivity={skill,task,mockId:mockId||null};currentView="activity";document.querySelectorAll(".nav-link").forEach(n=>n.classList.remove("active"));document.querySelector("#crumb-title").textContent="PRACTICE";renderActivity()}
+function startMock(id){if(!requireLogin())return;const mock=MOCKS.find(m=>m.id===id);if(!mock)return;mockState={mock,index:0,results:[]};currentView="activity";document.querySelector("#crumb-title").textContent="MOCK TEST";renderMockStep()}
+function currentMockTask(){if(!mockState)return null;const skill=SKILLS[mockState.index];const task=PACKS[skill][mockState.mock.picks[mockState.index]%PACKS[skill].length];return {skill,task}}
+function renderActivity(){if(!activeActivity){renderMockStep();return}const skill=activeActivity.skill,task=activeActivity.task;root.innerHTML='<section class="page-intro"><p class="eyebrow">'+esc(task.format||SKILL_META[skill].label)+'</p><h1>'+esc(task.title)+'</h1><p>'+esc(SKILL_META[skill].description)+'</p></section>'+activityMarkup(skill,task,false)}
+function renderMockStep(){if(!mockState)return;const part=currentMockTask();if(!part){renderMockSummary();return}const n=mockState.index+1;root.innerHTML='<section class="page-intro"><p class="eyebrow">'+esc(mockState.mock.type)+' · GUIDED MINI MOCK</p><h1>'+esc(mockState.mock.title)+'</h1><p>Section '+n+' of 4 · '+SKILL_META[part.skill].label+'</p></section><article class="runner"><div class="runner-top"><span class="runner-step">SECTION '+n+' / 4 · '+SKILL_META[part.skill].label.toUpperCase()+'</span><span class="timer-pill">FREE PRACTICE</span></div>'+activityMarkup(part.skill,part.task,true)+'</article>'}
+function activityMarkup(skill,task,inMock){const hasQuestions=Array.isArray(task.questions),listen=skill==="listening";let left="";if(listen){left='<div><p class="eyebrow">ORIGINAL LISTENING DRILL</p><h2>Listen for the key details</h2><p>Play the short recording, then answer the questions. You can replay it during practice.</p><div class="transcript-controls"><button class="audio-btn" data-action="play-audio">▶ Play recording</button><button class="audio-btn" data-action="stop-audio">■ Stop</button></div><details><summary>Show transcript</summary><div class="reading-passage">'+esc(task.transcript)+'</div></details></div>'}else if(skill==="reading"){left='<div><p class="eyebrow">READING PASSAGE</p><h2>'+esc(task.title)+'</h2><div class="reading-passage">'+esc(task.passage)+'</div></div>'}else if(skill==="writing"){left='<div><p class="eyebrow">'+esc(task.level)+'</p><h2>'+esc(task.title)+'</h2><div class="prompt-box">'+esc(task.prompt)+'</div><p class="card-subtitle">'+esc(task.hint)+'</p></div>'}else{left='<div><p class="eyebrow">'+esc(task.level)+'</p><h2>'+esc(task.title)+'</h2><div class="prompt-box">'+esc(task.prompt)+'</div><p class="card-subtitle">'+esc(task.hint)+'</p><div class="timer-pill" id="speaking-timer">01:00 preparation</div><div class="transcript-controls"><button class="audio-btn" data-action="start-speaking-timer">Start preparation</button><button class="audio-btn" data-action="reset-speaking-timer">Reset</button></div></div>'}
+let right="";if(hasQuestions){right='<div class="question-list">'+task.questions.map((q,i)=>'<div class="question-box"><strong>'+(i+1)+'. '+esc(q.q)+'</strong><div class="option-list">'+q.options.map((o,j)=>'<label class="option-label"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+esc(o)+'</span></label>').join("")+'</div></div>').join("")+'</div>'}else{right='<div><textarea class="text-answer" id="student-response" placeholder="'+(skill==="writing"?"Write your response here.":"Write brief notes after you speak. You can use the cue card as a one-minute preparation prompt.")+'" aria-label="'+(skill==="writing"?"Writing response":"Speaking reflection notes")+'"></textarea><div class="word-count"><span id="word-count">0 words</span><span>'+(skill==="writing"?"Your draft is saved with your account when submitted.":"Notes are saved with your account when submitted.")+'</span></div></div>'}
+return '<div class="runner-layout">'+left+right+'</div><div class="runner-actions"><small>'+(hasQuestions?"Choose one answer for each question. Your result is saved to your student account.":"Submit to save this response privately to your student account.")+'</small><button class="button button-primary" data-action="submit-activity">'+(inMock?"Save and continue →":"Finish practice and save")+'</button></div>'}
+function renderMockSummary(){const rows=mockState.results;root.innerHTML='<section class="page-intro"><p class="eyebrow">MINI MOCK COMPLETE</p><h1>Nice work. You finished all four skills.</h1><p>Your saved results and written responses are in My progress.</p></section><article class="card"><div class="card-head"><div><p class="eyebrow">'+esc(mockState.mock.title)+'</p><h2 class="card-title">Section summary</h2></div></div><div class="recent-list">'+rows.map(r=>'<div class="recent-item"><span class="recent-badge">'+SKILL_META[r.skill].icon+'</span><span class="recent-info"><strong>'+SKILL_META[r.skill].label+'</strong><small>'+esc(r.title)+'</small></span>'+(r.score!==null?'<span class="score-chip">'+r.score+'/'+r.total+'</span>':'<span class="score-chip">Saved</span>')+'</div>').join("")+'</div><div class="runner-actions"><small>Objective answers are self-marked. Writing and Speaking are saved without an official band score.</small><button class="button button-primary" data-action="finish-mock">Back to mock tests</button></div></article>'}
+async function saveSession(skill,task,score,total,response,mockId){if(!db||!currentUser)throw new Error("Sign in and connect Supabase before saving.");const elapsed=Math.max(60,Math.round((Date.now()-(activeActivity?.startedAt||Date.now()))/1000));const record={user_id:currentUser.id,module:skill,activity_id:task.id,title:task.title,score:score,total:total,duration_seconds:elapsed,mock_id:mockId||null,answer_data:response||{}};const {error}=await db.from("practice_sessions").insert(record);if(error)throw error;sessions.unshift({...record,id:"recent-"+Date.now(),created_at:new Date().toISOString()});return elapsed}
+async function submitActivity(){const inMock=Boolean(mockState),part=inMock?currentMockTask():activeActivity;if(!part)return;const {skill,task}=part;let score=null,total=null,response={};if(task.questions){total=task.questions.length;score=0;const answers=[];task.questions.forEach((q,i)=>{const picked=document.querySelector('input[name="q'+i+'"]:checked');const value=picked?Number(picked.value):null;answers.push(value);if(value===q.answer)score++});response={answers,review:task.questions.map((q,i)=>({question:q.q,selected:answers[i],correct:q.answer,explanation:q.why}))}}else{const box=document.querySelector("#student-response");response={text:box?.value||"",word_count:(box?.value||"").trim().split(/\s+/).filter(Boolean).length};if(!response.text.trim()){toast("Add a response or a few notes before saving.");box?.focus();return}}
+const button=document.querySelector('[data-action="submit-activity"]');button.disabled=true;button.textContent="Saving…";try{await saveSession(skill,task,score,total,response,inMock?mockState.mock.id:null);if(inMock){mockState.results.push({skill,title:task.title,score,total});mockState.index++;if(mockState.index<4)renderMockStep();else renderMockSummary()}else{renderResult(skill,task,score,total,response)}setSync("Progress synced",true)}catch(error){console.error(error);toast("Could not save this session. Check the Supabase setup and try again.");button.disabled=false;button.textContent=inMock?"Save and continue →":"Finish practice and save"}}
+function renderResult(skill,task,score,total,response){let body="Your response was saved to your private student account.";if(score!==null){body="You got "+score+" of "+total+" correct. Review the explanations below, then try another set.";const qs=task.questions.map((q,i)=>'<div class="question-box"><strong>'+(i+1)+'. '+esc(q.q)+'</strong><p class="card-subtitle">'+(response.answers[i]===q.answer?"Correct. ":"Review. ")+esc(q.why)+'</p></div>').join("");body+='<div class="question-list">'+qs+'</div>'}root.innerHTML='<section class="page-intro"><p class="eyebrow">'+esc(SKILL_META[skill].label)+' · SESSION SAVED</p><h1>'+(score===null?"Practice saved.":esc(score+"/"+total)+" correct.")+'</h1><p>'+body+'</p></section><article class="card"><div class="runner-actions"><small>Session added to My progress.</small><button class="button button-outline" data-action="go-history">View progress</button><button class="button button-primary" data-action="more-practice">More '+esc(SKILL_META[skill].label)+' practice</button></div></article>'}
+function speak(text){if(!("speechSynthesis"in window)){toast("Audio playback is not supported in this browser.");return}window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.lang="en-GB";utterance.rate=.9;window.speechSynthesis.speak(utterance)}
+function handleAuthSubmit(event){event.preventDefault();const form=event.currentTarget,fd=new FormData(form),email=String(fd.get("email")||"").trim(),password=String(fd.get("password")||""),name=String(fd.get("name")||"").trim(),error=document.querySelector("#auth-error");error.textContent="";if(!db){error.textContent="Supabase is not configured yet. Add your project URL and anon key to config.js.";return}const submit=document.querySelector("#auth-submit");submit.disabled=true;submit.textContent="Please wait…";(async()=>{try{if(authMode==="signup"){const {data,error:err}=await db.auth.signUp({email,password,options:{data:{full_name:name}}});if(err)throw err;if(data.session){closeAuth();toast("Account created. Welcome to Krypton!")}else{error.textContent="Check your email to confirm your free account, then sign in."}}else{const {error:err}=await db.auth.signInWithPassword({email,password});if(err)throw err;closeAuth();toast("Signed in. Your progress is ready.")}await refreshApp()}catch(err){error.textContent=err.message||"Could not complete sign-in."}finally{submit.disabled=false;renderAuthMode()}})()}
+function bindEvents(){document.addEventListener("click",async event=>{const nav=event.target.closest("[data-view]");if(nav){setView(nav.dataset.view);return}const filter=event.target.closest("[data-filter]");if(filter){selectedFilter=filter.dataset.filter;renderLibrary();return}const openSkill=event.target.closest("[data-open-skill]");if(openSkill){selectedFilter=openSkill.dataset.openSkill;setView("practice");return}const start=event.target.closest("[data-start-skill]");if(start){startActivity(start.dataset.startSkill,start.dataset.task);return}const mock=event.target.closest("[data-start-mock]");if(mock){startMock(mock.dataset.startMock);return}const action=event.target.closest("[data-action]")?.dataset.action;if(action==="go-practice")setView("practice");else if(action==="go-mocks")setView("mocks");else if(action==="go-history")setView("history");else if(action==="open-signup")openAuth("signup");else if(action==="finish-mock")setView("mocks");else if(action==="more-practice")setView("practice");else if(action==="play-audio"){const item=mockState?currentMockTask():activeActivity;if(item)speak(item.task.transcript)}else if(action==="stop-audio"){window.speechSynthesis?.cancel()}else if(action==="submit-activity")await submitActivity();else if(action==="start-speaking-timer")startSpeakingTimer();else if(action==="reset-speaking-timer")resetSpeakingTimer();if(event.target.closest("[data-close-modal]"))closeAuth();if(event.target.id==="auth-open"){if(currentUser){await db.auth.signOut();await refreshApp()}else openAuth("signin")}if(event.target.id==="signup-open")openAuth("signup");if(event.target.id==="auth-switch"){authMode=authMode==="signin"?"signup":"signin";renderAuthMode();document.querySelector("#auth-error").textContent=""}if(event.target.id==="mobile-menu")document.querySelector("#sidebar").classList.toggle("open")});
+document.querySelector("#auth-form").addEventListener("submit",handleAuthSubmit);
+document.addEventListener("input",event=>{if(event.target.id==="student-response"){const n=event.target.value.trim().split(/\s+/).filter(Boolean).length;document.querySelector("#word-count").textContent=n+" "+(n===1?"word":"words")}});
+document.addEventListener("keydown",event=>{if(event.key==="Escape")closeAuth()});
 }
-function saveProgress() { localStorage.setItem(storageKey, JSON.stringify(progress)); }
-function localDateKey(date = new Date()) {
-  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
-}
-function escapeHtml(text) {
-  return String(text).replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" })[ch]);
-}
-function renderProgress() {
-  const minutes = progress.minutes;
-  document.querySelector("#minutes-stat").innerHTML = `${minutes}<span> min</span>`;
-  document.querySelector("#sessions-stat").textContent = progress.sessions;
-  const todayMinutes = progress.completed[localDateKey()] || 0;
-  document.querySelector("#goal-progress").textContent = Math.min(todayMinutes, 30);
-  document.querySelector("#goal-bar").style.width = `${Math.min(todayMinutes / 30 * 100, 100)}%`;
-  document.querySelector("#goal-message").textContent = todayMinutes >= 30 ? "Daily goal reached — nice work!" : "30 minutes a day is a great start";
-  const days = [...new Set(progress.days)].sort().reverse();
-  let streak = 0;
-  const checkDate = new Date();
-  if (days[0] !== localDateKey(checkDate)) checkDate.setDate(checkDate.getDate() - 1);
-  while (days.includes(localDateKey(checkDate))) { streak++; checkDate.setDate(checkDate.getDate() - 1); }
-  document.querySelector("#streak-value").textContent = `${streak} ${streak === 1 ? "day" : "days"}`;
-  renderWeek();
-}
-function renderWeek() {
-  const container = document.querySelector("#week-row");
-  const today = new Date();
-  const start = new Date(today);
-  start.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-  const labels = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
-  container.innerHTML = labels.map((label, index) => {
-    const date = new Date(start); date.setDate(start.getDate() + index);
-    const key = localDateKey(date);
-    const classes = ["day-chip", progress.days.includes(key) ? "done" : "", key === localDateKey() ? "today" : ""].filter(Boolean).join(" ");
-    return `<div class="${classes}"><strong>${label}</strong>${date.getDate()}</div>`;
-  }).join("");
-}
-function renderActivity(skill) {
-  const data = skillData[skill] || skillData.listening;
-  document.querySelector("#practice-title").textContent = data.title;
-  document.querySelector("#activity-content").innerHTML = makeActivity(skill, data);
-  document.querySelectorAll(".module-tab").forEach(tab => {
-    const selected = tab.dataset.skill === skill;
-    tab.classList.toggle("selected", selected);
-    tab.setAttribute("aria-selected", String(selected));
-  });
-}
-function makeActivity(skill, data) {
-  if (skill === "listening" || skill === "reading") {
-    const isListening = skill === "listening";
-    return `<div class="activity">
-      <div><p class="prompt-label">${data.label}</p><h3>${data.heading}</h3><p>${data.intro}</p>
-        ${isListening ? `<button class="secondary-btn" id="transcript-toggle" type="button">Show transcript</button><div class="passage transcript" id="passage">${escapeHtml(data.passage).replace(/\n/g, "<br>")}</div>` : `<div class="passage">${escapeHtml(data.passage)}</div>`}
-      </div>
-      <div class="answer-card"><p>${data.question}</p><div class="choice-list">${data.options.map((option, index) => `<button class="choice" type="button" data-choice="${index}">${String.fromCharCode(65 + index)}. ${escapeHtml(option)}</button>`).join("")}</div><p class="feedback" id="feedback" aria-live="polite"></p></div>
-    </div>`;
-  }
-  if (skill === "writing") {
-    return `<div class="activity">
-      <div><p class="prompt-label">${data.label}</p><h3>${data.heading}</h3><p>${data.intro}</p><div class="prompt-box">${escapeHtml(data.prompt)}</div></div>
-      <div><textarea class="text-area" id="writing-response" placeholder="${escapeHtml(data.placeholder)}" aria-label="Your writing response"></textarea><div class="writing-meta"><span id="word-count">0 words</span><span>Draft stays in this browser</span></div><div class="action-row"><button class="primary-btn" id="save-writing" type="button">Save draft</button><button class="secondary-btn" id="complete-writing" type="button">Finish 5 min practice</button></div></div>
-    </div>`;
-  }
-  return `<div class="activity">
-    <div><p class="prompt-label">${data.label}</p><h3>${data.heading}</h3><p>${data.intro}</p><div class="prompt-box">${escapeHtml(data.prompt)}</div><ul class="cue-points">${data.points.map(point => `<li>${escapeHtml(point)}</li>`).join("")}</ul></div>
-    <div class="answer-card"><p>One minute to prepare</p><div class="timer-face" id="timer-face">01:00</div><div class="action-row"><button class="primary-btn" id="timer-start" type="button">Start preparation</button><button class="secondary-btn" id="timer-reset" type="button">Reset</button></div><p class="inline-note">When the timer ends, speak for up to two minutes. Add a few notes below.</p><textarea class="text-area" id="speaking-notes" placeholder="${escapeHtml(data.placeholder)}" aria-label="Speaking practice notes" style="min-height:75px"></textarea><div class="action-row" style="margin-top:9px"><button class="secondary-btn" id="complete-speaking" type="button">Finish practice</button></div></div>
-  </div>`;
-}
-function showToast(message) {
-  const toast = document.querySelector("#toast"); toast.textContent = message; toast.classList.add("show");
-  window.clearTimeout(showToast.timeout); showToast.timeout = window.setTimeout(() => toast.classList.remove("show"), 2600);
-}
-function completeSession(skill, minutes = 5) {
-  progress.minutes += minutes; progress.sessions += 1;
-  const today = localDateKey();
-  progress.days = [...new Set([...progress.days, today])];
-  progress.completed[today] = (progress.completed[today] || 0) + minutes;
-  saveProgress(); renderProgress(); showToast(`${skill} practice saved — ${minutes} minutes added.`);
-}
-function startTimer(button, seconds, mode) {
-  window.clearInterval(timerInterval);
-  timerSeconds = seconds; timerMode = mode;
-  const face = document.querySelector("#timer-face");
-  const startButton = document.querySelector("#timer-start");
-  const update = () => {
-    if (!face) return;
-    face.textContent = `${String(Math.floor(timerSeconds / 60)).padStart(2,"0")}:${String(timerSeconds % 60).padStart(2,"0")}`;
-    if (timerSeconds <= 0) {
-      window.clearInterval(timerInterval); timerInterval = null;
-      if (startButton) startButton.textContent = "Start again";
-      showToast(mode === "prepare" ? "Preparation time is up. Your speaking time starts now." : "Speaking time is complete.");
-      return;
-    }
-    timerSeconds -= 1;
-  };
-  update();
-  timerInterval = window.setInterval(update, 1000);
-  button.textContent = "Restart timer";
-}
-function onPracticeClick(event) {
-  const skillButton = event.target.closest("[data-skill]");
-  if (skillButton) {
-    const skill = skillButton.dataset.skill;
-    renderActivity(skill);
-    document.querySelector("#practice-room").scrollIntoView({ behavior: "smooth", block: "start" });
-    return;
-  }
-  if (event.target.id === "transcript-toggle") {
-    const passage = document.querySelector("#passage");
-    const visible = passage.classList.toggle("visible");
-    event.target.textContent = visible ? "Hide transcript" : "Show transcript";
-    return;
-  }
-  const choice = event.target.closest("[data-choice]");
-  if (choice) {
-    const data = skillData[document.querySelector(".module-tab.selected").dataset.skill];
-    const selected = Number(choice.dataset.choice);
-    document.querySelectorAll(".choice").forEach(item => item.disabled = true);
-    choice.classList.add(selected === data.answer ? "correct" : "incorrect");
-    if (selected !== data.answer) document.querySelectorAll(".choice")[data.answer].classList.add("correct");
-    document.querySelector("#feedback").textContent = selected === data.answer ? `Correct. ${data.explanation}` : `Not quite. ${data.explanation}`;
-    completeSession(document.querySelector(".module-tab.selected").textContent, 5);
-    return;
-  }
-  if (event.target.id === "save-writing") {
-    const value = document.querySelector("#writing-response").value;
-    localStorage.setItem("krypton-ielts-writing-draft", value);
-    showToast("Draft saved in this browser.");
-    return;
-  }
-  if (event.target.id === "complete-writing") { completeSession("Writing", 5); return; }
-  if (event.target.id === "complete-speaking") { completeSession("Speaking", 5); return; }
-  if (event.target.id === "timer-start") {
-    const mode = timerMode === "prepare" ? "speak" : "prepare";
-    const seconds = mode === "prepare" ? 60 : 120;
-    startTimer(event.target, seconds, mode);
-    event.target.textContent = mode === "prepare" ? "Restart preparation" : "Start 2-minute speaking";
-    return;
-  }
-  if (event.target.id === "timer-reset") {
-    window.clearInterval(timerInterval); timerInterval = null; timerMode = "";
-    const face = document.querySelector("#timer-face"); if (face) face.textContent = "01:00";
-    const startButton = document.querySelector("#timer-start"); if (startButton) startButton.textContent = "Start preparation";
-  }
-}
-document.addEventListener("click", onPracticeClick);
-document.addEventListener("input", event => {
-  if (event.target.id === "writing-response") {
-    const count = event.target.value.trim().split(/\s+/).filter(Boolean).length;
-    document.querySelector("#word-count").textContent = `${count} ${count === 1 ? "word" : "words"}`;
-  }
-});
-document.addEventListener("click", event => {
-  if (event.target.id !== "practice-title" && event.target.closest(".skill-card")) {
-    const skill = event.target.closest(".skill-card").dataset.skill; renderActivity(skill);
-  }
-});
-document.querySelector("#today-label").textContent = new Intl.DateTimeFormat(undefined, { weekday:"long", month:"short", day:"numeric" }).format(new Date()).toUpperCase();
-renderActivity("listening");
-renderProgress();
-const savedDraft = localStorage.getItem("krypton-ielts-writing-draft");
-document.addEventListener("click", event => {
-  if (event.target.dataset.skill === "writing" && savedDraft) {
-    window.setTimeout(() => { const input = document.querySelector("#writing-response"); if (input && !input.value) input.value = savedDraft; }, 0);
-  }
-});
+let speakingSeconds=60,speakingTimer=null;
+function startSpeakingTimer(){clearInterval(speakingTimer);speakingSeconds=60;const btn=document.querySelector('[data-action="start-speaking-timer"]'),face=document.querySelector("#speaking-timer");if(!face)return;btn.textContent="Timer running";speakingTimer=setInterval(()=>{speakingSeconds--;if(speakingSeconds<=0){clearInterval(speakingTimer);face.textContent="00:00 · Start speaking";btn.textContent="Restart preparation";toast("One minute is up. Begin speaking for up to two minutes.")}else face.textContent=String(Math.floor(speakingSeconds/60)).padStart(2,"0")+":"+String(speakingSeconds%60).padStart(2,"0")+" preparation"},1000)}
+function resetSpeakingTimer(){clearInterval(speakingTimer);speakingSeconds=60;const face=document.querySelector("#speaking-timer"),btn=document.querySelector('[data-action="start-speaking-timer"]');if(face)face.textContent="01:00 preparation";if(btn)btn.textContent="Start preparation"}
+bindEvents();
+if(db){db.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;setTimeout(refreshApp,0)})}
+refreshApp();
