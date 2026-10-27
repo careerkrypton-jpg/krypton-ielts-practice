@@ -32,7 +32,8 @@
       q("How much is the fee?",price,fees.filter(x=>x!==price),i,"The speaker states the fee directly in the recording."),
       q("When does the session take place?",day,dayChoices.filter(x=>x!==day),i+1,"The day is stated in the schedule."),
       q("What time does it begin?",time,timeChoices.filter(x=>x!==time),i+2,"The start time is given in the announcement."),
-      q("What should the participant bring?",item,itemChoices.filter(x=>x!==item),i+3,"The speaker names the item participants should bring.")
+      q("What should the participant bring?",item,itemChoices.filter(x=>x!==item),i+3,"The speaker names the item participants should bring."),
+      q("Where should participants meet or enter?",place,placeChoices.filter(x=>x!==place),i+4,"The recording states the meeting point or entrance.")
     ]};
   });
 
@@ -48,11 +49,14 @@
       ? `The ${subject} project will begin its next six-week trial on ${choose(days,n)}. Its aim is to ${aim}. The main challenge so far has been ${challenge}. In the previous trial, organisers found that ${finding}. Residents can join a short information session at ${choose(times,n*2)}; no previous experience is required. Participants are asked to register before ${choose(days,n+2)} so the team can prepare enough materials. The organisers plan to ${action}. Updated dates will be posted at the local information desk.`
       : `A research group studied how local programmes related to ${subject} could be improved. The work began in ${year} with a small pilot involving three neighbourhoods. Its purpose was to ${aim}. Researchers identified ${challenge} as a factor that could affect results. They also observed that ${finding}. The team cautioned that the pilot did not represent every location, because resources and local priorities differed. On the basis of the evidence, the report recommends that organisers ${action}. It concludes that further observation is needed before the approach is treated as a general solution.`;
     const fmt=isGT?"General Training · Multiple choice":"Academic · Multiple choice";
+    const titleQuestion=q("Choose the best title for this passage.",title,[isGT?`Community notice · ${choose(subjects,n+3)}`:`Research brief · ${choose(subjects,n+3)}`,isGT?`Community notice · ${choose(subjects,n+8)}`:`Research brief · ${choose(subjects,n+8)}`],n+4,"The title should reflect the passage’s central subject and purpose.");
+    titleQuestion.questionType="choosing-a-title";
     return {id:`bank-read-${i+1}`,course:isGT?"General Training":"Academic",title,level:"Intermediate",format:fmt,passage,questions:[
       q("What is the main aim of the project?",aim,aims.filter(x=>x!==aim),n,"The first paragraph states the project’s purpose."),
       q("Which challenge did the organisers identify?",challenge,challenges.filter(x=>x!==challenge),n+1,"The passage names this as a factor affecting the work."),
       q("What did the earlier trial show?",finding,findings.filter(x=>x!==finding),n+2,"This finding is reported from the previous trial."),
-      q("What action is recommended next?",action,actions.filter(x=>x!==action),n+3,"The final part of the passage gives this recommendation.")
+      q("What action is recommended next?",action,actions.filter(x=>x!==action),n+3,"The final part of the passage gives this recommendation."),
+      titleQuestion
     ]};
   });
 
