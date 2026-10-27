@@ -56,3 +56,7 @@
 .org-full-practice-controls label{display:grid;gap:7px;font-size:13px;font-weight:700;color:#506176}
 .org-full-practice-controls select{width:100%;padding:10px 12px;border:1px solid #d7e0ed;border-radius:9px;background:#fff;color:#14243a;font:inherit}
 @media(max-width:800px){.org-full-practice{grid-template-columns:1fr;padding:18px}}
+
+.org-runner-back{margin:4px 0 14px}
+.org-runner-back .text-button{display:inline-flex;align-items:center;gap:6px;padding:8px 0;color:#2464ad;font-size:14px;font-weight:700}
+.org-runner-back .text-button:hover{text-decoration:underline}
