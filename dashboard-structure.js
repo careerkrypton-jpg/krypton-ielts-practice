@@ -52,12 +52,12 @@
     var aside=document.createElement("div");aside.className="overview-aside";
     main.append(tabs,moduleHead,modules);if(recent)main.appendChild(recent);
     if(plan)aside.appendChild(plan);
-    aside.append(todayFocus());if(guidance)aside.appendChild(guidance);
+    aside.insertAdjacentHTML("beforeend",todayFocus());if(guidance)aside.appendChild(guidance);
     columns.append(main,aside);
     hero.insertAdjacentElement("afterend",search);
-    if(note){note.insertAdjacentElement("beforebegin",columns);note.insertAdjacentElement("beforebegin",sourceShelf());}
-    else{root.append(columns,sourceShelf());}
     if(dashboard)dashboard.remove();
+    if(note){note.insertAdjacentElement("beforebegin",columns);note.insertAdjacentHTML("beforebegin",sourceShelf());}
+    else{root.append(columns);root.insertAdjacentHTML("beforeend",sourceShelf());}
   };
   document.addEventListener("input",function(event){if(event.target&&event.target.id==="overview-practice-search")searchResults(event.target.value)});
   document.addEventListener("click",function(event){
