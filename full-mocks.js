@@ -152,6 +152,44 @@
     return html;
   };
 
+  function moduleDetails(index) {
+    if (index === 0) return { number: 1, title: "Listening", task: "Listening paper", taskNumber: 1, taskTotal: 1 };
+    if (index === 1) return { number: 2, title: "Reading", task: "Reading paper", taskNumber: 1, taskTotal: 1 };
+    if (index === 2 || index === 3) return { number: 3, title: "Writing", task: "Writing Task " + (index - 1), taskNumber: index - 1, taskTotal: 2 };
+    return { number: 4, title: "Speaking", task: "Speaking Part " + (index - 3), taskNumber: index - 3, taskTotal: 3 };
+  }
+  function mockModuleNav(activeNumber) {
+    var labels = ["Listening", "Reading", "Writing", "Speaking"];
+    return '<nav class="mock-module-nav" aria-label="Mock test modules">' + labels.map(function (label, index) {
+      var number = index + 1;
+      return '<span class="mock-module-step ' + (number === activeNumber ? "active" : number < activeNumber ? "complete" : "") + '"><b>' + number + '</b>' + label + '</span>';
+    }).join("") + '</nav>';
+  }
+  function nextTaskTitle(index) {
+    if (index === 1) return "Reading";
+    if (index === 2) return "Writing Task 1";
+    if (index === 3) return "Writing Task 2";
+    if (index === 4) return "Speaking Part 1";
+    if (index === 5) return "Speaking Part 2";
+    if (index === 6) return "Speaking Part 3";
+    return "the next section";
+  }
+  window.kryptonShowMockCheckpoint = function () {
+    if (!mockState || !mockState.mock || !mockState.mock.fullLength) return;
+    var completed = mockState.mock.extendedTasks[mockState.index - 1];
+    var done = moduleDetails(mockState.index - 1);
+    var next = moduleDetails(mockState.index);
+    var saved = mockState.results[mockState.results.length - 1];
+    var moduleMarkup = mockModuleNav(done.number);
+    var scoreMarkup = saved && saved.score !== null ? '<span class="score-chip">' + saved.score + '/' + saved.total + ' correct</span>' : '<span class="score-chip">Response saved</span>';
+    root.innerHTML =
+      '<section class="page-intro"><p class="eyebrow">' + esc(mockState.mock.type) + ' · MODULE ' + done.number + ' COMPLETE</p><h1>' + esc(done.task) + ' complete</h1><p>' + esc(done.title) + ' module · ' + esc(done.task) + ' is saved. Continue within the same mock test when you are ready.</p></section>' +
+      moduleMarkup +
+      '<article class="card mock-checkpoint"><div class="card-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2 class="card-title">' + esc(done.title) + ' module</h2></div>' + scoreMarkup + '</div>' +
+      '<div class="mock-checkpoint-body"><span class="mock-checkpoint-icon">✓</span><div><strong>' + esc(done.task) + ' saved</strong><p>Next in your full mock: <b>' + esc(nextTaskTitle(mockState.index)) + '</b>' + (next.number === done.number ? ' · continuing in the same ' + esc(done.title) + ' module' : ' · next module: ' + esc(next.title)) + '.</p></div></div>' +
+      '<div class="runner-actions"><small>Your answers are saved after each task.</small><button class="button button-primary" data-action="continue-full-mock">Continue to ' + esc(nextTaskTitle(mockState.index)) + ' →</button></div></article>';
+  };
+
   renderMockStep = function () {
     if (!mockState) return;
     var part = currentMockTask();
@@ -161,25 +199,37 @@
     }
     activityStartedAt = Date.now();
     var index = mockState.index;
+    var details = moduleDetails(index);
     var count = mockState.mock.extendedTasks.length;
     var timeGuide = ["30 minutes", "60 minutes", "20 minutes", "40 minutes", "4–5 minutes", "3–4 minutes", "4–5 minutes"][index] || "Timed practice";
-    var label = part.skill === "writing" ? "Writing Task " + (index - 1) : part.skill === "speaking" ? "Speaking Part " + (index - 3) : SKILL_META[part.skill].label;
     var questionCount = part.task.questions ? part.task.questions.length + " questions" : "Performance task";
     root.innerHTML =
-      '<section class="page-intro"><p class="eyebrow">' + esc(mockState.mock.type) + ' · COMPLETE MOCK TEST</p><h1>' + esc(mockState.mock.title) + '</h1><p>Section ' + (index + 1) + ' of ' + count + ' · ' + esc(label) + ' · ' + esc(questionCount) + ' · Suggested time: ' + timeGuide + '</p></section>' +
-      '<article class="runner"><div class="runner-top"><span class="runner-step">SECTION ' + (index + 1) + ' / ' + count + ' · ' + esc(label.toUpperCase()) + '</span><span class="timer-pill">' + timeGuide + '</span></div>' +
-      '<div class="info-strip">Full test sequence: Listening, Reading, Writing Task 1, Writing Task 2, and Speaking Parts 1–3. Your answers and responses are saved to your private student account as you finish each section.</div>' +
+      '<section class="page-intro"><p class="eyebrow">' + esc(mockState.mock.type) + ' · FULL MOCK TEST</p><h1>' + esc(mockState.mock.title) + '</h1><p>Module ' + details.number + ' of 4 · ' + esc(details.title) + ' · ' + esc(details.task) + ' (' + details.taskNumber + ' of ' + details.taskTotal + ') · ' + esc(questionCount) + ' · Suggested time: ' + timeGuide + '</p></section>' +
+      mockModuleNav(details.number) +
+      '<article class="runner"><div class="runner-top"><span class="runner-step">MODULE ' + details.number + ' / 4 · ' + esc(details.title.toUpperCase()) + ' · ' + esc(details.task.toUpperCase()) + ' ' + details.taskNumber + '/' + details.taskTotal + '</span><span class="timer-pill">' + timeGuide + '</span></div>' +
+      '<div class="info-strip">Complete the tasks in order. Writing Task 1 leads to Writing Task 2 in the same module; Speaking Parts 1–3 stay together in the Speaking module.</div>' +
+      '<div class="mock-subtask-progress"><span>Task ' + details.taskNumber + ' of ' + details.taskTotal + ' in ' + esc(details.title) + '</span><span>' + (index + 1) + ' of ' + count + ' mock tasks</span></div>' +
       activityMarkup(part.skill, part.task, true) + '</article>';
   };
+
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest('[data-action="continue-full-mock"]');
+    if (!button || !mockState || !mockState.mock || !mockState.mock.fullLength) return;
+    event.preventDefault();
+    if (mockState.index >= mockState.mock.extendedTasks.length) renderMockSummary();
+    else renderMockStep();
+  });
 
   renderMockSummary = function () {
     if (!mockState) return;
     var rows = mockState.results || [];
+    var skillLabels = ["Listening", "Reading", "Writing Task 1", "Writing Task 2", "Speaking Part 1", "Speaking Part 2", "Speaking Part 3"];
     root.innerHTML =
-      '<section class="page-intro"><p class="eyebrow">FULL MOCK TEST COMPLETE</p><h1>All seven sections are complete.</h1><p>Your objective results and written or speaking responses have been saved in My progress.</p></section>' +
+      '<section class="page-intro"><p class="eyebrow">FULL MOCK TEST COMPLETE</p><h1>All four modules are complete.</h1><p>You finished the Listening, Reading, Writing, and Speaking modules. Each task result was saved in My progress.</p></section>' +
+      mockModuleNav(4) +
       '<article class="card"><div class="card-head"><div><p class="eyebrow">' + esc(mockState.mock.title) + '</p><h2 class="card-title">Full test results</h2></div></div><div class="recent-list">' +
-      rows.map(function (result) {
-        return '<div class="recent-item"><span class="recent-badge">' + (SKILL_META[result.skill]?.icon || "✓") + '</span><span class="recent-info"><strong>' + esc(result.title) + '</strong><small>' + esc(SKILL_META[result.skill]?.label || result.skill) + '</small></span>' +
+      rows.map(function (result, index) {
+        return '<div class="recent-item"><span class="recent-badge">' + (SKILL_META[result.skill]?.icon || "✓") + '</span><span class="recent-info"><strong>' + esc(skillLabels[index] || result.title) + '</strong><small>' + esc(result.title) + '</small></span>' +
           (result.score !== null ? '<span class="score-chip">' + result.score + '/' + result.total + '</span>' : '<span class="score-chip">Saved</span>') + '</div>';
       }).join("") +
       '</div><div class="runner-actions"><small>Question scores are self-marked. AI writing and speaking scores are practice estimates, not official IELTS results.</small><button class="button button-primary" data-action="finish-mock">Back to mock test library</button></div></article>';
