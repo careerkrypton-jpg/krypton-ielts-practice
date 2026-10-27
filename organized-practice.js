@@ -74,10 +74,11 @@
     return '<button class="org-part-card" type="button" data-org-section="' + esc(String(n)) + '"><span class="org-part-number">' + (skill === "writing" ? "TASK " : skill === "reading" ? "PASSAGE " : "PART ") + n + '</span><strong>' + esc(descriptor) + '</strong><small>' + count + ' practice sets</small><span class="org-card-arrow">Explore →</span></button>';
   }
   function taskCard(skill, task, description) {
-    var detail = task.questions && task.questions.length ? task.questions.length + " questions" : (task.time || 3) + " min";
+    var fullSet = skill === "listening" || skill === "reading";
+    var detail = fullSet ? (skill === "reading" ? "40 questions · 60 minutes" : "40 questions · 30 minutes") : task.questions && task.questions.length ? task.questions.length + " questions" : (task.time || 3) + " min";
     var format = task.format || task.level || SKILL_META[skill].label;
     var badge = skill === "writing" && task.visual ? '<span class="visual-kind-badge">' + esc(visualLabels[task.visual.type] || "Illustration") + '</span>' : "";
-    return '<article class="lesson-card organized-task-card org-task-card"><div class="lesson-meta"><span>' + esc(format) + '</span><span class="tag">' + esc(task.course || "Both") + '</span>' + badge + '</div><h3>' + esc(task.title || "Practice set") + '</h3><p>' + esc(description || task.hint || "Original IELTS-style practice with answer review.") + '</p><div class="lesson-bottom"><small>' + esc(detail) + '</small><button class="button button-primary" type="button" data-org-start-task="' + esc(task.id) + '" data-org-skill="' + esc(skill) + '">Start practice →</button></div></article>';
+    return '<article class="lesson-card organized-task-card org-task-card"><div class="lesson-meta"><span>' + esc(format) + '</span><span class="tag">' + esc(task.course || "Both") + '</span>' + badge + '</div><h3>' + esc(task.title || "Practice set") + '</h3><p>' + esc(description || task.hint || "Original IELTS-style practice with answer review.") + '</p><div class="lesson-bottom"><small>' + esc(detail) + '</small><button class="button button-primary" type="button" data-org-start-task="' + esc(task.id) + '" data-org-skill="' + esc(skill) + '">' + (fullSet ? "Start full set →" : "Start practice →") + '</button></div></article>';
   }
   function backBar(title, target) {
     return '<div class="org-backbar"><button type="button" class="text-button" data-org-back="' + target + '">← Back</button><span>' + esc(title) + '</span></div>';
@@ -158,8 +159,8 @@
       return controls + '<section class="org-topic-grid org-task-grid">' + filtered.map(function (task) { return taskCard(skill,task,(task.visual && visualNames[task.visual.type] || "Academic Task 1") + " · describe key features, comparisons and trends."); }).join("") + '</section>';
     }
     return '<section class="org-topic-grid org-task-grid">' + filtered.map(function (task) {
-      var description = skill === "listening" ? "Part " + section + " · " + partNames.listening[section] + " · Listen, answer, then review explanations."
-        : skill === "reading" ? "Passage section " + section + " · Read the text, find evidence, and review explanations."
+      var description = skill === "listening" ? "Full Listening set · Parts 1–4 · 40 questions · Listen to each part, answer its questions, then continue."
+        : skill === "reading" ? "Full Reading set · Passages 1–3 · 40 questions · Read each passage, answer its questions, then move to the next."
         : "Writing Task " + section + (section === "1" ? " · practise a clear overview and accurate details." : " · develop a position with reasons and examples.");
       return taskCard(skill, task, description);
     }).join("") + '</section>';
@@ -211,7 +212,7 @@
       var title = skill === "listening" ? "Part " + orgState.section + " · " + partNames.listening[orgState.section]
         : skill === "reading" ? "Passage " + orgState.section + " · practice sets"
         : "Writing " + partNames.writing[orgState.section];
-      root.innerHTML = '<section class="page-intro"><p class="eyebrow">' + esc(label.toUpperCase()) + ' · PRACTICE SETS</p><h1>' + esc(title) + '</h1><p>Choose a topic below to start a focused practice set.</p></section>' + courseSwitchMarkup() + backBar(label + " sections","skill") + renderSectionTopics(skill,orgState.section);
+      root.innerHTML = '<section class="page-intro"><p class="eyebrow">' + esc(label.toUpperCase()) + ' · PRACTICE SETS</p><h1>' + esc(title) + '</h1><p>' + (skill === "reading" ? "Every selected set contains Passages 1, 2 and 3, with questions after each passage." : skill === "listening" ? "Every selected set contains Parts 1, 2, 3 and 4, with questions after each recording." : "Choose a topic below to start a focused practice set.") + '</p></section>' + courseSwitchMarkup() + backBar(label + " sections","skill") + renderSectionTopics(skill,orgState.section);
       return;
     }
     root.innerHTML = '<section class="page-intro"><p class="eyebrow">PRACTICE MODULE</p><h1>' + esc(label) + '</h1><p>' + esc(SKILL_META[skill].description) + '</p></section>' + courseSwitchMarkup() + backBar("All four modules","modules") + fullModuleCTA(skill) + renderSkillHome(skill);
@@ -259,6 +260,32 @@
     document.querySelector("#crumb-title").textContent = "SECTIONAL MOCK";
     renderMockStep();
   }
+  function practiceSetSeed(value) {
+    var hash = 2166136261;
+    String(value).split("").forEach(function (character) { hash = Math.imul(hash ^ character.charCodeAt(0), 16777619); });
+    return (hash >>> 0) || 1;
+  }
+  function startCompletePracticeSet(skill, id) {
+    if (!requireLogin()) return;
+    var source = (PACKS[skill] || []).find(function (task) { return task.id === id; });
+    if (!source) throw new Error("This practice set is no longer available.");
+    mockReturnContext = {view:"practice",state:copyOrgState()};
+    var preferredSection = skill === "listening"
+      ? partNumber(skill, source)
+      : readingSectionGroups().findIndex(function (group) { return group.some(function (task) { return task.id === id; }); }) + 1;
+    var seed = practiceSetSeed(kryptonCourse + ":" + skill + ":" + id);
+    var built = window.kryptonBuildMockQuestionSection(skill, kryptonCourse, seed, seed, id, preferredSection);
+    var attemptKey = "practice-set-" + skill + "-" + seed;
+    mockState = {
+      mock:{id:attemptKey,title:kryptonCourse + " " + SKILL_META[skill].label + " · " + (source.title || "Practice set"),type:kryptonCourse,sectional:true,extendedTasks:[built]},
+      index:0,results:[],attemptKey:attemptKey
+    };
+    activeActivity = null; activeSkill = skill; currentView = "activity";
+    document.querySelectorAll(".nav-link").forEach(function(nav){nav.classList.remove("active");});
+    document.querySelector("#crumb-title").textContent = "PRACTICE SET";
+    renderMockStep();
+  }
+
   var baseMockStep = renderMockStep;
   renderMockStep = function () {
     if (!mockState?.mock?.sectional) {
@@ -366,7 +393,15 @@
     var fullSpeaking = event.target.closest("[data-org-start-full-speaking]");
     if (fullSpeaking) { event.preventDefault();event.stopImmediatePropagation();startSpeaking(orgState.topic,0);return; }
     var startTask = event.target.closest("[data-org-start-task]");
-    if (startTask) { event.preventDefault();event.stopImmediatePropagation();startActivity(startTask.dataset.orgSkill,startTask.dataset.orgStartTask);return; }
+    if (startTask) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      var taskSkill = startTask.dataset.orgSkill, taskId = startTask.dataset.orgStartTask;
+      try {
+        if (taskSkill === "reading" || taskSkill === "listening") startCompletePracticeSet(taskSkill, taskId);
+        else startActivity(taskSkill, taskId);
+      } catch(error) { console.error(error); toast(error.message || "This practice set is not ready yet."); }
+      return;
+    }
     var sectional = event.target.closest("[data-org-sectional]");
     if (sectional) {
       event.preventDefault();event.stopImmediatePropagation();
