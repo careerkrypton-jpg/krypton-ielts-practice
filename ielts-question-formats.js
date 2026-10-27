@@ -2,7 +2,8 @@
 (function () {
   "use strict";
   var typeNames = {
-    "multiple-choice":"Multiple choice",\n    "choosing-a-title":"Choosing a title",
+    "multiple-choice":"Multiple choice",
+    "choosing-a-title":"Choosing a title",
     "multiple-choice-multiple":"Multiple choice · choose all that apply",
     "short-answer":"Short answer",
     "sentence-completion":"Sentence completion",
