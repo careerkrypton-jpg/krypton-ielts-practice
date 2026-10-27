@@ -13,12 +13,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
   <script src="config.js" defer></script>
   <script src="script.js" defer></script>
+  <script src="enhancements.js" defer></script>
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#overview" aria-label="Krypton IELTS Practice home">
-        <span class="brand-mark">K</span><span class="brand-copy"><strong>KRYPTON</strong><small>IELTS PRACTICE</small></span>
+        <img class="brand-logo" src="assets/krypton-logo.svg" alt="Kathmandu Krypton Educational Consultancy"><span class="brand-tagline">IELTS PRACTICE</span>
       </a>
       <p class="nav-label">STUDENT SPACE</p>
       <nav class="side-nav" aria-label="Student navigation">
@@ -47,12 +48,29 @@
   <div class="modal-backdrop" id="auth-modal" hidden>
     <section class="modal auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
       <button class="modal-close" data-close-modal aria-label="Close">×</button>
-      <div class="modal-brand"><span class="brand-mark">K</span><span>KRYPTON IELTS PRACTICE</span></div>
+      <div class="modal-brand"><img class="auth-brand-logo" src="assets/krypton-logo.svg" alt="Kathmandu Krypton Educational Consultancy"><span>KRYPTON IELTS PRACTICE</span></div>
       <p class="eyebrow">YOUR FREE STUDENT ACCOUNT</p>
       <h2 id="auth-title">Welcome back.</h2>
       <p class="modal-copy" id="auth-description">Sign in to save practice and continue your IELTS plan on any device.</p>
       <form id="auth-form">
         <label id="name-field" hidden>Full name<input name="name" autocomplete="name" placeholder="Your name"></label>
+        <div class="onboarding-fields" id="onboarding-fields" hidden>
+          <p class="eyebrow">BUILD YOUR STUDY PLAN</p>
+          <label>Which IELTS test are you preparing for?
+            <select name="test_type"><option value="Academic">IELTS Academic</option><option value="General Training">IELTS General Training</option></select>
+          </label>
+          <div class="onboarding-grid">
+            <label>Your target band
+              <select name="target_band"><option value="5.5">5.5</option><option value="6.0">6.0</option><option value="6.5">6.5</option><option value="7.0" selected>7.0</option><option value="7.5">7.5</option><option value="8.0">8.0</option><option value="8.5">8.5</option><option value="9.0">9.0</option></select>
+            </label>
+            <label>Study time each day
+              <select name="daily_study_minutes"><option value="30">30 minutes</option><option value="60" selected>1 hour</option><option value="90">1.5 hours</option><option value="120">2 hours</option><option value="180">3 hours</option></select>
+            </label>
+          </div>
+          <label>Planned test date <span class="optional-label">Optional</span>
+            <input name="exam_date" type="date">
+          </label>
+        </div>
         <label>Email address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
         <label>Password<input name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters"></label>
         <p class="form-error" id="auth-error" role="alert"></p>
