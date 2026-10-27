@@ -34,6 +34,7 @@
     return items[Math.floor(random() * items.length)];
   }
   function makeQuestionSection(skill, course, random, number) {
+    if (typeof random !== "function") random = seededRandom(random);
     var eligible = PACKS[skill].filter(function (task) {
       return Array.isArray(task.questions) && task.questions.length && (task.course === "Both" || task.course === course);
     });
