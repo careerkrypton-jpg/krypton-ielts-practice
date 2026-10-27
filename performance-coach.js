@@ -98,8 +98,9 @@
   renderAiFeedbackCard = function (feedback) {
     if (feedback && (feedback.module === "reading" || feedback.module === "listening")) {
       const copy = Object.assign({}, feedback, { criteria: (feedback.criteria || []).map(function (item) { return Object.assign({}, item, { band: "" }); }) });
+      const title = feedback.feedback_source === "raw-score-only" ? "KRYPTON " + feedback.module.toUpperCase() + " PRACTICE SCORE" : "KRYPTON " + feedback.module.toUpperCase() + " SCORE & AI COACH";
       return oldRenderAiFeedbackCard(copy)
-        .replace("KRYPTON AI PRACTICE FEEDBACK", "KRYPTON " + feedback.module.toUpperCase() + " SCORE & AI COACH")
+        .replace("KRYPTON AI PRACTICE FEEDBACK", title)
         .replace("Indicative band estimate", "Practice band estimate")
         .replace(/<span>Estimated band <\/span>/g, "")
         .replace('<div class="ai-band"><strong>', '<div class="ai-band"><strong>');
