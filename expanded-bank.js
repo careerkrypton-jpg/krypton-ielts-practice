@@ -126,7 +126,9 @@
       task.questions[5].questionType="multiple-choice";
       task.questions[6].q="Complete the note: Attendees should ______.";
       task.questions[6].questionType="summary-completion";
-      task.questions[7].questionType="multiple-choice";\n      task.questions[8].questionType="multiple-choice-multiple";\n      task.questions[9].questionType="matching";
+      task.questions[7].questionType="multiple-choice";
+      task.questions[8].questionType="multiple-choice-multiple";
+      task.questions[9].questionType="matching";
       task.questions[2].q="Complete the sentence: The session begins at ______.";
       task.questions[2].questionType="sentence-completion";
       task.questions[4].q="Complete the form: Meeting place: ______";
