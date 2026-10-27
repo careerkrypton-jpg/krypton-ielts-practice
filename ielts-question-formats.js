@@ -21,7 +21,7 @@
     "yes-no-not-given":"Yes / No / Not Given"
   };
   var visualStyle = document.createElement("style");
-  visualStyle.textContent = ".ielts-timer{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1rem 0;padding:1rem 1.2rem;border:1px solid #dbe5f2;border-radius:16px;background:#f5f9ff}.ielts-timer-face{display:block;font-size:1.55rem;font-variant-numeric:tabular-nums;color:#102b52}.ielts-timer-status{display:block;color:#64748b}.ielts-timer-controls{display:flex;gap:.5rem}.ielts-q-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.65rem}.ielts-q-number{display:grid;place-items:center;width:1.8rem;height:1.8rem;border-radius:50%;background:#e9f2ff;color:#1456a0;font-weight:700}.ielts-q-type{padding:.25rem .6rem;border-radius:99px;background:#eef2f7;color:#45546a;font-size:.76rem;font-weight:700}.ielts-question-prompt{display:block;margin-bottom:.8rem}.ielts-text-answer,.ielts-select-answer{width:100%;max-width:32rem;min-height:2.8rem;padding:.7rem .8rem;border:1px solid #b9c8dc;border-radius:10px;background:#fff;font:inherit}.ielts-format-guide{margin:.6rem 0;color:#58677d;font-size:.9rem}.ielts-legacy-answer{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:560px){.ielts-timer{align-items:flex-start;flex-direction:column}.ielts-timer-controls{width:100%}.ielts-timer-controls button{flex:1}}";
+  visualStyle.textContent = ".ielts-timer{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1rem 0;padding:1rem 1.2rem;border:1px solid #dbe5f2;border-radius:16px;background:#f5f9ff}.ielts-timer-face{display:block;font-size:1.55rem;font-variant-numeric:tabular-nums;color:#102b52}.ielts-timer-status{display:block;color:#64748b}.ielts-timer-controls{display:flex;gap:.5rem}.ielts-question-group{margin:1.1rem 0}.ielts-question-group>h3{margin:.3rem 0 .7rem;color:#1b365f;font-size:1rem}.ielts-question-group-items{display:grid;gap:.7rem}.ielts-q-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.65rem}.ielts-q-number{display:grid;place-items:center;width:1.8rem;height:1.8rem;border-radius:50%;background:#e9f2ff;color:#1456a0;font-weight:700}.ielts-q-type{padding:.25rem .6rem;border-radius:99px;background:#eef2f7;color:#45546a;font-size:.76rem;font-weight:700}.ielts-question-prompt{display:block;margin-bottom:.8rem}.ielts-text-answer,.ielts-select-answer{width:100%;max-width:32rem;min-height:2.8rem;padding:.7rem .8rem;border:1px solid #b9c8dc;border-radius:10px;background:#fff;font:inherit}.ielts-format-guide{margin:.6rem 0;color:#58677d;font-size:.9rem}.ielts-legacy-answer{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:560px){.ielts-timer{align-items:flex-start;flex-direction:column}.ielts-timer-controls{width:100%}.ielts-timer-controls button{flex:1}}";
   document.head.appendChild(visualStyle);
   var timerStates = Object.create(null);
   var timerInterval = null;
@@ -112,19 +112,22 @@
   }
   function formatQuestionList(part, list) {
     if (!part || !Array.isArray(part.task.questions) || !list) return;
-    list.innerHTML = part.task.questions.map(function (question, index) {
+    var groups = Object.create(null), order = [];
+    part.task.questions.forEach(function (question, index) {
       var type = questionType(part.task, question, index);
       question.__kryptonQuestionType = type;
-      return questionMarkup(question, index, type);
+      if (!groups[type]) { groups[type] = []; order.push(type); }
+      groups[type].push(questionMarkup(question, index, type));
+    });
+    list.innerHTML = order.map(function (type) {
+      return '<section class="ielts-question-group"><h3>' + esc(typeLabel(type)) + '</h3>' +
+        '<div class="ielts-question-group-items">' + groups[type].join("") + '</div></section>';
     }).join("");
-    var types = Array.from(new Set(part.task.questions.map(function (question, index) {
-      return questionType(part.task, question, index);
-    })));
     var guide = document.createElement("p");
     guide.className = "ielts-format-guide";
-    guide.textContent = types.length > 1
-      ? "This set mixes question formats. Check the format label beside each question."
-      : "Answer each question in the format shown beside it.";
+    guide.textContent = order.length > 1
+      ? "Questions are grouped by response format. Complete each group before moving to the next."
+      : "Answer each question in the format shown below.";
     list.parentNode.insertBefore(guide, list);
   }
   function moduleFor(part) {
