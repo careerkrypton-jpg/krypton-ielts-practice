@@ -108,3 +108,35 @@ body{font-size:15px}
 .ai-disclaimer{padding-top:10px;border-top:1px solid #e0e8f0;color:#8a97a5!important;font-size:10px!important}
 @media(max-width:1100px){.sidebar{width:230px}.main-content{margin-left:230px;padding:0 24px 22px}.brand-logo{max-width:185px}}
 @media(max-width:700px){.sidebar{width:258px}.main-content{margin:0;padding:0 16px 20px}.brand-logo{max-width:200px}.hero-row h1{font-size:30px}.page-intro h1{font-size:28px}.mock-generator{grid-template-columns:1fr;padding:20px}.mock-generator-actions{justify-content:flex-start}.plan-banner{align-items:flex-start;flex-direction:column}.plan-target{justify-items:start}.ai-criteria{grid-template-columns:1fr}.onboarding-grid{grid-template-columns:1fr 1fr}}
+
+/* Larger, easier-to-read student interface and auth options */
+:root{font-size:16px}
+body{font-size:16px;line-height:1.6}
+p,.card-subtitle,.modal-copy,.hero-copy,.note-banner,.reading-passage,.prompt-box{font-size:16px;line-height:1.7}
+label{font-size:15px;line-height:1.55}
+input,select,textarea,button,.button{font-size:16px}
+input,select,textarea{min-height:46px}
+button,.button{min-height:44px}
+.eyebrow{font-size:12px;letter-spacing:.14em}
+.nav-link,.filter-pill,.course-choice,.mock-label,.runner-step,.timer-pill{font-size:14px}
+.stat-value,.metric-value{font-size:30px}
+.lesson-card h3,.mock-card h3{font-size:19px}
+.question-box>strong{font-size:16px;line-height:1.55}
+.option-label{font-size:15px;line-height:1.45}
+.card-subtitle,.recent-item small{font-size:14px}
+.ai-consent,.recording-status,.ai-criterion p,.ai-feedback p,.ai-feedback li{font-size:14px;line-height:1.65}
+.ai-criterion strong{font-size:14px}
+.ai-disclaimer{font-size:12px!important}
+.mock-generator p{font-size:15px}
+.button-google{display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:#233750;border:1px solid #d7e1ed;font-weight:750}
+.button-google span{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;color:#4285f4;font:bold 18px Arial,sans-serif;box-shadow:0 0 0 1px #e0e6ee}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:12px 0;color:#718198;font-size:13px}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;background:#e1e8f0;flex:1}
+.email-code-open{margin-top:10px}
+.text-button{border:0;background:transparent;color:var(--blue);font-weight:700;cursor:pointer;padding:10px}
+#otp-form{display:grid;gap:12px;margin:14px 0}
+#otp-form[hidden]{display:none}
+#otp-form input[name="otp_token"]{font-size:22px;letter-spacing:.3em;text-align:center}
+#otp-form .form-error{min-height:18px}
+#otp-resend{margin-top:2px}
+@media(max-width:700px){body{font-size:16px}.hero-copy,.page-intro p{font-size:16px}.onboarding-grid{grid-template-columns:1fr}.question-box>strong{font-size:16px}}
