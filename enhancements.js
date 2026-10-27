@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 10409)
-Total output lines: 344
-
 /* Krypton IELTS Practice enhancements. Original questions only. */
 const KRYPTON_EXTRA = {
   listening: [
@@ -82,7 +79,17 @@ const KRYPTON_EXTRA = {
     {id:"speak-object",course:"Both",title:"An object you use often",level:"Part 2 · Cue card",format:"Speaking practice",time:3,prompt:"Describe an object you use regularly. You should say what it is, when you first got it, how you use it, and explain why it is useful to you.",hint:"Make brief notes for one minute, then speak for up to two minutes. Include one specific example."},
     {id:"speak-colleague",course:"Both",title:"A helpful person",level:"Part 2 · Cue card",format:"Speaking practice",time:3,prompt:"Describe a person who helped you learn something. You should say who the person is, what you learned, how they helped, and explain how you felt about the experience.",hint:"Organise the answer as context, example, result and reflection."},
     {id:"speak-book",course:"Both",title:"A book or article you found useful",level:"Part 2 · Cue card",format:"Speaking practice",time:3,prompt:"Describe a book or article that you found useful. You should say what it was about, when you read it, what you learned, and explain why it was useful.",hint:"Give enough detail for a two-minute talk and explain how you used what you learned."},
-    {id:"speak-volunteering",course:"Both",title:"Volunteering and communities",level:"Part 3 · Discussion",format:"Speaking practice",time:5,prompt:"Why do people volunteer? Should schools encourage students to help in their communities? What kin…409 tokens truncated…task){if(!task.course)task.course=task.level.indexOf("General Training")>=0?"General Training":"Academic";});
+    {id:"speak-volunteering",course:"Both",title:"Volunteering and communities",level:"Part 3 · Discussion",format:"Speaking practice",time:5,prompt:"Why do people volunteer? Should schools encourage students to help in their communities? What kinds of volunteering may become more common in the future?",hint:"Develop each answer with a reason, example and consequence."},
+    {id:"speak-publicspaces",course:"Both",title:"Public spaces",level:"Part 3 · Discussion",format:"Speaking practice",time:5,prompt:"What makes a public space enjoyable? How can parks serve people of different ages? Should local residents influence how public spaces are designed?",hint:"Compare different users’ needs and support your opinion with a specific example."},
+    {id:"speak-milestone",course:"Both",title:"A goal you achieved",level:"Part 2 · Cue card",format:"Speaking practice",time:3,prompt:"Describe a goal you achieved. You should say what the goal was, why it mattered, what you did to achieve it, and explain how you felt afterwards.",hint:"Tell the story in order and include one obstacle and how you responded."},
+    {id:"speak-media",course:"Both",title:"News and social media",level:"Part 3 · Discussion",format:"Speaking practice",time:5,prompt:"Where do people get news today? How can readers judge whether a story is reliable? Do you think social media has changed public discussion for the better?",hint:"Give balanced answers. Explain your view and use a relevant example."}
+  ]
+};
+Object.keys(KRYPTON_EXTRA).forEach(function(skill){PACKS[skill].push.apply(PACKS[skill],KRYPTON_EXTRA[skill]);});
+PACKS.listening.forEach(function(task){if(!task.course)task.course="Both";});
+PACKS.speaking.forEach(function(task){if(!task.course)task.course="Both";});
+PACKS.reading.forEach(function(task){if(!task.course)task.course="Academic";});
+PACKS.writing.forEach(function(task){if(!task.course)task.course=task.level.indexOf("General Training")>=0?"General Training":"Academic";});
 SKILL_META.listening.count=PACKS.listening.length+" practice sets";
 SKILL_META.reading.count=PACKS.reading.length+" practice sets";
 SKILL_META.writing.count=PACKS.writing.length+" task prompts";
@@ -297,7 +304,7 @@ async function scoreKryptonResponse(button){
   }catch(error){
     console.error("AI scoring unavailable",error);
     kryptonAiFeedback=null;
-    kryptonAiError="AI feedback is temporarily unavailable. Your response will still be saved; check the Groq secret or free-tier limit if this continues.";
+    kryptonAiError="AI feedback is temporarily unavailable. Your response can still be saved; check the Groq secret or free-tier limit if this continues.";
     showScoringError(kryptonAiError);
     button.disabled=false;button.textContent=skill==="writing"||skill==="speaking"?"Save response":"Save response";
     kryptonAiError="AI feedback is temporarily unavailable. Your response was saved without an AI score.";
@@ -334,4 +341,3 @@ function applySavedCourse(){
 }
 applySavedCourse();
 refreshApp();
-
