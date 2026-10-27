@@ -14,6 +14,8 @@
   <script src="config.js" defer></script>
   <script src="script.js" defer></script>
   <script src="enhancements.js" defer></script>
+  <script src="expanded-bank.js" defer></script>
+  <script src="auth-flows.js" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -52,6 +54,8 @@
       <p class="eyebrow">YOUR FREE STUDENT ACCOUNT</p>
       <h2 id="auth-title">Welcome back.</h2>
       <p class="modal-copy" id="auth-description">Sign in to save practice and continue your IELTS plan on any device.</p>
+      <button class="button button-google button-wide" id="google-auth" type="button"><span aria-hidden="true">G</span> Continue with Google</button>
+      <div class="auth-divider"><span>or continue with email</span></div>
       <form id="auth-form">
         <label id="name-field" hidden>Full name<input name="name" autocomplete="name" placeholder="Your name"></label>
         <div class="onboarding-fields" id="onboarding-fields" hidden>
@@ -72,9 +76,19 @@
           </label>
         </div>
         <label>Email address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
-        <label>Password<input name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters"></label>
+        <label id="password-field">Password<input name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters"></label>
         <p class="form-error" id="auth-error" role="alert"></p>
         <button class="button button-primary button-wide" id="auth-submit" type="submit">Sign in</button>
+        <button class="button button-outline button-wide email-code-open" id="email-code-open" type="button">Email me a sign-in code</button>
+      </form>
+      <form id="otp-form" hidden>
+        <p class="modal-copy" id="otp-stage-message">Check your inbox for a code or sign-in link. You can paste the code here or click the link in your email.</p>
+        <label>Email address<input name="otp_email" type="email" autocomplete="email" required readonly></label>
+        <label>Verification code<input name="otp_token" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Enter the code from your email" required></label>
+        <p class="form-error" id="otp-error" role="alert"></p>
+        <button class="button button-primary button-wide" id="otp-submit" type="submit">Verify and continue</button>
+        <button class="button button-outline button-wide" id="otp-resend" type="button">Send another code</button>
+        <button class="text-button button-wide" id="otp-back" type="button">Back to sign in</button>
       </form>
       <p class="auth-switch"><span id="switch-prompt">New to Krypton?</span> <button id="auth-switch" type="button">Create a free account</button></p>
       <p class="fine-print">Your account and progress are stored securely with Supabase. Krypton practice is free; there are no subscriptions.</p>
