@@ -110,13 +110,19 @@
       task.questions.push({q:"Choose the best title for this passage.",options:choices.map((_,i)=>choices[(i+offset)%choices.length]),answer:(choices.length-offset)%choices.length,why:"The best title captures the passage’s central subject and purpose.",questionType:"choosing-a-title"});
     }
     var gt=task.course==="General Training";
+    var answerText=function(question){
+      return question && Array.isArray(question.options) && typeof question.answer==="number"
+        ? question.options[question.answer] : "";
+    };
+    var aim=answerText(task.questions[0]) || "the project’s stated aim";
+    var challenge=answerText(task.questions[1]) || "the challenge described in the passage";
+    var finding=answerText(task.questions[2]) || "the finding described in the passage";
+    var action=answerText(task.questions[3]) || "the recommended next step";
     task.questions.push(
       {q:gt?"The next trial will last six weeks.":"The pilot involved three neighbourhoods.",options:["TRUE","FALSE","NOT GIVEN"],answer:0,why:gt?"The passage says the next trial will run for six weeks.":"The passage states that the pilot involved three neighbourhoods.",questionType:"true-false-not-given"},
       {q:gt?"Participants need previous experience to join.":"The pilot represented every location equally.",options:["TRUE","FALSE","NOT GIVEN"],answer:1,why:gt?"The passage says no previous experience is required.":"The passage says the pilot did not represent every location.",questionType:"true-false-not-given"},
-      {q:gt?"The trial will be held at a university.":"Researchers studied exactly twenty locations.",options:["TRUE","FALSE","NOT GIVEN"],answer:2,why:"The passage does not provide this information.",questionType:"true-false-not-given"}
-    );
-    task.questions.push(
-      {q:"Select TWO statements supported by the passage.",options:[gt?"The trial will last six weeks.":"The work began in "+year+".","The project aimed to "+aim+".","The project operated without any challenges.","The organisers guaranteed the programme would work everywhere."],answer:[0,1],why:"Both selected details are stated directly in the passage.",questionType:"multiple-choice-multiple"},
+      {q:gt?"The trial will be held at a university.":"Researchers studied exactly twenty locations.",options:["TRUE","FALSE","NOT GIVEN"],answer:2,why:"The passage does not provide this information.",questionType:"true-false-not-given"},
+      {q:"Select TWO statements supported by the passage.",options:["The project aimed to "+aim,gt?"No previous experience is required.":"Further observation is needed before a general solution.","The organisers guaranteed the programme would work everywhere.","The trial involved exactly twenty locations."],answer:[0,1],why:"Both selected statements are supported by the passage.",questionType:"multiple-choice-multiple"},
       {q:"Match the report’s recommended next step: Organisers should ______.",options:[action,finding,challenge],answer:0,why:"The recommendation appears near the end of the passage.",questionType:"matching-features"}
     );
   });
