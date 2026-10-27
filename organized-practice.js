@@ -183,7 +183,7 @@
       return '<section class="org-full-practice"><div><p class="eyebrow">COMPLETE SPEAKING INTERVIEW</p><h2>Practise all three parts together</h2><p>Choose a topic, then complete Part 1, the Part 2 cue card, and the connected Part 3 discussion in one interview.</p></div><div class="org-full-practice-controls"><label for="org-full-speaking-topic">Interview topic<select id="org-full-speaking-topic">' + speakingTopics().map(function(topic){return '<option value="' + esc(topic) + '">' + esc(topic) + '</option>';}).join("") + '</select></label><button class="button button-primary" type="button" data-org-full-module="speaking">Start full interview →</button></div></section>';
     }
     var details = skill === "listening" ? "Complete Parts 1–4 in order · 40 questions (10 each) · about 30 minutes."
-      : skill === "reading" ? "Complete all 3 passages in order · 30 questions (10 each) · 60 minutes."
+      : skill === "reading" ? "Complete all 3 passages in order · 40 questions (13, 13 and 14) · 60 minutes."
       : "Complete Task 1 and Task 2 in order · 60 minutes total.";
     return '<section class="org-full-practice"><div><p class="eyebrow">COMPLETE ' + esc(label.toUpperCase()) + ' PRACTICE</p><h2>Practise the whole module</h2><p>' + esc(details) + ' Your responses and practice score are saved together.</p></div><button class="button button-primary" type="button" data-org-full-module="' + esc(skill) + '">Start full ' + esc(label) + ' practice →</button></section>';
   }
