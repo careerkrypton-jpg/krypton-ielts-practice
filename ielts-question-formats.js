@@ -250,14 +250,15 @@
       var question=part.task.questions[index],type=questionType(part.task,question,index);
       var text=document.querySelector('[data-answer-text="'+index+'"]');
       var select=document.querySelector('[data-answer-select="'+index+'"]');
-      var checked=document.querySelector('input[name="q'+index+'"]:checked');
+      var checked=Array.from(document.querySelectorAll('input[name="q'+index+'"]:checked'));
       if(text){
-        var normalized=String(text.value||"").trim().replace(/\\s+/g," ").toLowerCase();
+        var normalized=String(text.value||"").trim().toLowerCase();
         var options=answerOptions(question,type);
-        var value=options.findIndex(function(option){return String(option).trim().replace(/\\s+/g," ").toLowerCase()===normalized;});
+        var value=options.findIndex(function(option){return String(option).trim().toLowerCase()===normalized;});
         saved[index]={kind:"text",text:text.value,value:value};
       }else if(select && select.value!=="") saved[index]={kind:"choice",value:Number(select.value)};
-      else if(checked) saved[index]={kind:"choice",value:Number(checked.value)};
+      else if(type==="multiple-choice-multiple") saved[index]={kind:"multi",value:checked.map(function(input){return Number(input.value);}).sort(function(a,b){return a-b;})};
+      else if(checked.length) saved[index]={kind:"choice",value:Number(checked[0].value)};
       else delete saved[index];
     });
   }
@@ -269,7 +270,11 @@
       var select=document.querySelector('[data-answer-select="'+index+'"]');
       if(text && answer.kind==="text")text.value=answer.text;
       else if(select && answer.kind==="choice")select.value=String(answer.value);
-      else if(answer.kind==="choice"){
+      else if(answer.kind==="multi"){
+        Array.from(document.querySelectorAll('input[type="checkbox"][name="q'+index+'"]')).forEach(function(input){
+          input.checked=answer.value.indexOf(Number(input.value))>=0;
+        });
+      }else if(answer.kind==="choice"){
         var radio=document.querySelector('input[name="q'+index+'"][value="'+answer.value+'"]');
         if(radio)radio.checked=true;
       }
@@ -294,11 +299,15 @@
     var current=questionIndices(part),currentSet=Object.create(null);
     current.forEach(function(index){currentSet[index]=true;});
     Object.keys(mockState.ieltsAnswers).forEach(function(key){
-      var index=Number(key),answer=mockState.ieltsAnswers[key];
-      if(currentSet[index] || answer.value===undefined || answer.value<0)return;
+      var index=Number(key),answer=mockState.ieltsAnswers[key],question=part.task.questions[index];
+      if(currentSet[index] || answer.value===undefined)return;
+      var values=Array.isArray(answer.value)?answer.value:[answer.value];
+      if(!values.length || (!Array.isArray(answer.value) && answer.value<0))return;
+      var type=questionType(part.task,question,index);
+      var inputType=type==="multiple-choice-multiple"?"checkbox":"radio";
       var holder=document.createElement("div");
       holder.className="ielts-legacy-answer";
-      holder.innerHTML='<input type="radio" name="q'+index+'" value="'+answer.value+'" checked>';
+      holder.innerHTML=values.map(function(value){return '<input type="'+inputType+'" name="q'+index+'" value="'+value+'" checked>';}).join("");
       var list=document.querySelector(".question-list");
       if(list)list.appendChild(holder);
     });
