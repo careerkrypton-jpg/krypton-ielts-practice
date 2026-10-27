@@ -39,7 +39,9 @@
       q("Complete the form: Meeting place: ______",place,placeChoices.filter(x=>x!==place),i+4,"The recording states the meeting point or entrance."),
       q("What is the recording mainly about?",topic,topics.filter(x=>x!==topic),i+5,"The speakers introduce this topic at the start of the recording."),
       q("Complete the note: The speaker says attendees should ______.",followUp,["ask for a refund","leave immediately","bring another person"],i+6,"The recording gives this instruction or follow-up."),
-      q("Who is speaking or providing the information?",speakerType,speakerChoices.filter(x=>x!==speakerType),i+7,"The speaker roles identify this kind of exchange.")
+      q("Who is speaking or providing the information?",speakerType,speakerChoices.filter(x=>x!==speakerType),i+7,"The speaker roles identify this kind of exchange."),
+      {q:"Select TWO details mentioned in the recording.",options:["Fee: "+price,"Day: "+day,"Fee: "+choose(fees.filter(x=>x!==price),i+9),"Day: "+choose(dayChoices.filter(x=>x!==day),i+10)],answer:[0,1],why:"Both the fee and the day are stated in the recording.",questionType:"multiple-choice-multiple"},
+      q("Match the event topic to its location: "+topic+" → ______",place,placeChoices.filter(x=>x!==place),i+8,"The speaker connects this event with the stated venue.")
     ]};
   });
 
@@ -113,6 +115,10 @@
       {q:gt?"Participants need previous experience to join.":"The pilot represented every location equally.",options:["TRUE","FALSE","NOT GIVEN"],answer:1,why:gt?"The passage says no previous experience is required.":"The passage says the pilot did not represent every location.",questionType:"true-false-not-given"},
       {q:gt?"The trial will be held at a university.":"Researchers studied exactly twenty locations.",options:["TRUE","FALSE","NOT GIVEN"],answer:2,why:"The passage does not provide this information.",questionType:"true-false-not-given"}
     );
+    task.questions.push(
+      {q:"Select TWO statements supported by the passage.",options:[gt?"The trial will last six weeks.":"The work began in "+year+".","The project aimed to "+aim+".","The project operated without any challenges.","The organisers guaranteed the programme would work everywhere."],answer:[0,1],why:"Both selected details are stated directly in the passage.",questionType:"multiple-choice-multiple"},
+      {q:"Match the report’s recommended next step: Organisers should ______.",options:[action,finding,challenge],answer:0,why:"The recommendation appears near the end of the passage.",questionType:"matching-features"}
+    );
   });
   PACKS.listening.push(...listening);
   PACKS.listening.forEach(task => {
@@ -120,7 +126,7 @@
       task.questions[5].questionType="multiple-choice";
       task.questions[6].q="Complete the note: Attendees should ______.";
       task.questions[6].questionType="summary-completion";
-      task.questions[7].questionType="multiple-choice";
+      task.questions[7].questionType="multiple-choice";\n      task.questions[8].questionType="multiple-choice-multiple";\n      task.questions[9].questionType="matching";
       task.questions[2].q="Complete the sentence: The session begins at ______.";
       task.questions[2].questionType="sentence-completion";
       task.questions[4].q="Complete the form: Meeting place: ______";
