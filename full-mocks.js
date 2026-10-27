@@ -252,4 +252,105 @@
       }).join("") +
       '</div><div class="runner-actions"><small>Question scores are self-marked. AI writing and speaking scores are practice estimates, not official IELTS results.</small><button class="button button-primary" data-action="finish-mock">Back to mock test library</button></div></article>';
   };
+
+  /* Practice library: keep modules together and guide related Speaking parts in sequence. */
+  var kryptonPracticeSequence = null;
+  var priorRenderPracticeLibrary = renderLibrary;
+  renderLibrary = function () {
+    var skills = selectedFilter === "all" ? SKILLS : [selectedFilter];
+    function category(skill, task) {
+      if (skill === "writing") {
+        var match = String(task.level || "").match(/Task\s*(1|2)/i);
+        return match ? "Task " + match[1] : "Writing practice";
+      }
+      if (skill === "listening") {
+        var listenPart = String(task.format || task.level || "").match(/Part\s*([1-4])/i);
+        return listenPart ? "Part " + listenPart[1] + " · " + task.title : task.title;
+      }
+      if (skill === "reading") return task.title;
+      return task.title.replace(/^Speaking practice\s*\d+\s*·\s*/i, "").replace(/^Speaking topic\s*·\s*/i, "");
+    }
+    function startButton(skill, task, sequence) {
+      return '<button class="button button-primary" data-start-skill="' + esc(skill) + '" data-task="' + esc(task.id) + '"' +
+        (sequence ? ' data-topic-sequence="' + esc(sequence) + '"' : '') + '>Start practice</button>';
+    }
+    var sections = skills.map(function (skill) {
+      var tasks = (PACKS[skill] || []);
+      var heading = SKILL_META[skill].label;
+      var content = "";
+      if (skill === "speaking") {
+        var groups = {};
+        tasks.forEach(function (task) {
+          var topic = category(skill, task);
+          (groups[topic] = groups[topic] || []).push(task);
+        });
+        content = Object.keys(groups).map(function (topic, index) {
+          var group = groups[topic].sort(function (a, b) {
+            var ap = Number((String(a.level || "").match(/Part\s*(\d)/i) || [0, 9])[1]);
+            var bp = Number((String(b.level || "").match(/Part\s*(\d)/i) || [0, 9])[1]);
+            return ap - bp;
+          });
+          var sequence = "speaking-topic-" + index;
+          var uniqueParts = group.filter(function (task, i, all) {
+            var p = (String(task.level || "").match(/Part\s*\d/i) || ["Part"])[0];
+            return all.findIndex(function (other) { return (String(other.level || "").match(/Part\s*\d/i) || ["Part"])[0] === p; }) === i;
+          });
+          return '<details class="topic-group"><summary><span><strong>' + esc(topic) + '</strong><small>' + uniqueParts.map(function (task) { return esc((String(task.level || "").match(/Part\s*\d/i) || ["Speaking practice"])[0]); }).join(" · ") + '</small></span><span class="topic-open-label">Open topic →</span></summary><div class="topic-task-list">' +
+            group.map(function (task) {
+              return '<article class="lesson-card topic-task-card"><div class="lesson-meta"><span>' + esc(task.format || "Speaking practice") + '</span><span class="tag">' + esc(task.level || "Speaking") + '</span></div><h3>' + esc((String(task.level || "").match(/Part\s*\d/i) || ["Speaking"])[0]) + '</h3><p>' + esc(task.hint || "Answer with a reason and a specific example.") + '</p><div class="lesson-bottom"><small>' + (task.time || 3) + ' min</small>' + startButton(skill, task, sequence) + '</div></article>';
+            }).join("") + '</div></details>';
+        }).join("");
+      } else {
+        content = tasks.map(function (task) {
+          var label = category(skill, task);
+          return '<article class="lesson-card"><div class="lesson-meta"><span>' + esc(task.format || "Practice") + '</span><span class="tag">' + esc(task.level || "Practice") + '</span></div><h3>' + esc(task.title) + '</h3><p>' + esc(skill === "listening" ? "Listen to an original recording and answer detail questions." : skill === "reading" ? "Read the passage, answer the questions, then review the explanations." : task.hint || "Develop your answer and support it with relevant detail.") + '</p><div class="lesson-bottom"><small>' + esc(label) + ' · ' + ((task.questions && task.questions.length) ? task.questions.length + " questions" : (task.time || 3) + " min") + '</small>' + startButton(skill, task, "") + '</div></article>';
+        }).join("");
+      }
+      return '<section class="practice-module-section"><div class="section-head"><div><p class="eyebrow">MODULE ' + esc(heading.toUpperCase()) + '</p><h2>' + esc(heading) + '</h2></div><span class="tag">' + tasks.length + ' practice sets</span></div>' + (skill === "speaking" ? '<p class="card-subtitle">Open a topic to complete Speaking Parts 1, 2 and 3 in order, all within the same topic.</p>' : skill === "writing" ? '<p class="card-subtitle">Writing Tasks 1 and 2 are organized under the Writing module.</p>' : '<p class="card-subtitle">Choose a practice set to work through this module.</p>') + '<div class="' + (skill === "speaking" ? "topic-list" : "lesson-list") + '">' + content + '</div></section>';
+    }).join("");
+    root.innerHTML = '<section class="page-intro"><p class="eyebrow">PRACTICE AT YOUR OWN PACE</p><h1>Practice modules</h1><p>Choose a skill, open a topic, and move through its tasks in order. All practice is free.</p></section><div class="filters"><button class="filter-pill ' + (selectedFilter === "all" ? "selected" : "") + '" data-filter="all">All modules</button>' + SKILLS.map(function (skill) { return '<button class="filter-pill ' + (selectedFilter === skill ? "selected" : "") + '" data-filter="' + skill + '">' + SKILL_META[skill].label + '</button>'; }).join("") + '</div>' + sections + '<div class="note-banner">Krypton practice uses original questions designed around public IELTS task formats. It does not reproduce official Cambridge, British Council, or IDP question banks.</div>';
+  };
+
+  var priorRenderPracticeResult = renderResult;
+  renderResult = function (skill, task, score, total, response) {
+    priorRenderPracticeResult(skill, task, score, total, response);
+    var sequence = kryptonPracticeSequence;
+    if (!sequence || sequence.skill !== skill || sequence.tasks[sequence.index]?.id !== task.id) return;
+    if (sequence.index + 1 < sequence.tasks.length) {
+      var nextTask = sequence.tasks[sequence.index + 1];
+      root.insertAdjacentHTML("beforeend", '<article class="card topic-next-card"><p class="eyebrow">SAME SPEAKING TOPIC</p><h2>Continue to ' + esc((String(nextTask.level || "").match(/Part\s*\d/i) || ["the next part"])[0]) + '</h2><p>' + esc(sequence.topic) + '</p><button class="button button-primary" data-action="continue-topic-practice">Continue to next part →</button></article>');
+    } else {
+      root.insertAdjacentHTML("beforeend", '<article class="card topic-next-card"><p class="eyebrow">TOPIC COMPLETE</p><h2>You finished this Speaking topic</h2><p>Choose another topic to keep practising.</p><button class="button button-outline" data-action="back-to-practice-topics">Back to Speaking topics</button></article>');
+      kryptonPracticeSequence = null;
+    }
+  };
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-start-skill][data-topic-sequence]");
+    if (!button) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    var topicTasks = Array.from(button.closest(".topic-task-list").querySelectorAll("[data-start-skill]"));
+    var ids = topicTasks.map(function (item) { return item.dataset.task; });
+    var topic = button.closest(".topic-group").querySelector("summary strong").textContent;
+    var tasks = ids.map(function (id) { return PACKS.speaking.find(function (task) { return task.id === id; }); }).filter(Boolean);
+    kryptonPracticeSequence = { skill: "speaking", tasks: tasks, index: Math.max(0, ids.indexOf(button.dataset.task)), topic: topic };
+    startActivity("speaking", button.dataset.task);
+  }, true);
+  document.addEventListener("click", function (event) {
+    var next = event.target.closest('[data-action="continue-topic-practice"]');
+    if (next && kryptonPracticeSequence) {
+      event.preventDefault();
+      kryptonPracticeSequence.index += 1;
+      startActivity("speaking", kryptonPracticeSequence.tasks[kryptonPracticeSequence.index].id);
+      return;
+    }
+    var back = event.target.closest('[data-action="back-to-practice-topics"]');
+    if (back) {
+      event.preventDefault();
+      setView("practice");
+      selectedFilter = "speaking";
+      renderLibrary();
+    }
+  }, true);
+
 })();
