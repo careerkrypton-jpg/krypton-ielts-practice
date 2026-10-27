@@ -314,26 +314,7 @@ async function scoreKryptonResponse(button){
     kryptonMediaRecorder=null;
   }
 }
-document.addEventListener("submit",function(event){
-  if(event.target?.id!=="auth-form"||authMode!=="signup")return;
-  event.preventDefault();event.stopImmediatePropagation();
-  const form=event.target,formData=new FormData(form),error=document.querySelector("#auth-error"),button=document.querySelector("#auth-submit");
-  if(!db){error.textContent="Student accounts are not connected.";return}
-  const email=String(formData.get("email")||"").trim(),password=String(formData.get("password")||"");
-  const name=String(formData.get("name")||"").trim(),testType=String(formData.get("test_type")||"Academic");
-  const targetBand=String(formData.get("target_band")||"7.0"),daily=String(formData.get("daily_study_minutes")||"60");
-  const examDate=String(formData.get("exam_date")||"");
-  error.textContent="";button.disabled=true;button.textContent="Creating your plan…";
-  (async function(){
-    try{
-      const result=await db.auth.signUp({email:email,password:password,options:{data:{full_name:name,target_band:targetBand,test_type:testType,daily_study_minutes:daily,exam_date:examDate}}});
-      if(result.error)throw result.error;
-      if(result.data.session){closeAuth();await refreshApp();toast("Free account created. Your study plan is ready.")}
-      else{error.textContent="Check your email to confirm your free account. Your study plan will be ready when you sign in."}
-    }catch(err){error.textContent=err.message||"Could not create your account."}
-    finally{button.disabled=false;renderAuthMode()}
-  })();
-},true);
+/* Authentication is handled by auth-flows.js. */
 document.addEventListener("click",function(event){
   const courseButton=event.target.closest("[data-course]");
   if(courseButton){kryptonCourse=courseButton.dataset.course;try{localStorage.setItem("kryptonCourse",kryptonCourse)}catch(_){};render();return}
