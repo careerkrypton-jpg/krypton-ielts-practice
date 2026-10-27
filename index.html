@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1726">
+  <meta name="description" content="A calm, focused space to practise IELTS Listening, Reading, Writing, and Speaking.">
+  <title>Krypton IELTS Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Krypton IELTS Studio home">
+        <span class="brand-mark">K</span>
+        <span class="brand-copy"><strong>KRYPTON</strong><small>IELTS STUDIO</small></span>
+      </a>
+      <div class="side-label">YOUR SPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <a class="nav-link active" href="#home"><span class="nav-icon">⌂</span> Overview</a>
+        <a class="nav-link" href="#practice"><span class="nav-icon">◉</span> Practice room</a>
+        <a class="nav-link" href="#plan"><span class="nav-icon">▦</span> Study plan</a>
+      </nav>
+      <div class="sidebar-note">
+        <span class="note-spark">✳</span>
+        <p><strong>Small steps add up.</strong><br>Build a steady routine, one skill at a time.</p>
+      </div>
+      <div class="profile-card">
+        <span class="avatar">K</span>
+        <span><strong>Your study space</strong><small>IELTS learner</small></span>
+        <span class="more">•••</span>
+      </div>
+    </aside>
+
+    <main class="main-content" id="home">
+      <header class="topbar">
+        <div class="breadcrumb">MY LEARNING <span>/</span> <strong>OVERVIEW</strong></div>
+        <div class="topbar-right"><span class="today-dot"></span><span id="today-label">TODAY</span><span class="top-avatar">K</span></div>
+      </header>
+
+      <section class="welcome-row">
+        <div>
+          <p class="eyebrow">YOUR IELTS JOURNEY</p>
+          <h1>Make today <span>count.</span></h1>
+          <p class="welcome-copy">A little focused practice goes a long way. Choose a skill and get started.</p>
+        </div>
+        <div class="streak-card"><span class="streak-icon">✦</span><div><strong id="streak-value">0 days</strong><small>practice streak</small></div></div>
+      </section>
+
+      <section class="stats-grid" aria-label="Your progress">
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon mint">◷</span><span class="stat-caption">THIS WEEK</span></div><strong id="minutes-stat">0<span> min</span></strong><small>focused practice</small><div class="mini-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon lavender">✎</span><span class="stat-caption">SESSIONS</span></div><strong id="sessions-stat">0</strong><small>practice sessions</small><div class="stat-foot"><span class="tiny-check">✓</span> Every session moves you forward</div></article>
+        <article class="stat-card goal-card"><div class="stat-top"><span class="stat-icon amber">◎</span><span class="stat-caption">DAILY GOAL</span></div><strong><span id="goal-progress">0</span><span class="goal-total"> / 30 min</span></strong><div class="progress-track"><span id="goal-bar"></span></div><small id="goal-message">30 minutes a day is a great start</small></article>
+      </section>
+
+      <section class="section-heading" id="practice"><div><p class="eyebrow">PICK UP WHERE YOU ARE</p><h2>Practice a skill</h2></div><span class="section-hint">Choose a room to begin <span>↗</span></span></section>
+      <section class="skill-grid" aria-label="IELTS skills">
+        <button class="skill-card listening" data-skill="listening"><span class="skill-icon">♫</span><span class="skill-arrow">↗</span><small>01 / LISTENING</small><strong>Listen closely.</strong><span class="skill-desc">Train your ear for detail and meaning.</span><span class="skill-link">Enter practice room <b>→</b></span></button>
+        <button class="skill-card reading" data-skill="reading"><span class="skill-icon">▤</span><span class="skill-arrow">↗</span><small>02 / READING</small><strong>Read with purpose.</strong><span class="skill-desc">Build speed, focus, and understanding.</span><span class="skill-link">Enter practice room <b>→</b></span></button>
+        <button class="skill-card writing" data-skill="writing"><span class="skill-icon">✎</span><span class="skill-arrow">↗</span><small>03 / WRITING</small><strong>Shape your ideas.</strong><span class="skill-desc">Organise your thoughts with confidence.</span><span class="skill-link">Enter practice room <b>→</b></span></button>
+        <button class="skill-card speaking" data-skill="speaking"><span class="skill-icon">◖</span><span class="skill-arrow">↗</span><small>04 / SPEAKING</small><strong>Find your voice.</strong><span class="skill-desc">Practise speaking clearly and naturally.</span><span class="skill-link">Enter practice room <b>→</b></span></button>
+      </section>
+
+      <section class="practice-panel" id="practice-room" aria-live="polite">
+        <div class="practice-heading"><div><p class="eyebrow">YOUR PRACTICE ROOM</p><h2 id="practice-title">Ready when you are.</h2></div><span class="level-pill" id="practice-level">QUICK DRILL · 5 MIN</span></div>
+        <div class="module-tabs" role="tablist" aria-label="Choose a practice skill">
+          <button class="module-tab selected" role="tab" aria-selected="true" data-skill="listening">Listening</button>
+          <button class="module-tab" role="tab" aria-selected="false" data-skill="reading">Reading</button>
+          <button class="module-tab" role="tab" aria-selected="false" data-skill="writing">Writing</button>
+          <button class="module-tab" role="tab" aria-selected="false" data-skill="speaking">Speaking</button>
+        </div>
+        <div id="activity-content"></div>
+      </section>
+
+      <section class="bottom-row" id="plan">
+        <article class="plan-card"><div class="plan-heading"><div><p class="eyebrow">A ROUTINE THAT WORKS</p><h2>Your study plan</h2></div><span class="plan-icon">✳</span></div><p>Try a different skill each day. Consistent practice helps you spot progress and find what to work on next.</p><div class="week-row" id="week-row"></div></article>
+        <article class="tip-card"><span class="tip-mark">✦</span><div><p class="eyebrow">A QUICK REMINDER</p><h3>Progress over perfection.</h3><p>Focus on one clear improvement in each practice session. It’s how confidence grows.</p></div></article>
+      </section>
+      <footer>MADE FOR YOUR NEXT STEP <span>·</span> KRYPTON IELTS STUDIO</footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
