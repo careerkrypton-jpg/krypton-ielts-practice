@@ -189,7 +189,7 @@ activityMarkup=function(skill,task,inMock){
   if(skill==="writing"||skill==="speaking"){
     const label=skill==="writing"?"AI score and save →":"AI score and save →";
     html=html.replace("data-action=\"submit-activity\">"+(inMock?"Save and continue →":"Finish practice and save"),"data-action=\"submit-activity\">"+label);
-    html=html.replace('<div class="runner-actions">','<div class="ai-consent">Your response is sent securely to Krypton’s AI scoring service only after you press the scoring button. Feedback is an estimate for practice, not an official IELTS result.</div><div class="runner-actions">');
+    html=html.replace('<div class="runner-actions">','<div class="ai-consent">Your response is sent securely to Krypton’s AI scoring service only after you press the scoring button. Feedback is an estimate for practice, not an official IELTS result. Students practise free; each AI score may use Krypton consultancy provider credits.</div><div class="runner-actions">');
   }
   if(skill==="speaking"){
     const controls='<div class="ai-consent"><strong>Optional speaking recording.</strong> If you record, the audio is sent for transcription when you score it and is not kept in your progress history. Your browser will ask before the microphone starts.</div><div class="recording-panel"><button class="audio-btn" type="button" data-action="krypton-record-start">● Record answer</button><button class="audio-btn" type="button" data-action="krypton-record-stop" disabled>■ Stop recording</button><button class="audio-btn" type="button" data-action="krypton-record-clear">Remove recording</button><span class="recording-status" id="krypton-recording-status">No recording yet. You can also submit a written response.</span></div>';
