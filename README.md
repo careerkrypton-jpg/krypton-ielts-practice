@@ -6,15 +6,15 @@ Krypton IELTS Practice is the independent practice web app for Kathmandu Krypton
 
 ## Student features
 
-- Free email/password sign-up and sign-in
+- Free account creation and sign-in with password, email verification, or Google (Google OAuth must be configured in Supabase)
 - Onboarding for Academic or General Training, target band, daily study time, and optional test date
 - Readable, responsive dashboard with a personal study plan
-- Original Listening and Reading drills with answer explanations
-- Academic and General Training Writing prompts
-- Speaking interview questions and cue cards, with optional audio recording
+- 107+ Listening sets and 109+ Reading sets, each with four original, self-marked questions
+- 112+ Academic and General Training Writing prompts
+- 112+ Speaking interview questions and cue cards, with optional audio recording
 - AI practice feedback for typed Writing and Speaking responses; optional Speaking audio transcription
 - Saved practice history and AI feedback, protected by Supabase row-level security
-- Random four-skill practice mixes and unlimited attempts
+- Extended mocks with 50 Listening questions, 50 Reading questions, one Writing task, and one Speaking task; students can repeat mocks without a limit
 - No student subscription or paywall
 
 ## AI scoring setup
@@ -25,15 +25,15 @@ OpenAI usage can incur API charges. This does not add a subscription or charge t
 
 ## Supabase
 
-The live app uses the connected Supabase project. Its public site URL and email-confirmation redirect are configured for GitHub Pages.
+The live app uses the connected Supabase project. Its public site URL and email-confirmation redirect are configured for GitHub Pages. Supabase currently has no custom SMTP server configured; its built-in mailer restricts delivery to pre-authorized project team addresses, so production student email sign-up and verification need a custom SMTP provider.
 
 For a new Supabase project:
 
 1. Run [supabase/schema.sql](supabase/schema.sql) in the SQL Editor. It creates student profiles and practice history, enables row-level security, and limits each student to their own records.
 2. Put the project URL and public anon/publishable key in [config.js](config.js).
 3. Set the Supabase Authentication site URL and redirect allowlist to your HTTPS app URL. Enable email/password sign-in.
-4. Deploy the Edge Function and set its `OPENAI_API_KEY` secret in Supabase.
-5. Serve the repository over HTTPS. For local development, use a local web server rather than opening `index.html` directly.
+4. Configure a production SMTP provider for Auth email delivery. To send numeric codes, set the Magic Link or OTP email template to use `{{ .Token }}`; the default template sends a link.\n5. If you want Google sign-in, create a Google OAuth web client with the Supabase callback URL shown in the provider settings, then add its Client ID and Secret to the Supabase Google provider.\n6. Deploy the Edge Function and set its `OPENAI_API_KEY` secret in Supabase.
+7. Serve the repository over HTTPS. For local development, use a local web server rather than opening `index.html` directly.
 
 Only a public anon/publishable key belongs in browser code. Never put a service-role key or OpenAI key in the public repository.
 
