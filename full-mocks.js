@@ -38,7 +38,7 @@
     var eligible = PACKS[skill].filter(function (task) {
       return Array.isArray(task.questions) && task.questions.length && (task.course === "Both" || task.course === course);
     });
-    var targets = skill === "listening" ? [5, 5, 5, 5] : [5, 5, 5];
+    var targets = skill === "listening" ? [8, 8, 8, 8] : [8, 8, 8];
     var questions = [], sourceText = [], sectionData = [];
     var used = Object.create(null);
     targets.forEach(function (target, sectionIndex) {
@@ -195,7 +195,7 @@
     root.innerHTML =
       '<section class="page-intro"><p class="eyebrow">200 ORIGINAL FULL MOCK FORMS · FREE</p><h1>Full mock test library</h1><p>Complete all four IELTS skills in one sitting. Choose from 100 numbered Academic forms and 100 General Training forms, or generate a fresh random form. Every attempt is free and can be repeated.</p></section>' +
       courseSwitchMarkup() +
-      '<section class="mock-generator"><div><p class="eyebrow">COMPLETE FOUR-SKILL TEST</p><h2>200 full mock forms</h2><p>Each test has 20 Listening questions across four parts, 15 Reading questions across three passages, Writing Tasks 1 and 2, and one connected Speaking interview with Parts 1–3. The content is original Krypton practice material, with no attempt limit.</p><div class="full-mock-count"><span>35 scored questions</span><span>2 writing tasks</span><span>3 speaking parts</span></div></div><div class="mock-generator-actions mock-library-actions"><label for="full-mock-number">Choose test number<select id="full-mock-number">' + options + '</select></label><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-selected">Start selected full mock</button><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-random">Start a fresh random mock</button></div></section>' +
+      '<section class="mock-generator"><div><p class="eyebrow">COMPLETE FOUR-SKILL TEST</p><h2>200 full mock forms</h2><p>Each test has 32 Listening questions across four parts, 24 Reading questions across three passages, Writing Tasks 1 and 2, and one connected Speaking interview with Parts 1–3. The content is original Krypton practice material, with no attempt limit.</p><div class="full-mock-count"><span>56 scored questions</span><span>2 writing tasks</span><span>3 speaking parts</span></div></div><div class="mock-generator-actions mock-library-actions"><label for="full-mock-number">Choose test number<select id="full-mock-number">' + options + '</select></label><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-selected">Start selected full mock</button><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-random">Start a fresh random mock</button></div></section>' +
       '<div class="info-strip"><strong>Suggested timing:</strong> Listening 30 minutes · Reading 60 minutes · Writing 60 minutes · Speaking 11–14 minutes. These are original learning simulations and are not official IELTS papers.</div>' +
       '<div class="note-banner">The supplied books are not copied into this public app. The mock tests use original questions written for Krypton and follow common IELTS task formats.</div>';
   };
@@ -237,7 +237,7 @@
     if (inMock && mockState && mockState.mock && mockState.mock.fullLength && skill === "listening") {
       html = html.replace(
         "Play the short recording, then answer the questions. You can replay it during practice.",
-        "Listen to the recording for this part, answer its five questions, then continue to the next part."
+        "Listen to the recording for this part, answer its eight questions, then continue to the next part."
       );
     }
     return html;
