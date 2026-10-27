@@ -32,8 +32,10 @@ Deno.serve(async (req: Request) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
   const groqKey = Deno.env.get("GROQ_API_KEY");
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !supabaseKey) return json({ error: "Student authentication is not configured." }, 503, headers);
   if (!groqKey) return json({ error: "Free AI scoring is awaiting secure Groq setup. Please type your answer or save it for now." }, 503, headers);
+  if (!serviceRoleKey) return json({ error: "AI scoring quota protection is not configured." }, 503, headers);
 
   try {
     const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
@@ -54,6 +56,28 @@ Deno.serve(async (req: Request) => {
     const objective = objectiveMode && body.objective && typeof body.objective === "object" ? body.objective : null;
     if (objectiveMode && (!Number.isFinite(Number(objective?.band_estimate)) || Number(objective?.band_estimate) < 1 || Number(objective?.band_estimate) > 9)) {
       return json({ error: "A valid practice band estimate is required for objective feedback." }, 400, headers);
+    }
+    // Consume a server-enforced quota before any transcription or model call.
+    let quotaResponse: Response;
+    try {
+      quotaResponse = await fetch(`${supabaseUrl}/rest/v1/rpc/consume_ai_score_quota`, {
+        method: "POST",
+        headers: { apikey: serviceRoleKey, authorization: `Bearer ${serviceRoleKey}`, "content-type": "application/json" },
+        body: JSON.stringify({ p_user_id: user.id }),
+      });
+    } catch {
+      return json({ error: "AI scoring is temporarily unavailable. Please try again shortly." }, 503, headers);
+    }
+    if (!quotaResponse.ok) {
+      console.error("AI scoring quota check failed", quotaResponse.status);
+      return json({ error: "AI scoring is temporarily unavailable. Please try again shortly." }, 503, headers);
+    }
+    const quota = await quotaResponse.json();
+    const quotaRow = Array.isArray(quota) ? quota[0] : quota;
+    if (!quotaRow?.allowed) {
+      const retryAfter = Math.max(1, Number(quotaRow?.retry_after_seconds) || 60);
+      headers["Retry-After"] = String(retryAfter);
+      return json({ error: "AI practice limit reached. Please wait a little and try again." }, 429, headers);
     }
     const prompt = String(body.prompt || "").slice(0, 3000);
     let responseText = String(body.response || "").slice(0, 12000);
