@@ -63,3 +63,12 @@
 @media(max-width:900px){.overview-columns{grid-template-columns:1fr}.overview-aside{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.overview-aside .plan-banner{grid-column:1/-1}.source-groups{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.overview-search{gap:7px}.overview-search button{padding:10px}.overview-search .search-mark{width:32px;height:32px}.overview-columns .module-grid{grid-template-columns:1fr}.overview-aside{grid-template-columns:1fr}.overview-aside .plan-banner{grid-column:auto}.source-groups{grid-template-columns:1fr}.progress-panel-top{align-items:start;flex-direction:column}.progress-panel .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.performance-snapshot{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .hero-copy{font-size:13px}.eyebrow{font-size:10px}.button{font-size:12px}.metric-top{font-size:10px}.metric-caption{font-size:11px}.section-hint,.link-button{font-size:11px}
+
+/* Compact typography for the Speaking topic catalogue and response screen. */
+.topic-group > summary strong{font-size:.94rem;line-height:1.35}
+.topic-group > summary small{font-size:.8rem;line-height:1.4}
+.topic-group > summary .topic-open-label{font-size:.8rem}
+.topic-task-card h3{font-size:13px}
+#view-root:has(#speaking-timer) .runner-layout h2{font-size:17px}
+#view-root:has(#speaking-timer) .runner-layout p{font-size:9px}
+#view-root:has(#speaking-timer) .runner-layout .prompt-box{font-size:9px;line-height:1.6}
