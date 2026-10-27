@@ -1,28 +1,35 @@
 # Krypton IELTS Practice
 
-A free student practice web app for the Krypton consultancy. It offers original exercises for Listening, Reading, Writing, and Speaking, guided short-form mock tests, student accounts, and private saved progress.
+[Open the free student practice app](https://careerkrypton-jpg.github.io/krypton-ielts-practice/).
 
-## Set up Supabase
+Krypton IELTS Practice is a free IELTS preparation web app for the Krypton consultancy. Students can create an account, practise Listening, Reading, Writing, and Speaking, take guided mini mocks, and keep their progress synced privately.
+
+## Student features
+
+- Free email/password sign-up and sign-in
+- Private progress history protected by Supabase row-level security
+- Original Listening and Reading drills with answer explanations
+- Timed Writing prompts and saved drafts
+- Speaking cue cards, preparation timer, and saved notes
+- Five guided mini mocks across all four skills
+- Links to official test-format and familiarisation resources
+- No subscriptions or paid access
+
+The live app uses the connected Supabase project. Its public site URL and email-confirmation redirect are configured for GitHub Pages.
+
+## Self-hosting
 
 1. Create a Supabase project.
-2. In the Supabase SQL Editor, run [supabase/schema.sql](supabase/schema.sql). This creates student profiles and practice history, enables row-level security, and limits each student to their own records.
-3. Copy the project URL and the public anon/publishable key from the Supabase project settings into [config.js](config.js).
-4. In Supabase Authentication settings, set the allowed site URL and redirect URLs for your deployed domain. Enable email/password sign-in. If email confirmation is enabled, students must confirm their address before signing in.
-5. Serve the repository over HTTPS or run it on a local development server. Open `index.html` directly only for a quick visual preview; authentication needs the Supabase configuration.
+2. Run [supabase/schema.sql](supabase/schema.sql) in the Supabase SQL Editor. It creates student profiles and practice history, enables row-level security, and limits each student to their own records.
+3. Put the project URL and public anon/publishable key in [config.js](config.js).
+4. Set the Supabase Authentication site URL and redirect allowlist to your HTTPS app URL. Enable email/password sign-in.
+5. Serve the repository over HTTPS. For local development, use a local web server rather than opening `index.html` directly.
 
-Only the public anon/publishable key belongs in `config.js`. Never put a service-role key in browser code. The app has no subscriptions or paid access.
+Only a public anon/publishable key belongs in browser code. Never put a service-role key in `config.js`.
 
-## Features
+## Practice material
 
-- Email/password student sign-up and sign-in through Supabase Auth
-- Per-student progress history stored in Supabase with row-level security
-- Original Listening and Reading multiple-choice drills with answer explanations
-- Writing prompts with timed task guidance and saved student responses
-- Speaking cue cards with a preparation timer and saved notes
-- Five guided mini mocks covering all four skills
-- Free links to official test-format and familiarisation resources
-
-The mini mocks are short practice simulations, not full-length official IELTS tests. They do not provide an official band score. The sample questions in this repository are original practice material; they are not copied from Cambridge IELTS books, British Council materials, IDP question banks, or other protected sources. Krypton IELTS Practice is an independent preparation resource and is not affiliated with IELTS, Cambridge, the British Council, or IDP.
+The mini mocks are short practice simulations, not full-length official IELTS tests. They do not provide an official band score. Sample questions are original practice material, not copied from Cambridge IELTS books, British Council materials, IDP question banks, or other protected sources. Krypton IELTS Practice is an independent preparation resource and is not affiliated with IELTS, Cambridge, the British Council, or IDP.
 
 ## Official preparation and format references
 
