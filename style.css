@@ -173,3 +173,46 @@ button,.button{min-height:44px}
   .topic-open-label { font-size:.88rem; }
   .topic-task-list { grid-template-columns:1fr; padding:10px; }
 }
+
+/* One-page, section-based practice catalogue inspired by familiar IELTS dashboards. */
+.practice-intro { padding-bottom:14px; }
+.module-jump { position:sticky; top:0; z-index:3; display:flex; gap:8px; overflow-x:auto; margin:0 -2px 22px; padding:9px 2px; background:#f6f8fb; scrollbar-width:thin; }
+.module-jump a { display:inline-flex; align-items:center; gap:9px; flex:none; text-decoration:none; font-weight:700; }
+.module-jump a span { color:var(--red,#c83d48); }
+.practice-module-section { scroll-margin-top:76px; margin:26px 0 34px; padding:22px; border:1px solid var(--line,#dce4ef); border-radius:18px; background:#fbfcfe; }
+.practice-module-heading { display:flex; align-items:center; justify-content:space-between; gap:18px; padding-bottom:16px; border-bottom:1px solid var(--line,#e5eaf0); }
+.practice-module-heading h2 { margin:0; color:#183552; font:800 22px Manrope,sans-serif; }
+.practice-module-heading p:not(.eyebrow) { margin:6px 0 0; color:#748397; font-size:13px; line-height:1.55; }
+.practice-module-heading > .tag { flex:none; }
+.organized-groups { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.practice-group { min-width:0; border:1px solid #e3e9f0; border-radius:12px; background:#fff; overflow:hidden; }
+.practice-group > summary { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:66px; padding:13px 15px; cursor:pointer; list-style:none; }
+.practice-group > summary::-webkit-details-marker { display:none; }
+.practice-group > summary > span:first-child { display:grid; gap:5px; }
+.practice-group > summary strong { color:#24415f; font-size:13px; }
+.practice-group > summary small { color:#8290a0; font-size:11px; }
+.practice-group[open] { grid-column:1/-1; }
+.practice-group[open] > summary { background:#f5f8fc; border-bottom:1px solid #e3e9f0; }
+.practice-group .topic-task-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.organized-task-card { min-width:0; }
+.organized-task-card .lesson-bottom small { line-height:1.4; }
+.topic-group { grid-column:span 1; }
+.topic-group .topic-task-card { min-width:0; }
+.topic-group .topic-task-card h3 { margin-top:8px; }
+@media(max-width:900px) {
+  .practice-module-section { padding:17px; }
+  .organized-groups { grid-template-columns:1fr; }
+  .practice-group[open] { grid-column:auto; }
+  .practice-group .topic-task-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:600px) {
+  .module-jump { top:0; }
+  .practice-module-section { margin:20px 0 26px; padding:13px; border-radius:14px; }
+  .practice-module-heading { align-items:flex-start; }
+  .practice-module-heading h2 { font-size:19px; }
+  .practice-module-heading > .tag { font-size:10px; }
+  .practice-group .topic-task-list { grid-template-columns:1fr; }
+  .practice-group > summary { padding:12px; }
+  .practice-group > summary strong { font-size:12px; }
+}
+
