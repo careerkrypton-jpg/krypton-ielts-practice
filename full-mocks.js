@@ -39,8 +39,7 @@
       return Array.isArray(task.questions) && task.questions.length && (task.course === "Both" || task.course === course);
     });
     var targets = skill === "listening" ? [5, 5, 5, 5] : [5, 5, 5];
-    var questions = [];
-    var sourceText = [];
+    var questions = [], sourceText = [], sectionData = [];
     var used = Object.create(null);
     targets.forEach(function (target, sectionIndex) {
       var sectionNumber = sectionIndex + 1;
@@ -50,18 +49,17 @@
           })
         : eligible.slice();
       pool = shuffle(pool.filter(function (task) { return !used[task.id]; }), random);
-      var sectionCount = 0;
-      var sectionSources = [];
+      var sectionCount = 0, sectionStart = questions.length, sectionSources = [];
       pool.forEach(function (task) {
         if (sectionCount >= target) return;
         used[task.id] = true;
-        var remaining = target - sectionCount;
-        var selectedQuestions = task.questions.slice(0, remaining);
+        var selectedQuestions = task.questions.slice(0, target - sectionCount);
         if (!selectedQuestions.length) return;
-        sectionSources.push(task.title + "\n" + (skill === "listening" ? task.transcript || "" : task.passage || ""));
+        sectionSources.push({title:task.title,text:skill === "listening" ? task.transcript || "" : task.passage || ""});
         selectedQuestions.forEach(function (question) {
           questions.push(Object.assign({}, question, {
-            q: (skill === "listening" ? "Part " + sectionNumber : "Passage " + sectionNumber) + " · " + question.q
+            q: question.q,
+            sectionNumber: sectionNumber
           }));
         });
         sectionCount += selectedQuestions.length;
@@ -69,18 +67,23 @@
       if (sectionCount < target) {
         throw new Error("The original " + skill + " bank needs at least " + target + " questions for section " + sectionNumber + ".");
       }
-      sourceText.push((skill === "listening" ? "PART " : "PASSAGE ") + sectionNumber + "\n" + sectionSources.join("\n\n"));
+      var sectionTitle = sectionSources.map(function(source){return source.title;}).join(" · ");
+      var sectionBody = sectionSources.map(function(source){return source.text;}).join("\n\n");
+      sourceText.push((skill === "listening" ? "PART " : "PASSAGE ") + sectionNumber + " · " + sectionTitle + "\n" + sectionBody);
+      sectionData.push({number:sectionNumber,title:sectionTitle,text:sectionBody,start:sectionStart,end:questions.length});
     });
     var label = skill === "listening" ? "Listening" : "Reading";
     var task = {
       id: "full-" + skill + "-" + number + "-" + Date.now(),
       course: course,
       title: label + " · " + questions.length + " questions",
-      level: "Full mock · " + label,
-      format: "Full mock · " + label + " section",
+      level: "Timed practice · " + label,
+      format: "Timed practice · " + label + " section",
       questions: questions,
       time: skill === "listening" ? 30 : 60,
-      sectionCount: targets.length,\n      sections: sectionData,\n      questionSections: sectionData
+      sectionCount: targets.length,
+      sections: sectionData,
+      questionSections: sectionData
     };
     task[skill === "listening" ? "transcript" : "passage"] = sourceText.join("\n\n");
     return { skill: skill, task: task };
