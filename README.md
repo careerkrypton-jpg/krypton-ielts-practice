@@ -12,7 +12,7 @@ Krypton IELTS Practice is the independent practice web app for Kathmandu Krypton
 - 107+ Listening sets and 109+ Reading sets, each with four original, self-marked questions
 - 112+ Academic and General Training Writing prompts
 - 112+ Speaking interview questions and cue cards, with optional audio recording
-- AI practice feedback for typed Writing and Speaking responses; optional Speaking audio transcription
+- AI practice coaching in all four modules: Reading and Listening answer analysis with approximate section-band estimates, plus IELTS-criteria feedback and optional transcription for Writing and Speaking
 - Saved practice history and AI feedback, protected by Supabase row-level security
 - 200 numbered full mock test forms: 100 each for Academic and General Training. Each has 50 Listening questions, 50 Reading questions, Writing Tasks 1 and 2, and Speaking Parts 1, 2, and 3
 - Fresh random full mocks can also be generated without an attempt limit
@@ -21,9 +21,9 @@ Krypton IELTS Practice is the independent practice web app for Kathmandu Krypton
 
 ## AI scoring setup
 
-The app calls the Supabase Edge Function at `supabase/functions/score-ielts-response/index.ts`. It uses Groq's free-tier `openai/gpt-oss-120b` model for Writing and transcript-based Speaking feedback, and `whisper-large-v3-turbo` for requested Speaking audio transcription. Set a private `GROQ_API_KEY` in Supabase Edge Function secrets before deploying. Create the key in your Groq account, then add it in Supabase Dashboard → Edge Functions → Secrets. Never put it in `config.js` or GitHub. Free-tier limits can change or be reached, so feedback may be temporarily unavailable; student practice and saving still work.
+The app calls the Supabase Edge Function at `supabase/functions/score-ielts-response/index.ts`. It uses Groq's free-tier `openai/gpt-oss-120b` model for targeted coaching in all four modules, and `whisper-large-v3-turbo` for requested Speaking audio transcription. Reading and Listening are marked from answer keys; their band estimates use approximate raw-score conversions and are less reliable for short practice sets. Writing and Speaking use practice estimates against the IELTS criteria. Set a private `GROQ_API_KEY` in Supabase Edge Function secrets before deploying. Never put it in `config.js` or GitHub. Free-tier limits can change or be reached, so AI coaching may be temporarily unavailable; answer-key scoring and saving still work.
 
-Audio is sent for transcription only when the student explicitly requests scoring and is not saved by the function. Speaking feedback is transcript-based and does not assess accent or pronunciation. Scores are practice estimates, not official IELTS band scores. Review the provider's current privacy terms before sending students' work to an external AI provider.
+Objective answer mistakes and typed Writing/Speaking responses are sent for AI coaching only after the student presses the scoring button. Audio is sent for transcription only when the student explicitly requests scoring and is not saved by the function. Speaking feedback is transcript-based and does not assess accent or pronunciation. Scores are practice estimates, not official IELTS band scores. Review the provider's current privacy terms before sending students' work to an external AI provider.
 
 ## Supabase
 

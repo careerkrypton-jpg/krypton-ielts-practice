@@ -101,6 +101,7 @@ let kryptonAiError="";
 let kryptonAudioBlob=null;
 let kryptonMediaRecorder=null;
 let kryptonAudioTimer=null;
+const kryptonOriginalSubmitActivity=submitActivity;
 const kryptonUsedMocks=new Set();
 const kryptonProfileColumns="full_name,target_band,test_type,daily_study_minutes,exam_date";
 
@@ -215,7 +216,7 @@ renderResult=function(skill,task,score,total,response){
 const kryptonOriginalRenderHistory=renderHistory;
 renderHistory=function(){
   kryptonOriginalRenderHistory();
-  const scored=sessions.filter(function(session){return session.answer_data&&session.answer_data.ai_feedback});
+  const scored=sessions.filter(function(session){return session.answer_data&&session.answer_data.ai_feedback&&session.answer_data.ai_feedback.feedback_source!=="raw-score-only"});
   if(!currentUser||!scored.length)return;
   const items=scored.slice(0,8).map(function(session){
     const feedback=session.answer_data.ai_feedback;
@@ -303,10 +304,10 @@ async function scoreKryptonResponse(button){
   }catch(error){
     console.error("AI scoring unavailable",error);
     kryptonAiFeedback=null;
-    kryptonAiError="AI scoring is not connected yet. Your response can still be saved; the scoring service needs its secure provider setup.";
+    kryptonAiError="AI feedback is temporarily unavailable. Your response can still be saved; check the Groq secret or free-tier limit if this continues.";
     showScoringError(kryptonAiError);
     button.disabled=false;button.textContent=skill==="writing"||skill==="speaking"?"Save response":"Save response";
-    kryptonAiError="AI scoring is not connected yet. Your response will be saved without an AI score.";
+    kryptonAiError="AI feedback is temporarily unavailable. Your response was saved without an AI score.";
     await kryptonOriginalSubmitActivity();
   }finally{
     clearTimeout(kryptonAudioTimer);
