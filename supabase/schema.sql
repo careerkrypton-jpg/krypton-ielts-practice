@@ -8,6 +8,9 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text not null default '',
   target_band numeric(2,1) check (target_band is null or target_band between 0 and 9),
+  test_type text not null default 'Academic' constraint profiles_test_type_check check (test_type in ('Academic', 'General Training')),
+  daily_study_minutes integer not null default 60 constraint profiles_daily_study_minutes_check check (daily_study_minutes in (30, 60, 90, 120, 180)),
+  exam_date date,
   created_at timestamptz not null default now()
 );
 
@@ -25,6 +28,21 @@ create table if not exists public.practice_sessions (
   created_at timestamptz not null default now(),
   constraint practice_score_within_total check (score is null or total is null or score <= total)
 );
+
+-- Add study-plan fields safely for existing student profiles.
+alter table public.profiles add column if not exists test_type text not null default 'Academic';
+alter table public.profiles add column if not exists daily_study_minutes integer not null default 60;
+alter table public.profiles add column if not exists exam_date date;
+
+do $
+begin
+  if not exists (select 1 from pg_constraint where conname = 'profiles_test_type_check' and conrelid = 'public.profiles'::regclass) then
+    alter table public.profiles add constraint profiles_test_type_check check (test_type in ('Academic', 'General Training'));
+  end if;
+  if not exists (select 1 from pg_constraint where conname = 'profiles_daily_study_minutes_check' and conrelid = 'public.profiles'::regclass) then
+    alter table public.profiles add constraint profiles_daily_study_minutes_check check (daily_study_minutes in (30, 60, 90, 120, 180));
+  end if;
+end $;
 
 create index if not exists practice_sessions_user_created_idx
   on public.practice_sessions (user_id, created_at desc);
@@ -78,8 +96,15 @@ security definer
 set search_path = ''
 as $$
 begin
-  insert into public.profiles (id, full_name)
-  values (new.id, coalesce(new.raw_user_meta_data ->> 'full_name', ''))
+  insert into public.profiles (id, full_name, target_band, test_type, daily_study_minutes, exam_date)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data ->> 'full_name', ''),
+    coalesce(nullif(new.raw_user_meta_data ->> 'target_band', '')::numeric, 7.0),
+    case when new.raw_user_meta_data ->> 'test_type' = 'General Training' then 'General Training' else 'Academic' end,
+    coalesce(nullif(new.raw_user_meta_data ->> 'daily_study_minutes', '')::integer, 60),
+    nullif(new.raw_user_meta_data ->> 'exam_date', '')::date
+  )
   on conflict (id) do nothing;
   return new;
 end;
