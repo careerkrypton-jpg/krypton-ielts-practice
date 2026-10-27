@@ -120,6 +120,4 @@
     otpForm.hidden=true;authForm.hidden=false;authSwitch.hidden=false;renderAuthMode();
   });
 
-  applySavedCourse();
-  refreshApp();
 })();
