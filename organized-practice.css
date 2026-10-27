@@ -48,3 +48,11 @@
 .org-mock-progress b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#edf2f7}
 .org-task-grid .lesson-card{height:100%}
 @media(max-width:800px){.org-module-grid,.org-part-grid,.org-topic-grid,.org-mock-grid{grid-template-columns:1fr}.org-full-mock,.org-speaking-runner{grid-template-columns:1fr}.org-full-mock{padding:18px}.org-module-card,.org-topic-card,.org-mock-card,.org-part-card{padding:17px}.org-speaking-answer .text-answer{min-height:140px}}
+
+.org-full-practice{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.65fr);gap:22px;align-items:center;margin:18px 0 24px;padding:22px 24px;border:1px solid #cfe0f4;border-radius:16px;background:linear-gradient(120deg,#f1f7ff,#fff);box-shadow:0 5px 20px rgba(24,51,84,.045)}
+.org-full-practice h2{margin:3px 0 8px;font-size:20px;line-height:1.35;color:#14243a}
+.org-full-practice p:not(.eyebrow){margin:0;color:#64748b;line-height:1.65}
+.org-full-practice-controls{display:grid;gap:10px}
+.org-full-practice-controls label{display:grid;gap:7px;font-size:13px;font-weight:700;color:#506176}
+.org-full-practice-controls select{width:100%;padding:10px 12px;border:1px solid #d7e0ed;border-radius:9px;background:#fff;color:#14243a;font:inherit}
+@media(max-width:800px){.org-full-practice{grid-template-columns:1fr;padding:18px}}
