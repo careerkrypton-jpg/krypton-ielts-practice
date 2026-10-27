@@ -47,6 +47,13 @@
     var match = skill === "listening" ? label.match(/Part\s*([1-4])/i) : null;
     return match ? Number(match[1]) : 0;
   }
+  function isCompleteModuleSource(skill, task) {
+    var prefix = skill === "listening" ? "bank-listen-" : "bank-read-";
+    var minimum = skill === "listening" ? 10 : 14;
+    return String(task.id || "").indexOf(prefix) === 0 &&
+      Array.isArray(task.questions) && task.questions.length >= minimum &&
+      (task.course === "Both" || !task.course || task.course === kryptonCourse);
+  }
   function writingTaskNumber(task) {
     var match = String(task.level || "") + " " + String(task.format || "");
     var found = match.match(/Task\s*([12])/i);
@@ -109,9 +116,11 @@
   };
 
   function moduleCard(skill) {
-    var count = visibleTasks(skill).length;
-    var desc = skill === "listening" ? "Four parts · everyday conversations, announcements, discussions and lectures"
-      : skill === "reading" ? "Three passage sections · choose Academic or General Training"
+    var count = (skill === "reading" || skill === "listening")
+      ? visibleTasks(skill).filter(function (task) { return isCompleteModuleSource(skill, task); }).length
+      : visibleTasks(skill).length;
+    var desc = skill === "listening" ? "Four parts · 40 questions · complete Listening sets"
+      : skill === "reading" ? "Three passages · 40 questions · complete Academic or General Training sets"
       : skill === "writing" ? "Task 1 visuals or letters · Task 2 essays"
       : "Topic-based examiner practice · Parts 1, 2 and 3";
     return '<button class="org-module-card" type="button" data-org-open-skill="' + skill + '"><span class="org-module-icon">' + esc(SKILL_META[skill].icon) + '</span><span class="eyebrow">' + esc(SKILL_META[skill].label.toUpperCase()) + '</span><strong>' + esc(SKILL_META[skill].label) + '</strong><small>' + esc(desc) + '</small><span class="tag">' + count + ' practice sets</span><b>Open module →</b></button>';
@@ -126,13 +135,14 @@
     }
     if (skill === "listening") {
       return '<section class="org-part-grid">' + [1,2,3,4].map(function (n) {
-        var items = tasks.filter(function (task) { return partNumber(skill, task) === n; });
+        var items = tasks.filter(function (task) { return partNumber(skill, task) === n && isCompleteModuleSource(skill, task); });
         return partCard(skill, n, items.length, partNames.listening[n]);
       }).join("") + '</section>';
     }
     if (skill === "reading") {
       var bySection = readingSectionGroups();
       return '<section class="org-part-grid">' + bySection.map(function (items,i) {
+        items = items.filter(function (task) { return isCompleteModuleSource(skill, task); });
         return partCard(skill, i + 1, items.length, partNames.reading[i + 1]);
       }).join("") + '</section>';
     }
@@ -147,8 +157,8 @@
   }
   function renderSectionTopics(skill, section) {
     var tasks = visibleTasks(skill), filtered = [];
-    if (skill === "listening") filtered = tasks.filter(function (task) { return partNumber(skill, task) === Number(section); });
-    else if (skill === "reading") filtered = readingSectionGroups()[Number(section)-1] || [];
+    if (skill === "listening") filtered = tasks.filter(function (task) { return partNumber(skill, task) === Number(section) && isCompleteModuleSource(skill, task); });
+    else if (skill === "reading") filtered = (readingSectionGroups()[Number(section)-1] || []).filter(function (task) { return isCompleteModuleSource(skill, task); });
     else if (skill === "writing") filtered = tasks.filter(function (task) { return writingTaskNumber(task) === Number(section); });
     if (skill === "writing" && Number(section) === 1 && kryptonCourse === "Academic") {
       var types = Array.from(new Set(filtered.map(function (task) { return task.visual && task.visual.type; }).filter(Boolean)));
