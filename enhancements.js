@@ -263,7 +263,7 @@ async function startKryptonRecording(){
     if(start)start.disabled=true;
     if(stop)stop.disabled=false;
     setKryptonRecordingStatus("Recording. Speak naturally, then press Stop.");
-    kryptonAudioTimer=setTimeout(function(){if(kryptonMediaRecorder?.state==="recording")kryptonMediaRecorder.stop()},90000);
+    kryptonAudioTimer=setTimeout(function(){if(kryptonMediaRecorder?.state==="recording")kryptonMediaRecorder.stop()},900000);
   }catch(error){console.error(error);toast("Microphone permission was not granted. You can still type a response.");}
 }
 function base64FromBlob(blob){
@@ -287,6 +287,7 @@ async function scoreKryptonResponse(button){
   let response=(box?.value||"").trim();
   if(skill==="speaking"&&!response&&!kryptonAudioBlob){toast("Write a response or record your speaking answer first.");return}
   if(skill==="writing"&&!response){toast("Write your response before asking for feedback.");box?.focus();return}
+  if(skill==="speaking"&&kryptonAudioBlob&&kryptonAudioBlob.size>6700000){toast("This recording is too large to send. Record a shorter answer or type your response.");return}
   const oldLabel=button.textContent;
   button.disabled=true;button.textContent="Scoring and saving…";
   kryptonAiFeedback=null;kryptonAiError="";

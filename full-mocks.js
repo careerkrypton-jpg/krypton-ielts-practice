@@ -35,30 +35,51 @@
   }
   function makeQuestionSection(skill, course, random, number) {
     var eligible = PACKS[skill].filter(function (task) {
-      return Array.isArray(task.questions) && (task.course === "Both" || task.course === course);
+      return Array.isArray(task.questions) && task.questions.length && (task.course === "Both" || task.course === course);
     });
-    var sets = shuffle(eligible, random).slice(0, 13);
+    var targets = skill === "listening" ? [10, 10, 10, 10] : [13, 13, 14];
     var questions = [];
     var sourceText = [];
-    sets.forEach(function (task, index) {
-      sourceText.push((skill === "listening" ? "RECORDING " : "PASSAGE ") + String(index + 1).padStart(2, "0") + " · " + task.title + "\n" + (skill === "listening" ? task.transcript : task.passage));
-      task.questions.forEach(function (question) {
-        if (questions.length < 50) {
+    var used = Object.create(null);
+    targets.forEach(function (target, sectionIndex) {
+      var sectionNumber = sectionIndex + 1;
+      var pool = skill === "listening"
+        ? eligible.filter(function (task) {
+            return Number((String(task.format || "") + " " + String(task.level || "")).match(/Part\s*([1-4])/i)?.[1]) === sectionNumber;
+          })
+        : eligible.slice();
+      pool = shuffle(pool.filter(function (task) { return !used[task.id]; }), random);
+      var sectionCount = 0;
+      var sectionSources = [];
+      pool.forEach(function (task) {
+        if (sectionCount >= target) return;
+        used[task.id] = true;
+        var remaining = target - sectionCount;
+        var selectedQuestions = task.questions.slice(0, remaining);
+        if (!selectedQuestions.length) return;
+        sectionSources.push(task.title + "\n" + (skill === "listening" ? task.transcript || "" : task.passage || ""));
+        selectedQuestions.forEach(function (question) {
           questions.push(Object.assign({}, question, {
-            q: (skill === "listening" ? "Recording " : "Passage ") + String(index + 1) + " · " + question.q
+            q: (skill === "listening" ? "Part " + sectionNumber : "Passage " + sectionNumber) + " · " + question.q
           }));
-        }
+        });
+        sectionCount += selectedQuestions.length;
       });
+      if (sectionCount < target) {
+        throw new Error("The original " + skill + " bank needs at least " + target + " questions for section " + sectionNumber + ".");
+      }
+      sourceText.push((skill === "listening" ? "PART " : "PASSAGE ") + sectionNumber + "\n" + sectionSources.join("\n\n"));
     });
-    if (questions.length < 50) throw new Error("The original question bank needs at least 50 questions for this mock.");
     var label = skill === "listening" ? "Listening" : "Reading";
     var task = {
       id: "full-" + skill + "-" + number + "-" + Date.now(),
       course: course,
-      title: label + " · 50 questions",
+      title: label + " · 40 questions",
       level: "Full mock · " + label,
       format: "Full mock · " + label + " section",
-      questions: questions
+      questions: questions,
+      time: skill === "listening" ? 30 : 60,
+      sectionCount: targets.length
     };
     task[skill === "listening" ? "transcript" : "passage"] = sourceText.join("\n\n");
     return { skill: skill, task: task };
@@ -93,6 +114,56 @@
     }
     return { skill: skill, task: task };
   }
+  function makeSpeakingInterview(topic, number, activePart) {
+    var cleanTopic = String(topic || "a meaningful experience").trim();
+    var part1 = [
+      "Do you enjoy " + cleanTopic + "? Why or why not?",
+      "When did you first become interested in " + cleanTopic + "?",
+      "How often do you spend time thinking about or experiencing it?",
+      "Do you usually experience it alone or with other people?",
+      "Would you like to experience more of it in the future? Why?"
+    ];
+    var cueCard = {
+      title: "Describe " + cleanTopic + ".",
+      bullets: ["when or where it happened", "who was involved", "what you did or experienced", "why it was meaningful to you"]
+    };
+    var part3 = [
+      "How can people's experiences of " + cleanTopic + " differ across generations?",
+      "What factors make it easier or harder for people to experience it?",
+      "How have technology or social changes influenced it?",
+      "What changes do you expect in the future, and why?"
+    ];
+    var selected = activePart ? Number(activePart) : 0;
+    var promptParts = selected === 1
+      ? ["Part 1 — answer each short interview question: " + part1.join(" ")]
+      : selected === 2
+        ? ["Part 2 — respond to this cue card: " + cueCard.title + " You should say " + cueCard.bullets.join(", ") + "."]
+        : selected === 3
+          ? ["Part 3 — discuss the wider topic: " + part3.join(" ")]
+          : [
+              "Part 1 — answer each short interview question: " + part1.join(" "),
+              "Part 2 — respond to this cue card: " + cueCard.title + " You should say " + cueCard.bullets.join(", ") + ".",
+              "Part 3 — discuss the wider topic: " + part3.join(" ")
+            ];
+    var prompt = "IELTS Speaking practice topic: " + cleanTopic + "\n\n" + promptParts.join("\n\n");
+    return {
+      skill: "speaking",
+      task: {
+        id: "speaking-interview-" + String(cleanTopic).toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + (selected || "all") + "-" + number,
+        course: "Both",
+        title: "Speaking topic · " + cleanTopic,
+        level: "Speaking · " + (selected ? "Part " + selected : "Parts 1–3"),
+        format: "Speaking · " + (selected ? "Part " + selected : "Full 3-part interview"),
+        time: selected === 2 ? 3 : selected ? 5 : 14,
+        prompt: prompt,
+        hint: selected === 2 ? "Take one minute to prepare, then speak for up to two minutes." : "Answer naturally, extend each answer with a reason or example, and keep your Part 2 and Part 3 ideas connected.",
+        speakingFlow: {topic:cleanTopic, part1:part1, cueCard:cueCard, part3:part3, activePart:selected}
+      }
+    };
+  }
+  window.kryptonBuildMockQuestionSection = makeQuestionSection;
+  window.kryptonBuildSpeakingInterview = makeSpeakingInterview;
+
   function buildFullMock(course, number, seed, isRandom) {
     var random = seededRandom(seed);
     var topicNames = Array.from(new Set(PACKS.speaking.map(function (task) {
@@ -106,9 +177,7 @@
       makeQuestionSection("reading", course, random, number),
       makePerformanceSection("writing", course, 1, random, number),
       makePerformanceSection("writing", course, 2, random, number),
-      makePerformanceSection("speaking", course, 1, random, number, speakingTopic),
-      makePerformanceSection("speaking", course, 2, random, number, speakingTopic),
-      makePerformanceSection("speaking", course, 3, random, number, speakingTopic)
+      makeSpeakingInterview(speakingTopic, number, 0)
     ];
     var title = (course === "Academic" ? "Academic" : "General Training") +
       (isRandom ? " Fresh Full Mock" : " Full Mock Test " + String(number).padStart(3, "0"));
@@ -122,7 +191,7 @@
     root.innerHTML =
       '<section class="page-intro"><p class="eyebrow">200 ORIGINAL FULL MOCK FORMS · FREE</p><h1>Full mock test library</h1><p>Complete all four IELTS skills in one sitting. Choose from 100 numbered Academic forms and 100 General Training forms, or generate a fresh random form. Every attempt is free and can be repeated.</p></section>' +
       courseSwitchMarkup() +
-      '<section class="mock-generator"><div><p class="eyebrow">COMPLETE FOUR-SKILL TEST</p><h2>200 full mock forms</h2><p>Each test has 50 Listening questions, 50 Reading questions, Writing Tasks 1 and 2, and Speaking Parts 1, 2 and 3. The content is original Krypton practice material, with no attempt limit.</p><div class="full-mock-count"><span>100 questions</span><span>2 writing tasks</span><span>3 speaking parts</span></div></div><div class="mock-generator-actions mock-library-actions"><label for="full-mock-number">Choose test number<select id="full-mock-number">' + options + '</select></label><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-selected">Start selected full mock</button><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-random">Start a fresh random mock</button></div></section>' +
+      '<section class="mock-generator"><div><p class="eyebrow">COMPLETE FOUR-SKILL TEST</p><h2>200 full mock forms</h2><p>Each test has 40 Listening questions across four parts, 40 Reading questions across three passages, Writing Tasks 1 and 2, and one connected Speaking interview with Parts 1–3. The content is original Krypton practice material, with no attempt limit.</p><div class="full-mock-count"><span>80 scored questions</span><span>2 writing tasks</span><span>3 speaking parts</span></div></div><div class="mock-generator-actions mock-library-actions"><label for="full-mock-number">Choose test number<select id="full-mock-number">' + options + '</select></label><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-selected">Start selected full mock</button><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-random">Start a fresh random mock</button></div></section>' +
       '<div class="info-strip"><strong>Suggested timing:</strong> Listening 30 minutes · Reading 60 minutes · Writing 60 minutes · Speaking 11–14 minutes. These are original learning simulations and are not official IELTS papers.</div>' +
       '<div class="note-banner">The supplied books are not copied into this public app. The mock tests use original questions written for Krypton and follow common IELTS task formats.</div>';
   };
@@ -164,17 +233,17 @@
     if (inMock && mockState && mockState.mock && mockState.mock.fullLength && skill === "listening") {
       html = html.replace(
         "Play the short recording, then answer the questions. You can replay it during practice.",
-        "Listen through the full recording playlist and answer all 50 questions. You can replay the recordings during practice."
+        "Listen through the four-part recording playlist and answer all 40 questions. You can replay the recordings during practice."
       );
     }
     return html;
   };
 
   function moduleDetails(index) {
-    if (index === 0) return { number: 1, title: "Listening", task: "Listening paper", taskNumber: 1, taskTotal: 1 };
-    if (index === 1) return { number: 2, title: "Reading", task: "Reading paper", taskNumber: 1, taskTotal: 1 };
+    if (index === 0) return { number: 1, title: "Listening", task: "Listening Parts 1–4", taskNumber: 1, taskTotal: 1 };
+    if (index === 1) return { number: 2, title: "Reading", task: "Reading Passages 1–3", taskNumber: 1, taskTotal: 1 };
     if (index === 2 || index === 3) return { number: 3, title: "Writing", task: "Writing Task " + (index - 1), taskNumber: index - 1, taskTotal: 2 };
-    return { number: 4, title: "Speaking", task: "Speaking Part " + (index - 3), taskNumber: index - 3, taskTotal: 3 };
+    return { number: 4, title: "Speaking", task: "Speaking Parts 1–3", taskNumber: 1, taskTotal: 1 };
   }
   function mockModuleNav(activeNumber) {
     var labels = ["Listening", "Reading", "Writing", "Speaking"];
@@ -187,9 +256,7 @@
     if (index === 1) return "Reading";
     if (index === 2) return "Writing Task 1";
     if (index === 3) return "Writing Task 2";
-    if (index === 4) return "Speaking Part 1";
-    if (index === 5) return "Speaking Part 2";
-    if (index === 6) return "Speaking Part 3";
+    if (index === 4) return "Speaking Parts 1–3";
     return "the next section";
   }
   window.kryptonShowMockCheckpoint = function () {
@@ -219,8 +286,8 @@
     var index = mockState.index;
     var details = moduleDetails(index);
     var count = mockState.mock.extendedTasks.length;
-    var timeGuide = ["30 minutes", "60 minutes", "20 minutes", "40 minutes", "4–5 minutes", "3–4 minutes", "4–5 minutes"][index] || "Timed practice";
-    var questionCount = part.task.questions ? part.task.questions.length + " questions" : "Performance task";
+    var timeGuide = ["30 minutes", "60 minutes", "20 minutes", "40 minutes", "11–14 minutes"][index] || "Timed practice";
+    var questionCount = part.task.speakingFlow ? "Speaking interview · Parts 1–3" : part.task.questions ? part.task.questions.length + " questions" : "Performance task";
     root.innerHTML =
       '<section class="page-intro"><p class="eyebrow">' + esc(mockState.mock.type) + ' · FULL MOCK TEST</p><h1>' + esc(mockState.mock.title) + '</h1><p>Module ' + details.number + ' of 4 · ' + esc(details.title) + ' · ' + esc(details.task) + ' (' + details.taskNumber + ' of ' + details.taskTotal + ') · ' + esc(questionCount) + ' · Suggested time: ' + timeGuide + '</p></section>' +
       mockModuleNav(details.number) +
@@ -241,7 +308,7 @@
   renderMockSummary = function () {
     if (!mockState) return;
     var rows = mockState.results || [];
-    var skillLabels = ["Listening", "Reading", "Writing Task 1", "Writing Task 2", "Speaking Part 1", "Speaking Part 2", "Speaking Part 3"];
+    var skillLabels = ["Listening · Parts 1–4", "Reading · Passages 1–3", "Writing Task 1", "Writing Task 2", "Speaking · Parts 1–3"];
     root.innerHTML =
       '<section class="page-intro"><p class="eyebrow">FULL MOCK TEST COMPLETE</p><h1>All four modules are complete.</h1><p>You finished the Listening, Reading, Writing, and Speaking modules. Each task result was saved in My progress.</p></section>' +
       mockModuleNav(5) +
