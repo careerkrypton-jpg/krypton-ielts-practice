@@ -72,6 +72,8 @@
       if(performance)performance.hidden=tab.dataset.dashboardTab!=="performance";
     }
   });
-  var priorLibrary=renderLibrary;
-  renderLibrary=function(){priorLibrary();var intro=root.querySelector(".page-intro");if(intro){var helper=document.createElement("p");helper.className="module-organization-note";helper.textContent="Each skill keeps its own question types and topics. Speaking topics open Parts 1, 2 and 3 in sequence; writing practice is grouped by task type.";intro.appendChild(helper)}};
 })();
+
+// Re-render after the practice banks have loaded so overview counts include every set.
+if(currentView==="overview")renderOverview();
+
