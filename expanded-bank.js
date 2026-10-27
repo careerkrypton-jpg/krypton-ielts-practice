@@ -141,6 +141,27 @@
       else if(task.id==="listen-library")task.questions.push({q:"Complete the note: The café is beside the ______.",options:["main entrance","second floor","exit"],answer:0,why:"The café is beside the main entrance.",questionType:"sentence-completion"});
       else if(task.id==="listen-research")task.questions.push({q:"What will the report compare?",options:["the responses","the questions","the shop owners"],answer:0,why:"The tutor says the report should compare the responses.",questionType:"short-answer"});
     }
+    if(task.id==="listen-campus")task.questions.push(
+      {q:"Complete the note: The viewing is arranged for ______ morning.",options:["Saturday","Sunday","Monday"],answer:0,why:"The student asks for a Saturday morning viewing.",questionType:"sentence-completion"},
+      {q:"Which TWO costs are included in the rent?",options:["Water","Internet","Electricity","Heating"],answer:[0,1],why:"Water and internet are included; electricity is separate.",questionType:"multiple-choice-multiple"},
+      {q:"Match the room to its setting: The room is in a ______.",options:["shared house","hotel","university hall"],answer:0,why:"The owner says the room is in a shared house.",questionType:"matching"},
+      {q:"What does the student want to arrange?",options:["A viewing","A payment plan","A key collection"],answer:0,why:"The student asks to arrange a viewing.",questionType:"multiple-choice"},
+      {q:"Complete the form: Accommodation type: ______",options:["single room","double room","family room"],answer:0,why:"The owner describes it as a single room.",questionType:"form-note-completion"}
+    );
+    else if(task.id==="listen-library")task.questions.push(
+      {q:"Complete the note: The library closes on Saturday at ______.",options:["4 p.m.","5 p.m.","6 p.m."],answer:0,why:"Saturday opening hours end at four.",questionType:"sentence-completion"},
+      {q:"Which TWO facilities are available?",options:["Study-room booking","A book-return machine","Sunday opening","A second café"],answer:[0,1],why:"Study rooms can be booked and the return machine is near the exit.",questionType:"multiple-choice-multiple"},
+      {q:"Where is the café?",options:["Beside the main entrance","On the second floor","Near the exit"],answer:0,why:"The café is beside the main entrance.",questionType:"short-answer"},
+      {q:"On which day is the library closed?",options:["Sunday","Saturday","Monday"],answer:0,why:"The announcement says the library is closed on Sundays.",questionType:"multiple-choice"},
+      {q:"Complete the sentence: Members may borrow up to ______ books.",options:["eight","six","ten"],answer:0,why:"Members may borrow up to eight books.",questionType:"sentence-completion"}
+    );
+    else if(task.id==="listen-research")task.questions.push(
+      {q:"Which TWO actions are planned?",options:["Lina drafts the questions","James contacts shop owners","They publish a book","They return to an online survey"],answer:[0,1],why:"Lina will draft questions and James will contact the shop owners.",questionType:"multiple-choice-multiple"},
+      {q:"Complete the note: They plan to interview ______ shop owners.",options:["twelve","ten","twenty"],answer:0,why:"James suggests interviewing twelve local shop owners.",questionType:"form-note-completion"},
+      {q:"When will James contact the shop owners?",options:["Next week","By Thursday","This weekend"],answer:0,why:"James says he can contact them next week.",questionType:"short-answer"},
+      {q:"What should the report do with the responses?",options:["Compare them","Translate them","Publish them individually"],answer:0,why:"The tutor says to compare rather than merely list responses.",questionType:"multiple-choice"},
+      {q:"Complete the sentence: Lina will draft the questions by ______.",options:["Thursday","Friday","next week"],answer:0,why:"Lina says she will draft them by Thursday.",questionType:"sentence-completion"}
+    );
   });
   PACKS.writing.push(...writeAcademic,...writeGeneral);
   PACKS.speaking.push(...speaking);
