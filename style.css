@@ -140,3 +140,8 @@ button,.button{min-height:44px}
 #otp-form .form-error{min-height:18px}
 #otp-resend{margin-top:2px}
 @media(max-width:700px){body{font-size:16px}.hero-copy,.page-intro p{font-size:16px}.onboarding-grid{grid-template-columns:1fr}.question-box>strong{font-size:16px}}
+
+
+/* Full mock library controls */
+.full-mock-count{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.full-mock-count span{padding:7px 10px;border:1px solid #ffffff45;border-radius:8px;background:#ffffff14;color:#fff;font-size:12px;font-weight:700}.mock-library-actions{align-items:stretch}.mock-library-actions label{display:grid;gap:6px;min-width:180px;color:#fff;font-size:12px;font-weight:700}.mock-library-actions select{height:46px;padding:0 12px;border:1px solid #dfe7f0;border-radius:8px;background:#fff;color:#1d3554;font-size:15px}.mock-library-actions .button{white-space:normal}
+@media(max-width:700px){.mock-library-actions{display:grid;grid-template-columns:1fr}.mock-library-actions label{min-width:0}.full-mock-count span{font-size:11px}}
