@@ -32,7 +32,9 @@ For a new Supabase project:
 1. Run [supabase/schema.sql](supabase/schema.sql) in the SQL Editor. It creates student profiles and practice history, enables row-level security, and limits each student to their own records.
 2. Put the project URL and public anon/publishable key in [config.js](config.js).
 3. Set the Supabase Authentication site URL and redirect allowlist to your HTTPS app URL. Enable email/password sign-in.
-4. Configure a production SMTP provider for Auth email delivery. To send numeric codes, set the Magic Link or OTP email template to use `{{ .Token }}`; the default template sends a link.\n5. If you want Google sign-in, create a Google OAuth web client with the Supabase callback URL shown in the provider settings, then add its Client ID and Secret to the Supabase Google provider.\n6. Deploy the Edge Function and set its `OPENAI_API_KEY` secret in Supabase.
+4. Configure a production SMTP provider for Auth email delivery. To send numeric codes, set the Magic Link or OTP email template to use `{{ .Token }}`; the default template sends a link.
+5. If you want Google sign-in, create a Google OAuth web client with the Supabase callback URL shown in the provider settings, then add its Client ID and Secret to the Supabase Google provider. Once that provider is enabled, the app's Google button uses it automatically.
+6. Deploy the Edge Function and set its `OPENAI_API_KEY` secret in Supabase.
 7. Serve the repository over HTTPS. For local development, use a local web server rather than opening `index.html` directly.
 
 Only a public anon/publishable key belongs in browser code. Never put a service-role key or OpenAI key in the public repository.
