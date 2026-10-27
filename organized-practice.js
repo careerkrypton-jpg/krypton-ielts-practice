@@ -1,6 +1,22 @@
 /* Krypton IELTS topic-first practice and sectional mock navigation. */
 (function () {
   var orgState = { skill: null, section: null, topic: null, visual: "all" };
+  var activityReturnContext = null;
+  var mockReturnContext = null;
+  function copyOrgState() {
+    return {skill:orgState.skill,section:orgState.section,topic:orgState.topic,visual:orgState.visual};
+  }
+  var priorStartActivityForBack = startActivity;
+  startActivity = function(skill,id,mockId) {
+    activityReturnContext = {view:currentView,state:copyOrgState()};
+    if (activityReturnContext.view !== "practice") activityReturnContext.state = {skill:null,section:null,topic:null,visual:"all"};
+    priorStartActivityForBack(skill,id,mockId);
+  };
+  var priorStartMockForBack = startMock;
+  startMock = function(id) {
+    mockReturnContext = {view:currentView,state:copyOrgState()};
+    priorStartMockForBack(id);
+  };
   var partNames = {
     listening: {
       "1": "Everyday conversation",
@@ -66,6 +82,31 @@
   function backBar(title, target) {
     return '<div class="org-backbar"><button type="button" class="text-button" data-org-back="' + target + '">← Back</button><span>' + esc(title) + '</span></div>';
   }
+  function practiceBackLabel(context) {
+    var state = context && context.state;
+    if (!context || context.view !== "practice" || !state || !state.skill) return "All practice modules";
+    if (state.topic) return "Speaking topic: " + state.topic;
+    if (state.section) {
+      if (state.skill === "listening") return "Listening Part " + state.section + " sets";
+      if (state.skill === "reading") return "Reading Passage " + state.section + " sets";
+      return "Writing Task " + state.section + " sets";
+    }
+    return SKILL_META[state.skill].label + " module";
+  }
+  function runnerBackMarkup(context) {
+    var toPractice = !!(context && context.view === "practice");
+    var label = toPractice ? practiceBackLabel(context) : "Mock test studio";
+    return '<div class="org-runner-back"><button type="button" class="text-button" data-org-runner-back="' + (toPractice ? "practice" : "mocks") + '">← Back to ' + esc(label) + '</button></div>';
+  }
+  function addRunnerBack(context) {
+    if (root && root.firstElementChild) root.insertAdjacentHTML("afterbegin",runnerBackMarkup(context));
+  }
+  var backNavigationBaseRenderActivity = renderActivity;
+  renderActivity = function() {
+    backNavigationBaseRenderActivity();
+    if (activeActivity && !mockState) addRunnerBack(activityReturnContext);
+  };
+
   function moduleCard(skill) {
     var count = visibleTasks(skill).length;
     var desc = skill === "listening" ? "Four parts · everyday conversations, announcements, discussions and lectures"
@@ -195,6 +236,7 @@
 
   function beginSectionalMock(skill) {
     if (!requireLogin()) return;
+    mockReturnContext = {view:currentView,state:copyOrgState()};
     var tasks = [], now = Date.now(), random = Math.floor(Math.random() * 1000000000);
     if (skill === "listening" || skill === "reading") {
       var built = window.kryptonBuildMockQuestionSection(skill, kryptonCourse, Math.random ? Math.random() * 100000 : now, random);
@@ -219,7 +261,11 @@
   }
   var baseMockStep = renderMockStep;
   renderMockStep = function () {
-    if (!mockState?.mock?.sectional) { baseMockStep(); return; }
+    if (!mockState?.mock?.sectional) {
+      baseMockStep();
+      if (mockState && mockState.mock) addRunnerBack(mockReturnContext);
+      return;
+    }
     var current = currentMockTask();
     if (!current) { renderMockSummary(); return; }
     activityStartedAt = Date.now();
@@ -227,6 +273,7 @@
     var detail = skill === "writing" ? "Writing Task " + step + " of 2" : skill === "speaking" ? "Speaking Parts 1–3" : skill === "listening" ? "Listening Parts 1–4" : "Reading Passages 1–3";
     var duration = skill === "writing" ? (step === 1 ? "20 minutes" : "40 minutes") : skill === "speaking" ? "11–14 minutes" : skill === "listening" ? "30 minutes" : "60 minutes";
     root.innerHTML = '<section class="page-intro"><p class="eyebrow">' + esc(kryptonCourse) + ' · SECTIONAL MOCK</p><h1>' + esc(mockState.mock.title) + '</h1><p>' + esc(detail) + ' · ' + step + ' of ' + total + '</p></section><nav class="org-mock-progress" aria-label="Mock progress">' + mockState.mock.extendedTasks.map(function(item,index){return '<span class="' + (index===mockState.index?'active':index<mockState.index?'complete':'') + '"><b>' + (index+1) + '</b>' + esc(item.skill==="writing"?"Task "+(index+1):SKILL_META[item.skill].label) + '</span>';}).join("") + '</nav><article class="runner"><div class="runner-top"><span class="runner-step">' + esc(detail.toUpperCase()) + '</span><span class="timer-pill">' + duration + '</span></div>' + activityMarkup(skill,task,true) + '</article>';
+    addRunnerBack(mockReturnContext);
   };
   var baseMockSummary = renderMockSummary;
   renderMockSummary = function () {
@@ -253,6 +300,20 @@
   };
 
   document.addEventListener("click", function (event) {
+    var runnerBack = event.target.closest("[data-org-runner-back]");
+    if (runnerBack) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      var destination = runnerBack.dataset.orgRunnerBack;
+      if (destination === "practice") {
+        orgState = activityReturnContext && activityReturnContext.view === "practice"
+          ? activityReturnContext.state
+          : {skill:null,section:null,topic:null,visual:"all"};
+        setView("practice");
+      } else {
+        setView("mocks");
+      }
+      return;
+    }
     var practiceNav = event.target.closest('[data-view="practice"]');
     if (practiceNav) { orgState = {skill:null,section:null,topic:null,visual:"all"}; return; }
     var openSkill = event.target.closest("[data-org-open-skill]");
