@@ -33,7 +33,7 @@
     if (!items.length) throw new Error("The practice library is missing a required original task.");
     return items[Math.floor(random() * items.length)];
   }
-  function makeQuestionSection(skill, course, random, number) {
+  function makeQuestionSection(skill, course, random, number, preferredId, preferredSection) {
     if (typeof random !== "function") random = seededRandom(random);
     var bankPrefix = skill === "listening" ? "bank-listen-" : "bank-read-";
     var eligible = PACKS[skill].filter(function (task) {
@@ -52,6 +52,10 @@
           })
         : eligible.slice();
       pool = shuffle(pool.filter(function (task) { return !used[task.id]; }), random);
+      var preferredTask = preferredId ? eligible.find(function (task) { return task.id === preferredId; }) : null;
+      if (preferredTask && Number(preferredSection) === sectionNumber && !used[preferredTask.id]) {
+        pool = [preferredTask].concat(pool.filter(function (task) { return task.id !== preferredTask.id; }));
+      }
       var sectionCount = 0, sectionStart = questions.length, sectionSources = [];
       pool.forEach(function (task) {
         if (sectionCount >= target) return;
