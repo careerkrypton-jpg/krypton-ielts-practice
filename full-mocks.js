@@ -237,7 +237,7 @@
     if (inMock && mockState && mockState.mock && mockState.mock.fullLength && skill === "listening") {
       html = html.replace(
         "Play the short recording, then answer the questions. You can replay it during practice.",
-        "Listen through the four-part recording playlist and answer all 40 questions. You can replay the recordings during practice."
+        "Listen to the recording for this part, answer its five questions, then continue to the next part."
       );
     }
     return html;
