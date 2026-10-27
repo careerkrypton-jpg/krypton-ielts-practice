@@ -31,8 +31,14 @@ Deno.serve(async (req: Request) => {
     if (!user?.id) return json({ error: "Sign in to use AI feedback." }, 401, headers);
 
     const body = await req.json();
-    const module = body.module === "speaking" ? "speaking" : body.module === "writing" ? "writing" : "";
-    if (!module) return json({ error: "AI feedback is available for Writing and Speaking." }, 400, headers);
+    const allowedModules = ["listening", "reading", "writing", "speaking"];
+    const module = allowedModules.includes(body.module) ? body.module : "";
+    if (!module) return json({ error: "AI feedback is available for all four practice modules." }, 400, headers);
+    const objectiveMode = module === "reading" || module === "listening";
+    const objective = objectiveMode && body.objective && typeof body.objective === "object" ? body.objective : null;
+    if (objectiveMode && (!Number.isFinite(Number(objective?.band_estimate)) || Number(objective?.band_estimate) < 1 || Number(objective?.band_estimate) > 9)) {
+      return json({ error: "A valid practice band estimate is required for objective feedback." }, 400, headers);
+    }
     const prompt = String(body.prompt || "").slice(0, 3000);
     let responseText = String(body.response || "").slice(0, 12000);
     let transcript = "";
@@ -57,12 +63,16 @@ Deno.serve(async (req: Request) => {
       if (!transcript) return json({ error: "No speech was detected. Please try again or type your answer." }, 422, headers);
       responseText = transcript;
     }
-    if (!responseText.trim()) return json({ error: "Add a response before asking for feedback." }, 400, headers);
+    if (!responseText.trim() && !objectiveMode) return json({ error: "Add a response before asking for feedback." }, 400, headers);
 
     const writing = module === "writing";
     const criteria = writing
       ? ["Task Response", "Coherence and Cohesion", "Lexical Resource", "Grammatical Range and Accuracy"]
-      : ["Fluency and Coherence", "Lexical Resource", "Grammatical Range and Accuracy"];
+      : module === "speaking"
+        ? ["Fluency and Coherence", "Lexical Resource", "Grammatical Range and Accuracy"]
+        : module === "reading"
+          ? ["Reading Accuracy", "Evidence and Question Strategy"]
+          : ["Listening Accuracy", "Listening and Detail Strategy"];
     const schema = {
       type: "object", additionalProperties: false,
       properties: {
@@ -79,14 +89,18 @@ Deno.serve(async (req: Request) => {
     };
     const rubric = writing
       ? "Assess an IELTS Writing practice response using the four public IELTS writing criteria: task response/achievement appropriate to task type, coherence and cohesion, lexical resource, grammatical range and accuracy."
-      : "Assess IELTS Speaking practice from transcript only using fluency and coherence, lexical resource, grammatical range and accuracy. Do not score pronunciation, accent, voice, or vocal delivery because only transcript text is available.";
+      : module === "speaking"
+        ? "Assess IELTS Speaking practice from transcript only using fluency and coherence, lexical resource, grammatical range and accuracy. Do not score pronunciation, accent, voice, or vocal delivery because only transcript text is available."
+        : module === "reading"
+          ? "Coach IELTS Reading from the objective answer report. Explain the missed-answer patterns and practical evidence-finding strategies. Do not invent errors or change the supplied raw-score band estimate."
+          : "Coach IELTS Listening from the objective answer report. Explain missed-answer patterns and practical prediction, detail-tracking, and checking strategies. Do not invent errors or change the supplied raw-score band estimate.";
     const request = await fetch("https://api.groq.com/openai/v1/responses", {
       method: "POST",
       headers: { authorization: `Bearer ${groqKey}`, "content-type": "application/json" },
       body: JSON.stringify({
         model: "openai/gpt-oss-120b", store: false,
-        instructions: `You are a careful IELTS practice tutor. Give constructive, specific, encouraging feedback. ${rubric} The result is an indicative learning estimate, never an official IELTS score. Use whole or half band estimates from 0 to 9. Include exactly ${criteria.length} criterion items named: ${criteria.join(", ")}. Keep strengths and next steps concise, grounded in the student's work, and avoid inventing errors. Return transcript exactly as provided; for writing it should be an empty string.`,
-        input: `Test type: ${String(body.course || "Academic").slice(0, 40)}\nTask: ${String(body.task_type || module).slice(0, 100)}\nPrompt: ${prompt}\nStudent response: ${responseText}`,
+        instructions: `You are a careful IELTS practice tutor. Give constructive, specific, encouraging feedback. ${rubric} The result is an indicative learning estimate, never an official IELTS score. Use whole or half band estimates from 0 to 9. Include exactly ${criteria.length} criterion items named: ${criteria.join(", ")}. Keep strengths and next steps concise, grounded in the student's work, and avoid inventing errors. Return transcript exactly as provided; for writing it should be an empty string. ${objectiveMode ? `The objective raw-score conversion supplied in the input is authoritative; set estimated_band and both criterion bands to exactly ${Number(objective.band_estimate)}.` : ""}`,
+        input: `Test type: ${String(body.course || "Academic").slice(0, 40)}\nTask: ${String(body.task_type || module).slice(0, 100)}\nPrompt: ${prompt}\nStudent response: ${responseText}${objectiveMode ? `\nObjective answer report: ${JSON.stringify(objective).slice(0, 7000)}` : ""}`,
         text: { format: { type: "json_schema", name: "ielts_practice_feedback", strict: true, schema } },
       }),
     });
@@ -99,6 +113,11 @@ Deno.serve(async (req: Request) => {
     if (!outputText) return json({ error: "AI feedback returned an empty result." }, 502, headers);
     const feedback = JSON.parse(outputText);
     if (transcript) feedback.transcript = transcript;
+    if (objectiveMode) {
+      feedback.estimated_band = Number(objective.band_estimate);
+      feedback.criteria = (feedback.criteria || []).map((item: any) => ({ ...item, band: Number(objective.band_estimate) }));
+      feedback.transcript = "";
+    }
     return json({ feedback }, 200, headers);
   } catch (err) {
     console.error("score-ielts-response failed", err);
