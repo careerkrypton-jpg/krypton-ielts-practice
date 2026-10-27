@@ -14,7 +14,8 @@ Krypton IELTS Practice is the independent practice web app for Kathmandu Krypton
 - 112+ Speaking interview questions and cue cards, with optional audio recording
 - AI practice feedback for typed Writing and Speaking responses; optional Speaking audio transcription
 - Saved practice history and AI feedback, protected by Supabase row-level security
-- Extended mocks with 50 Listening questions, 50 Reading questions, one Writing task, and one Speaking task; students can repeat mocks without a limit
+- 100 numbered full mock test forms for Academic and General Training, each with 50 Listening questions, 50 Reading questions, Writing Tasks 1 and 2, and Speaking Parts 1, 2, and 3
+- Fresh random full mocks can also be generated without an attempt limit
 - No student subscription or paywall
 
 ## AI scoring setup
@@ -43,7 +44,7 @@ Only a public anon/publishable key belongs in browser code. Never put a service-
 
 Question sets in the app are original Krypton practice material based on common IELTS task types. The Cambridge IELTS 17 PDF supplied for this project is a reference for understanding the four-test structure and task formats; its questions, passages, answers, and audio scripts are not reproduced or redistributed here. The app also does not reproduce protected British Council or IDP question banks. Krypton IELTS Practice is an independent preparation resource and is not affiliated with IELTS, Cambridge, the British Council, or IDP.
 
-The mini mocks are practice simulations, not full-length official IELTS tests. Automatic objective-question scores and AI feedback are for study only.
+The full mock library follows a timed four-skill sequence, but it is an original practice simulation, not an official IELTS paper. Objective-question scores and AI feedback are for study only; the suggested section times are guidance.
 
 ## Official preparation and format references
 
