@@ -21,9 +21,9 @@ Krypton IELTS Practice is the independent practice web app for Kathmandu Krypton
 
 ## AI scoring setup
 
-The app calls the Supabase Edge Function at `supabase/functions/score-ielts-response/index.ts`. AI feedback stays unavailable until the function is deployed to the connected Supabase project and its `OPENAI_API_KEY` secret is set in Supabase Edge Function secrets. The key must remain private; never add it to `config.js` or GitHub.
+The app calls the Supabase Edge Function at `supabase/functions/score-ielts-response/index.ts`. It uses Groq's free-tier `openai/gpt-oss-120b` model for Writing and transcript-based Speaking feedback, and `whisper-large-v3-turbo` for requested Speaking audio transcription. Set a private `GROQ_API_KEY` in Supabase Edge Function secrets before deploying. Create the key in your Groq account, then add it in Supabase Dashboard → Edge Functions → Secrets. Never put it in `config.js` or GitHub. Free-tier limits can change or be reached, so feedback may be temporarily unavailable; student practice and saving still work.
 
-OpenAI usage can incur API charges. This does not add a subscription or charge to the student app, but the consultancy account that owns the API key pays for model use. Audio is sent for transcription only when the student explicitly requests scoring and is not saved by the function. Speaking feedback is transcript-based and does not assess accent or pronunciation. Scores are practice estimates, not official IELTS band scores.
+Audio is sent for transcription only when the student explicitly requests scoring and is not saved by the function. Speaking feedback is transcript-based and does not assess accent or pronunciation. Scores are practice estimates, not official IELTS band scores. Review the provider's current privacy terms before sending students' work to an external AI provider.
 
 ## Supabase
 
@@ -36,10 +36,10 @@ For a new Supabase project:
 3. Set the Supabase Authentication site URL and redirect allowlist to your HTTPS app URL. Enable email/password sign-in.
 4. Configure a production SMTP provider for Auth email delivery. To send numeric codes, set the Magic Link or OTP email template to use `{{ .Token }}`; the default template sends a link.
 5. If you want Google sign-in, create a Google OAuth web client with the Supabase callback URL shown in the provider settings, then add its Client ID and Secret to the Supabase Google provider. Once that provider is enabled, the app's Google button uses it automatically.
-6. Deploy the Edge Function and set its `OPENAI_API_KEY` secret in Supabase.
+6. Create a Groq API key, add it as `GROQ_API_KEY` in Supabase Edge Function secrets, and deploy the Edge Function.
 7. Serve the repository over HTTPS. For local development, use a local web server rather than opening `index.html` directly.
 
-Only a public anon/publishable key belongs in browser code. Never put a service-role key or OpenAI key in the public repository.
+Only a public anon/publishable key belongs in browser code. Never put a service-role key or AI provider key in the public repository.
 
 ## Practice material
 
@@ -53,3 +53,4 @@ The full mock library follows a timed four-skill sequence, but it is an original
 - [British Council free practice tests](https://takeielts.britishcouncil.org/prepare/ielts-free-practice-mock-tests)
 - [IDP familiarisation tests](https://ielts.idp.com/about/ielts-familiarisation-tests)
 - [Cambridge English IELTS preparation](https://www.cambridgeenglish.org/exams-and-tests/ielts/preparation/)
+
