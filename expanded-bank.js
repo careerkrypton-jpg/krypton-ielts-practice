@@ -125,6 +125,18 @@
       {q:"Select TWO statements supported by the passage.",options:["The project aimed to "+aim,gt?"No previous experience is required.":"Further observation is needed before a general solution.","The organisers guaranteed the programme would work everywhere.","The trial involved exactly twenty locations."],answer:[0,1],why:"Both selected statements are supported by the passage.",questionType:"multiple-choice-multiple"},
       {q:"Match the report’s recommended next step: Organisers should ______.",options:[action,finding,challenge],answer:0,why:"The recommendation appears near the end of the passage.",questionType:"matching-features"}
     );
+    if(String(task.id).indexOf("bank-read-")===0){
+      var yearMatch=String(task.passage||"").match(/\b(20\d{2})\b/);
+      var year=yearMatch?yearMatch[1]:"2020";
+      var yearOptions=[year].concat(["2018","2024","2026"].filter(function(value){return value!==year;}).slice(0,2));
+      var detailOption=function(correct,decoys){return [correct].concat(decoys.filter(function(value){return value!==correct;}).slice(0,2));};
+      task.questions.push(
+        {q:gt?"How long will the next trial last?":"In which year did the work begin?",options:gt?["six weeks","four weeks","eight weeks"]:yearOptions,answer:0,why:gt?"The passage describes a six-week trial.":"The passage states the year when the work began.",questionType:"short-answer"},
+        {q:"Match the earlier-trial observation: Organisers found that ______.",options:[finding,challenge,action],answer:0,why:"This detail is described as an observation from the earlier trial.",questionType:"matching-information"},
+        {q:"Complete the sentence: The project’s aim was to ______.",options:[aim,challenge,finding],answer:0,why:"The passage states the project’s purpose directly.",questionType:"sentence-completion"},
+        {q:gt?"Complete the note: Participants need no previous ______.":"Complete the table: Pilot neighbourhoods: ______.",options:gt?["experience","registration","materials"]:["three","two","five"],answer:0,why:gt?"The passage says no previous experience is required.":"The pilot involved three neighbourhoods.",questionType:"table-completion"}
+      );
+    }
   });
   PACKS.listening.push(...listening);
   PACKS.listening.forEach(task => {
