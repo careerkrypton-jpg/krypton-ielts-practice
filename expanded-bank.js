@@ -116,7 +116,7 @@
   });
   PACKS.listening.push(...listening);
   PACKS.listening.forEach(task => {
-    if (String(task.id).indexOf("bank-listen-")===0 && task.questions[4]) {
+    if (String(task.id).indexOf("bank-listen-")===0 && task.questions[4]) {\n      task.questions[5].questionType="multiple-choice";\n      task.questions[6].q="Complete the note: Attendees should ______.";\n      task.questions[6].questionType="summary-completion";\n      task.questions[7].questionType="multiple-choice";
       task.questions[2].q="Complete the sentence: The session begins at ______.";
       task.questions[2].questionType="sentence-completion";
       task.questions[4].q="Complete the form: Meeting place: ______";
