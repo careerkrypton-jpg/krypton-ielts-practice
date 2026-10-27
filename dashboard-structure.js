@@ -55,7 +55,7 @@
     aside.append(todayFocus());if(guidance)aside.appendChild(guidance);
     columns.append(main,aside);
     hero.insertAdjacentElement("afterend",search);
-    if(note){note.insertAdjacentElement("beforebegin",sourceShelf());note.insertAdjacentElement("beforebegin",columns);}
+    if(note){note.insertAdjacentElement("beforebegin",columns);note.insertAdjacentElement("beforebegin",sourceShelf());}
     else{root.append(columns,sourceShelf());}
     if(dashboard)dashboard.remove();
   };
