@@ -38,10 +38,10 @@
     var bankPrefix = skill === "listening" ? "bank-listen-" : "bank-read-";
     var eligible = PACKS[skill].filter(function (task) {
       return String(task.id || "").indexOf(bankPrefix) === 0 &&
-        Array.isArray(task.questions) && task.questions.length >= 10 &&
+        Array.isArray(task.questions) && task.questions.length >= (skill === "listening" ? 10 : 14) &&
         (task.course === "Both" || task.course === course);
     });
-    var targets = skill === "listening" ? [10, 10, 10, 10] : [10, 10, 10];
+    var targets = skill === "listening" ? [10, 10, 10, 10] : [13, 13, 14];
     var questions = [], sourceText = [], sectionData = [];
     var used = Object.create(null);
     targets.forEach(function (target, sectionIndex) {
