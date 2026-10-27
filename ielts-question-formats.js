@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   var typeNames = {
-    "multiple-choice":"Multiple choice",
+    "multiple-choice":"Multiple choice",\n    "choosing-a-title":"Choosing a title",
     "multiple-choice-multiple":"Multiple choice · choose all that apply",
     "short-answer":"Short answer",
     "sentence-completion":"Sentence completion",
@@ -21,7 +21,7 @@
     "yes-no-not-given":"Yes / No / Not Given"
   };
   var visualStyle = document.createElement("style");
-  visualStyle.textContent = ".ielts-timer{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1rem 0;padding:1rem 1.2rem;border:1px solid #dbe5f2;border-radius:16px;background:#f5f9ff}.ielts-timer-face{display:block;font-size:1.55rem;font-variant-numeric:tabular-nums;color:#102b52}.ielts-timer-status{display:block;color:#64748b}.ielts-timer-controls{display:flex;gap:.5rem}.ielts-question-group{margin:1.1rem 0}.ielts-question-group>h3{margin:.3rem 0 .7rem;color:#1b365f;font-size:1rem}.ielts-question-group-items{display:grid;gap:.7rem}.ielts-q-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.65rem}.ielts-q-number{display:grid;place-items:center;width:1.8rem;height:1.8rem;border-radius:50%;background:#e9f2ff;color:#1456a0;font-weight:700}.ielts-q-type{padding:.25rem .6rem;border-radius:99px;background:#eef2f7;color:#45546a;font-size:.76rem;font-weight:700}.ielts-question-prompt{display:block;margin-bottom:.8rem}.ielts-text-answer,.ielts-select-answer{width:100%;max-width:32rem;min-height:2.8rem;padding:.7rem .8rem;border:1px solid #b9c8dc;border-radius:10px;background:#fff;font:inherit}.ielts-format-guide{margin:.6rem 0;color:#58677d;font-size:.9rem}.ielts-legacy-answer{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:560px){.ielts-timer{align-items:flex-start;flex-direction:column}.ielts-timer-controls{width:100%}.ielts-timer-controls button{flex:1}}";
+  visualStyle.textContent = ".ielts-timer{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1rem 0;padding:1rem 1.2rem;border:1px solid #dbe5f2;border-radius:16px;background:#f5f9ff}.ielts-timer-face{display:block;font-size:1.55rem;font-variant-numeric:tabular-nums;color:#102b52}.ielts-timer-status{display:block;color:#64748b}.ielts-timer-controls{display:flex;gap:.5rem}.ielts-question-group{margin:1.1rem 0}.ielts-question-group>h3{margin:.3rem 0 .7rem;color:#1b365f;font-size:1rem}.ielts-question-group-items{display:grid;gap:.7rem}.ielts-sequence-nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1rem 0;padding:1rem;border-radius:14px;background:#edf5ff}.ielts-sequence-nav strong{display:block;color:#143866}.ielts-sequence-nav small{color:#58677d}.ielts-q-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.65rem}.ielts-q-number{display:grid;place-items:center;width:1.8rem;height:1.8rem;border-radius:50%;background:#e9f2ff;color:#1456a0;font-weight:700}.ielts-q-type{padding:.25rem .6rem;border-radius:99px;background:#eef2f7;color:#45546a;font-size:.76rem;font-weight:700}.ielts-question-prompt{display:block;margin-bottom:.8rem}.ielts-text-answer,.ielts-select-answer{width:100%;max-width:32rem;min-height:2.8rem;padding:.7rem .8rem;border:1px solid #b9c8dc;border-radius:10px;background:#fff;font:inherit}.ielts-format-guide{margin:.6rem 0;color:#58677d;font-size:.9rem}.ielts-legacy-answer{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:560px){.ielts-timer{align-items:flex-start;flex-direction:column}.ielts-timer-controls{width:100%}.ielts-timer-controls button{flex:1}}";
   document.head.appendChild(visualStyle);
   var timerStates = Object.create(null);
   var timerInterval = null;
@@ -110,25 +110,34 @@
       return '<input type="radio" name="q' + index + '" value="' + optionIndex + '">';
     }).join("") + '</div>';
   }
+  function questionIndices(part) {
+    var sections = part && part.task && part.task.questionSections;
+    if (mockState && Array.isArray(sections) && sections.length > 1) {
+      var section = sections[Math.min(Number(mockState.ieltsSectionIndex) || 0, sections.length - 1)];
+      var selected = [];
+      for (var i = section.start; i < section.end; i++) selected.push(i);
+      return selected;
+    }
+    return (part && part.task && part.task.questions || []).map(function(_,index){return index;});
+  }
   function formatQuestionList(part, list) {
     if (!part || !Array.isArray(part.task.questions) || !list) return;
-    var groups = Object.create(null), order = [];
-    part.task.questions.forEach(function (question, index) {
-      var type = questionType(part.task, question, index);
-      question.__kryptonQuestionType = type;
-      if (!groups[type]) { groups[type] = []; order.push(type); }
-      groups[type].push(questionMarkup(question, index, type));
+    var groups = Object.create(null), order = [], indices = questionIndices(part);
+    indices.forEach(function(index) {
+      var question=part.task.questions[index], type=questionType(part.task,question,index);
+      question.__kryptonQuestionType=type;
+      if(!groups[type]){groups[type]=[];order.push(type);}
+      groups[type].push(questionMarkup(question,index,type));
     });
-    list.innerHTML = order.map(function (type) {
-      return '<section class="ielts-question-group"><h3>' + esc(typeLabel(type)) + '</h3>' +
-        '<div class="ielts-question-group-items">' + groups[type].join("") + '</div></section>';
+    list.innerHTML=order.map(function(type){
+      return '<section class="ielts-question-group"><h3>'+esc(typeLabel(type))+'</h3><div class="ielts-question-group-items">'+groups[type].join("")+'</div></section>';
     }).join("");
-    var guide = document.createElement("p");
-    guide.className = "ielts-format-guide";
-    guide.textContent = order.length > 1
-      ? "Questions are grouped by response format. Complete each group before moving to the next."
-      : "Answer each question in the format shown below.";
-    list.parentNode.insertBefore(guide, list);
+    var guide=document.createElement("p");
+    guide.className="ielts-format-guide";
+    guide.textContent=order.length>1
+      ?"Questions are grouped by IELTS response format. Complete each group before moving to the next."
+      :"Answer each question in the format shown below.";
+    list.parentNode.insertBefore(guide,list);
   }
   function moduleFor(part) {
     if (!part) return "reading";
@@ -218,18 +227,96 @@
       if (!state.remaining) button.disabled = true;
     }
   }
-  function enhanceRendered(mock) {
-    var part = currentPart(mock);
-    if (!part || !part.task) return;
-    if (["reading","listening"].indexOf(part.skill) >= 0) {
-      formatQuestionList(part, document.querySelector(".question-list"));
-    }
-    var actions = document.querySelector(".runner-actions");
-    if (actions) actions.insertAdjacentHTML("beforebegin", timerMarkup(part, mock));
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(updateTimerFace, 1000);
+  function sequenceSection(part) {
+    var sections=part && part.task && part.task.questionSections;
+    if(!mockState || !Array.isArray(sections) || sections.length<2 || ["reading","listening"].indexOf(part.skill)<0) return null;
+    return {sections:sections,index:Math.min(Number(mockState.ieltsSectionIndex)||0,sections.length-1),skill:part.skill};
   }
-
+  function segmentName(sequence,index) {
+    return sequence.skill==="reading" ? "Passage "+(index+1) : "Part "+(index+1);
+  }
+  function prepareSegment(part) {
+    var sequence=sequenceSection(part);
+    if(!sequence)return;
+    var section=sequence.sections[sequence.index];
+    if(sequence.skill==="reading")part.task.passage=section.text;
+    else part.task.transcript=section.text;
+  }
+  function storeCurrentAnswers(part) {
+    var sequence=sequenceSection(part);
+    if(!sequence || !mockState)return;
+    var saved=mockState.ieltsAnswers || (mockState.ieltsAnswers=Object.create(null));
+    questionIndices(part).forEach(function(index){
+      var question=part.task.questions[index],type=questionType(part.task,question,index);
+      var text=document.querySelector('[data-answer-text="'+index+'"]');
+      var select=document.querySelector('[data-answer-select="'+index+'"]');
+      var checked=document.querySelector('input[name="q'+index+'"]:checked');
+      if(text){
+        var normalized=String(text.value||"").trim().replace(/\\s+/g," ").toLowerCase();
+        var options=answerOptions(question,type);
+        var value=options.findIndex(function(option){return String(option).trim().replace(/\\s+/g," ").toLowerCase()===normalized;});
+        saved[index]={kind:"text",text:text.value,value:value};
+      }else if(select && select.value!=="") saved[index]={kind:"choice",value:Number(select.value)};
+      else if(checked) saved[index]={kind:"choice",value:Number(checked.value)};
+      else delete saved[index];
+    });
+  }
+  function restoreCurrentAnswers(part) {
+    var saved=mockState && mockState.ieltsAnswers || {};
+    questionIndices(part).forEach(function(index){
+      var answer=saved[index];if(!answer)return;
+      var text=document.querySelector('[data-answer-text="'+index+'"]');
+      var select=document.querySelector('[data-answer-select="'+index+'"]');
+      if(text && answer.kind==="text")text.value=answer.text;
+      else if(select && answer.kind==="choice")select.value=String(answer.value);
+      else if(answer.kind==="choice"){
+        var radio=document.querySelector('input[name="q'+index+'"][value="'+answer.value+'"]');
+        if(radio)radio.checked=true;
+      }
+    });
+  }
+  function addSequenceControls(part,sequence) {
+    var section=sequence.sections[sequence.index],name=segmentName(sequence,sequence.index);
+    var heading=document.querySelector(".page-intro h1");
+    if(heading)heading.textContent=name+" · "+(section.title||part.task.title);
+    var intro=document.querySelector(".page-intro p:last-child");
+    if(intro)intro.textContent=name+" of "+sequence.sections.length+" · "+(sequence.skill==="reading"?"Read the passage, then answer its questions.":"Listen to this part, then answer its questions.");
+    var actions=document.querySelector(".runner-actions");
+    if(!actions)return;
+    var back=sequence.index>0?'<button class="button button-outline" type="button" data-ielts-sequence-action="back">← Previous '+(sequence.skill==="reading"?"passage":"part")+'</button>':"";
+    var next=sequence.index<sequence.sections.length-1
+      ?'<button class="button button-primary" type="button" data-ielts-sequence-action="next">Next '+(sequence.skill==="reading"?"passage":"part")+' →</button>'
+      :'<span class="ielts-sequence-last">Last '+(sequence.skill==="reading"?"passage":"part")+' · submit to continue</span>';
+    actions.insertAdjacentHTML("beforebegin",'<nav class="ielts-sequence-nav" aria-label="'+name+' progress"><div><strong>'+name+' of '+sequence.sections.length+'</strong><small>'+(sequence.index+1)+' / '+sequence.sections.length+' · '+(section.end-section.start)+' questions</small></div><div>'+back+next+'</div></nav>');
+  }
+  function injectSavedAnswers(part) {
+    if(!mockState || !mockState.ieltsAnswers)return;
+    var current=questionIndices(part),currentSet=Object.create(null);
+    current.forEach(function(index){currentSet[index]=true;});
+    Object.keys(mockState.ieltsAnswers).forEach(function(key){
+      var index=Number(key),answer=mockState.ieltsAnswers[key];
+      if(currentSet[index] || answer.value===undefined || answer.value<0)return;
+      var holder=document.createElement("div");
+      holder.className="ielts-legacy-answer";
+      holder.innerHTML='<input type="radio" name="q'+index+'" value="'+answer.value+'" checked>';
+      var list=document.querySelector(".question-list");
+      if(list)list.appendChild(holder);
+    });
+  }
+  function enhanceRendered(mock) {
+    var part=currentPart(mock);
+    if(!part || !part.task)return;
+    if(["reading","listening"].indexOf(part.skill)>=0){
+      formatQuestionList(part,document.querySelector(".question-list"));
+      restoreCurrentAnswers(part);
+      var sequence=sequenceSection(part);
+      if(sequence)addSequenceControls(part,sequence);
+    }
+    var actions=document.querySelector(".runner-actions");
+    if(actions)actions.insertAdjacentHTML("beforebegin",timerMarkup(part,mock));
+    if(timerInterval)clearInterval(timerInterval);
+    timerInterval=setInterval(updateTimerFace,1000);
+  }
   var baseRenderActivity = renderActivity;
   renderActivity = function () {
     baseRenderActivity();
@@ -237,6 +324,8 @@
   };
   var baseRenderMockStep = renderMockStep;
   renderMockStep = function () {
+    var part=mockState && currentMockTask();
+    if(part)prepareSegment(part);
     baseRenderMockStep();
     if (mockState && currentMockTask()) enhanceRendered(true);
   };
@@ -287,4 +376,20 @@
     var radios = Array.from(document.querySelectorAll('input[type="radio"][name="q' + index + '"]'));
     radios.forEach(function (radio) { radio.checked = radio.value === select.value && select.value !== ""; });
   });
+
+  document.addEventListener("click",function(event){
+    var control=event.target.closest("[data-ielts-sequence-action]");
+    if(control){
+      event.preventDefault();event.stopImmediatePropagation();
+      var part=currentPart(true),sequence=sequenceSection(part);if(!sequence)return;
+      storeCurrentAnswers(part);
+      mockState.ieltsSectionIndex=control.dataset.ieltsSequenceAction==="next"?sequence.index+1:Math.max(0,sequence.index-1);
+      renderMockStep();return;
+    }
+    if(!event.target.closest('[data-action="submit-activity"]'))return;
+    var part=currentPart(Boolean(mockState)),sequence=sequenceSection(part);
+    if(!sequence)return;
+    storeCurrentAnswers(part);
+    injectSavedAnswers(part);
+  },true);
 })();
