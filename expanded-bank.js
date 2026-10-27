@@ -20,6 +20,9 @@
   const listening=Array.from({length:100},(_,i)=>{
     const name=choose(people,i),topic=choose(topics,i*3+1),place=choose(places,i*5+2),day=choose(days,i*2+3),time=choose(times,i*7+4),price=choose(prices,i*3+5),item=choose(items,i*5+6);
     const fees=prices,dayChoices=days,timeChoices=times,placeChoices=places,itemChoices=items;
+    const followUp=i%4===0?"collect a welcome pack when they arrive":i%4===1?"ask staff at the information desk if they have questions":i%4===2?"share the notes with the group":"receive a summary after the session";
+    const speakerType=i%4===0?"a staff member and a participant":i%4===1?"a public announcer":i%4===2?"a tutor and a student":"a lecturer";
+    const speakerChoices=["a staff member and a participant","a public announcer","a tutor and a student","a lecturer"];
     const transcript=i%4===0
       ? `STAFF: Hello, ${topic}. How can I help?\n${name.toUpperCase()}: I would like to register.\nSTAFF: The fee is ${price}, and the next session is on ${day} at ${time}. Please meet at ${place}.\n${name.toUpperCase()}: Is there anything I should bring?\nSTAFF: Yes, please bring ${item}. You can collect your welcome pack when you arrive.`
       : i%4===1
@@ -32,7 +35,13 @@
       q("How much is the fee?",price,fees.filter(x=>x!==price),i,"The speaker states the fee directly in the recording."),
       q("When does the session take place?",day,dayChoices.filter(x=>x!==day),i+1,"The day is stated in the schedule."),
       q("What time does it begin?",time,timeChoices.filter(x=>x!==time),i+2,"The start time is given in the announcement."),
-      q("What should the participant bring?",item,itemChoices.filter(x=>x!==item),i+3,"The speaker names the item participants should bring.")
+      q("What should the participant bring?",item,itemChoices.filter(x=>x!==item),i+3,"The speaker names the item participants should bring."),
+      q("Complete the form: Meeting place: ______",place,placeChoices.filter(x=>x!==place),i+4,"The recording states the meeting point or entrance."),
+      q("What is the recording mainly about?",topic,topics.filter(x=>x!==topic),i+5,"The speakers introduce this topic at the start of the recording."),
+      q("Complete the note: The speaker says attendees should ______.",followUp,["ask for a refund","leave immediately","bring another person"],i+6,"The recording gives this instruction or follow-up."),
+      q("Who is speaking or providing the information?",speakerType,speakerChoices.filter(x=>x!==speakerType),i+7,"The speaker roles identify this kind of exchange."),
+      {q:"Select TWO details mentioned in the recording.",options:["Fee: "+price,"Day: "+day,"Fee: "+choose(fees.filter(x=>x!==price),i+9),"Day: "+choose(dayChoices.filter(x=>x!==day),i+10)],answer:[0,1],why:"Both the fee and the day are stated in the recording.",questionType:"multiple-choice-multiple"},
+      q("Match the event topic to its location: "+topic+" → ______",place,placeChoices.filter(x=>x!==place),i+8,"The speaker connects this event with the stated venue.")
     ]};
   });
 
@@ -48,11 +57,14 @@
       ? `The ${subject} project will begin its next six-week trial on ${choose(days,n)}. Its aim is to ${aim}. The main challenge so far has been ${challenge}. In the previous trial, organisers found that ${finding}. Residents can join a short information session at ${choose(times,n*2)}; no previous experience is required. Participants are asked to register before ${choose(days,n+2)} so the team can prepare enough materials. The organisers plan to ${action}. Updated dates will be posted at the local information desk.`
       : `A research group studied how local programmes related to ${subject} could be improved. The work began in ${year} with a small pilot involving three neighbourhoods. Its purpose was to ${aim}. Researchers identified ${challenge} as a factor that could affect results. They also observed that ${finding}. The team cautioned that the pilot did not represent every location, because resources and local priorities differed. On the basis of the evidence, the report recommends that organisers ${action}. It concludes that further observation is needed before the approach is treated as a general solution.`;
     const fmt=isGT?"General Training · Multiple choice":"Academic · Multiple choice";
+    const titleQuestion=q("Choose the best title for this passage.",title,[isGT?`Community notice · ${choose(subjects,n+3)}`:`Research brief · ${choose(subjects,n+3)}`,isGT?`Community notice · ${choose(subjects,n+8)}`:`Research brief · ${choose(subjects,n+8)}`],n+4,"The title should reflect the passage’s central subject and purpose.");
+    titleQuestion.questionType="choosing-a-title";
     return {id:`bank-read-${i+1}`,course:isGT?"General Training":"Academic",title,level:"Intermediate",format:fmt,passage,questions:[
       q("What is the main aim of the project?",aim,aims.filter(x=>x!==aim),n,"The first paragraph states the project’s purpose."),
       q("Which challenge did the organisers identify?",challenge,challenges.filter(x=>x!==challenge),n+1,"The passage names this as a factor affecting the work."),
       q("What did the earlier trial show?",finding,findings.filter(x=>x!==finding),n+2,"This finding is reported from the previous trial."),
-      q("What action is recommended next?",action,actions.filter(x=>x!==action),n+3,"The final part of the passage gives this recommendation.")
+      q("What action is recommended next?",action,actions.filter(x=>x!==action),n+3,"The final part of the passage gives this recommendation."),
+      titleQuestion
     ]};
   });
 
@@ -82,8 +94,75 @@
     return {id:`bank-speak-${i+1}`,course:"Both",title:`Speaking practice ${String(i+1).padStart(3,"0")} · ${topic}`,level:`Part ${part===1?"2":part===2?"3":"1"} · ${part===1?"Cue card":part===2?"Discussion":"Interview"}`,format:"Speaking practice",time:3,prompt,hint:part===1?"Use the one-minute preparation timer, then speak for up to two minutes.":"Respond in complete thoughts and support your answers with a reason, comparison, or specific example."};
   });
 
-  PACKS.listening.push(...listening);
+
+
   PACKS.reading.push(...reading);
+  PACKS.reading.forEach((task,index) => {
+    if (String(task.id).indexOf("bank-read-")===0 && task.questions.length>=5) {
+      task.questions[2].q="Complete the sentence: The earlier trial showed that ______.";
+      task.questions[2].questionType="sentence-completion";
+      task.questions[3].q="Complete the summary: The recommended next step is to ______.";
+      task.questions[3].questionType="summary-completion";
+    }
+    if (task.questions.length<5) {
+      var decoys=PACKS.reading.filter(other=>other.id!==task.id).slice(0,2).map(other=>other.title);
+      var choices=[task.title].concat(decoys),offset=index%3;
+      task.questions.push({q:"Choose the best title for this passage.",options:choices.map((_,i)=>choices[(i+offset)%choices.length]),answer:(choices.length-offset)%choices.length,why:"The best title captures the passage’s central subject and purpose.",questionType:"choosing-a-title"});
+    }
+    var gt=task.course==="General Training";
+    task.questions.push(
+      {q:gt?"The next trial will last six weeks.":"The pilot involved three neighbourhoods.",options:["TRUE","FALSE","NOT GIVEN"],answer:0,why:gt?"The passage says the next trial will run for six weeks.":"The passage states that the pilot involved three neighbourhoods.",questionType:"true-false-not-given"},
+      {q:gt?"Participants need previous experience to join.":"The pilot represented every location equally.",options:["TRUE","FALSE","NOT GIVEN"],answer:1,why:gt?"The passage says no previous experience is required.":"The passage says the pilot did not represent every location.",questionType:"true-false-not-given"},
+      {q:gt?"The trial will be held at a university.":"Researchers studied exactly twenty locations.",options:["TRUE","FALSE","NOT GIVEN"],answer:2,why:"The passage does not provide this information.",questionType:"true-false-not-given"}
+    );
+    task.questions.push(
+      {q:"Select TWO statements supported by the passage.",options:[gt?"The trial will last six weeks.":"The work began in "+year+".","The project aimed to "+aim+".","The project operated without any challenges.","The organisers guaranteed the programme would work everywhere."],answer:[0,1],why:"Both selected details are stated directly in the passage.",questionType:"multiple-choice-multiple"},
+      {q:"Match the report’s recommended next step: Organisers should ______.",options:[action,finding,challenge],answer:0,why:"The recommendation appears near the end of the passage.",questionType:"matching-features"}
+    );
+  });
+  PACKS.listening.push(...listening);
+  PACKS.listening.forEach(task => {
+    if (String(task.id).indexOf("bank-listen-")===0 && task.questions[4]) {
+      task.questions[5].questionType="multiple-choice";
+      task.questions[6].q="Complete the note: Attendees should ______.";
+      task.questions[6].questionType="summary-completion";
+      task.questions[7].questionType="multiple-choice";
+      task.questions[8].questionType="multiple-choice-multiple";
+      task.questions[9].questionType="matching";
+      task.questions[2].q="Complete the sentence: The session begins at ______.";
+      task.questions[2].questionType="sentence-completion";
+      task.questions[4].q="Complete the form: Meeting place: ______";
+      task.questions[4].questionType="form-note-completion";
+    }
+    if (task.id==="listen-campus") { task.questions[2].q="Complete the note: Available from: ______"; task.questions[2].questionType="sentence-completion"; }
+    if (task.id==="listen-research") { task.questions[2].q="Complete the sentence: By Thursday, Lina will ______."; task.questions[2].questionType="sentence-completion"; }
+    if (task.questions.length<5) {
+      if(task.id==="listen-campus")task.questions.push({q:"Complete the accommodation form: Room type: ______",options:["single","double","shared"],answer:0,why:"The owner describes it as a single room.",questionType:"form-note-completion"});
+      else if(task.id==="listen-library")task.questions.push({q:"Complete the note: The café is beside the ______.",options:["main entrance","second floor","exit"],answer:0,why:"The café is beside the main entrance.",questionType:"sentence-completion"});
+      else if(task.id==="listen-research")task.questions.push({q:"What will the report compare?",options:["the responses","the questions","the shop owners"],answer:0,why:"The tutor says the report should compare the responses.",questionType:"short-answer"});
+    }
+    if(task.id==="listen-campus")task.questions.push(
+      {q:"Complete the note: The viewing is arranged for ______ morning.",options:["Saturday","Sunday","Monday"],answer:0,why:"The student asks for a Saturday morning viewing.",questionType:"sentence-completion"},
+      {q:"Which TWO costs are included in the rent?",options:["Water","Internet","Electricity","Heating"],answer:[0,1],why:"Water and internet are included; electricity is separate.",questionType:"multiple-choice-multiple"},
+      {q:"Match the room to its setting: The room is in a ______.",options:["shared house","hotel","university hall"],answer:0,why:"The owner says the room is in a shared house.",questionType:"matching"},
+      {q:"What does the student want to arrange?",options:["A viewing","A payment plan","A key collection"],answer:0,why:"The student asks to arrange a viewing.",questionType:"multiple-choice"},
+      {q:"Complete the form: Accommodation type: ______",options:["single room","double room","family room"],answer:0,why:"The owner describes it as a single room.",questionType:"form-note-completion"}
+    );
+    else if(task.id==="listen-library")task.questions.push(
+      {q:"Complete the note: The library closes on Saturday at ______.",options:["4 p.m.","5 p.m.","6 p.m."],answer:0,why:"Saturday opening hours end at four.",questionType:"sentence-completion"},
+      {q:"Which TWO facilities are available?",options:["Study-room booking","A book-return machine","Sunday opening","A second café"],answer:[0,1],why:"Study rooms can be booked and the return machine is near the exit.",questionType:"multiple-choice-multiple"},
+      {q:"Where is the café?",options:["Beside the main entrance","On the second floor","Near the exit"],answer:0,why:"The café is beside the main entrance.",questionType:"short-answer"},
+      {q:"On which day is the library closed?",options:["Sunday","Saturday","Monday"],answer:0,why:"The announcement says the library is closed on Sundays.",questionType:"multiple-choice"},
+      {q:"Complete the sentence: Members may borrow up to ______ books.",options:["eight","six","ten"],answer:0,why:"Members may borrow up to eight books.",questionType:"sentence-completion"}
+    );
+    else if(task.id==="listen-research")task.questions.push(
+      {q:"Which TWO actions are planned?",options:["Lina drafts the questions","James contacts shop owners","They publish a book","They return to an online survey"],answer:[0,1],why:"Lina will draft questions and James will contact the shop owners.",questionType:"multiple-choice-multiple"},
+      {q:"Complete the note: They plan to interview ______ shop owners.",options:["twelve","ten","twenty"],answer:0,why:"James suggests interviewing twelve local shop owners.",questionType:"form-note-completion"},
+      {q:"When will James contact the shop owners?",options:["Next week","By Thursday","This weekend"],answer:0,why:"James says he can contact them next week.",questionType:"short-answer"},
+      {q:"What should the report do with the responses?",options:["Compare them","Translate them","Publish them individually"],answer:0,why:"The tutor says to compare rather than merely list responses.",questionType:"multiple-choice"},
+      {q:"Complete the sentence: Lina will draft the questions by ______.",options:["Thursday","Friday","next week"],answer:0,why:"Lina says she will draft them by Thursday.",questionType:"sentence-completion"}
+    );
+  });
   PACKS.writing.push(...writeAcademic,...writeGeneral);
   PACKS.speaking.push(...speaking);
   for(const skill of ["listening","reading","writing","speaking"]){

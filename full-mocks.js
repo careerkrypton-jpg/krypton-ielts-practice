@@ -38,9 +38,8 @@
     var eligible = PACKS[skill].filter(function (task) {
       return Array.isArray(task.questions) && task.questions.length && (task.course === "Both" || task.course === course);
     });
-    var targets = skill === "listening" ? [10, 10, 10, 10] : [13, 13, 14];
-    var questions = [];
-    var sourceText = [];
+    var targets = skill === "listening" ? [10, 10, 10, 10] : [10, 10, 10];
+    var questions = [], sourceText = [], sectionData = [];
     var used = Object.create(null);
     targets.forEach(function (target, sectionIndex) {
       var sectionNumber = sectionIndex + 1;
@@ -50,18 +49,17 @@
           })
         : eligible.slice();
       pool = shuffle(pool.filter(function (task) { return !used[task.id]; }), random);
-      var sectionCount = 0;
-      var sectionSources = [];
+      var sectionCount = 0, sectionStart = questions.length, sectionSources = [];
       pool.forEach(function (task) {
         if (sectionCount >= target) return;
         used[task.id] = true;
-        var remaining = target - sectionCount;
-        var selectedQuestions = task.questions.slice(0, remaining);
+        var selectedQuestions = task.questions.slice(0, target - sectionCount);
         if (!selectedQuestions.length) return;
-        sectionSources.push(task.title + "\n" + (skill === "listening" ? task.transcript || "" : task.passage || ""));
+        sectionSources.push({title:task.title,text:skill === "listening" ? task.transcript || "" : task.passage || ""});
         selectedQuestions.forEach(function (question) {
           questions.push(Object.assign({}, question, {
-            q: (skill === "listening" ? "Part " + sectionNumber : "Passage " + sectionNumber) + " · " + question.q
+            q: question.q,
+            sectionNumber: sectionNumber
           }));
         });
         sectionCount += selectedQuestions.length;
@@ -69,18 +67,23 @@
       if (sectionCount < target) {
         throw new Error("The original " + skill + " bank needs at least " + target + " questions for section " + sectionNumber + ".");
       }
-      sourceText.push((skill === "listening" ? "PART " : "PASSAGE ") + sectionNumber + "\n" + sectionSources.join("\n\n"));
+      var sectionTitle = sectionSources.map(function(source){return source.title;}).join(" · ");
+      var sectionBody = sectionSources.map(function(source){return source.text;}).join("\n\n");
+      sourceText.push((skill === "listening" ? "PART " : "PASSAGE ") + sectionNumber + " · " + sectionTitle + "\n" + sectionBody);
+      sectionData.push({number:sectionNumber,title:sectionTitle,text:sectionBody,start:sectionStart,end:questions.length});
     });
     var label = skill === "listening" ? "Listening" : "Reading";
     var task = {
       id: "full-" + skill + "-" + number + "-" + Date.now(),
       course: course,
-      title: label + " · 40 questions",
-      level: "Full mock · " + label,
-      format: "Full mock · " + label + " section",
+      title: label + " · " + questions.length + " questions",
+      level: "Timed practice · " + label,
+      format: "Timed practice · " + label + " section",
       questions: questions,
       time: skill === "listening" ? 30 : 60,
-      sectionCount: targets.length
+      sectionCount: targets.length,
+      sections: sectionData,
+      questionSections: sectionData
     };
     task[skill === "listening" ? "transcript" : "passage"] = sourceText.join("\n\n");
     return { skill: skill, task: task };
@@ -192,7 +195,7 @@
     root.innerHTML =
       '<section class="page-intro"><p class="eyebrow">200 ORIGINAL FULL MOCK FORMS · FREE</p><h1>Full mock test library</h1><p>Complete all four IELTS skills in one sitting. Choose from 100 numbered Academic forms and 100 General Training forms, or generate a fresh random form. Every attempt is free and can be repeated.</p></section>' +
       courseSwitchMarkup() +
-      '<section class="mock-generator"><div><p class="eyebrow">COMPLETE FOUR-SKILL TEST</p><h2>200 full mock forms</h2><p>Each test has 40 Listening questions across four parts, 40 Reading questions across three passages, Writing Tasks 1 and 2, and one connected Speaking interview with Parts 1–3. The content is original Krypton practice material, with no attempt limit.</p><div class="full-mock-count"><span>80 scored questions</span><span>2 writing tasks</span><span>3 speaking parts</span></div></div><div class="mock-generator-actions mock-library-actions"><label for="full-mock-number">Choose test number<select id="full-mock-number">' + options + '</select></label><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-selected">Start selected full mock</button><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-random">Start a fresh random mock</button></div></section>' +
+      '<section class="mock-generator"><div><p class="eyebrow">COMPLETE FOUR-SKILL TEST</p><h2>200 full mock forms</h2><p>Each test has 40 Listening questions across four parts, 30 Reading questions across three passages, Writing Tasks 1 and 2, and one connected Speaking interview with Parts 1–3. The content is original Krypton practice material, with no attempt limit.</p><div class="full-mock-count"><span>70 scored questions</span><span>2 writing tasks</span><span>3 speaking parts</span></div></div><div class="mock-generator-actions mock-library-actions"><label for="full-mock-number">Choose test number<select id="full-mock-number">' + options + '</select></label><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-selected">Start selected full mock</button><button class="button button-outline" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-random">Start a fresh random mock</button></div></section>' +
       '<div class="info-strip"><strong>Suggested timing:</strong> Listening 30 minutes · Reading 60 minutes · Writing 60 minutes · Speaking 11–14 minutes. These are original learning simulations and are not official IELTS papers.</div>' +
       '<div class="note-banner">The supplied books are not copied into this public app. The mock tests use original questions written for Krypton and follow common IELTS task formats.</div>';
   };
@@ -234,7 +237,7 @@
     if (inMock && mockState && mockState.mock && mockState.mock.fullLength && skill === "listening") {
       html = html.replace(
         "Play the short recording, then answer the questions. You can replay it during practice.",
-        "Listen through the four-part recording playlist and answer all 40 questions. You can replay the recordings during practice."
+        "Listen to the recording for this part, answer its ten questions, then continue to the next part."
       );
     }
     return html;

@@ -9,13 +9,13 @@ Krypton IELTS Practice is the independent practice web app for Kathmandu Krypton
 - Free account creation and sign-in with password, email verification, or Google (Google OAuth must be configured in Supabase)
 - Onboarding for Academic or General Training, target band, daily study time, and optional test date
 - Readable, responsive dashboard with a personal study plan
-- 107+ Listening sets and 109+ Reading sets, each with four original, self-marked questions
+- 100+ original Listening and Reading practice sets with multiple choice, short answer, form/note completion, sentence and summary completion, matching, multiple-select, and True/False/Not Given question formats
 - 112+ Academic and General Training Writing prompts
 - 112+ Speaking interview questions and cue cards, with optional audio recording
 - AI practice coaching in all four modules: Reading and Listening answer analysis with approximate section-band estimates, plus IELTS-criteria feedback and optional transcription for Writing and Speaking
 - Saved practice history and AI feedback, protected by Supabase row-level security
-- 200 numbered full mock test forms: 100 each for Academic and General Training. Each has 50 Listening questions, 50 Reading questions, Writing Tasks 1 and 2, and Speaking Parts 1, 2, and 3
-- Fresh random full mocks can also be generated without an attempt limit
+- 200 timed IELTS-style mock simulations: 100 each for Academic and General Training. Listening moves through four parts with 10 questions each; Reading moves through three passages with 10 questions each; Writing contains Tasks 1 and 2; Speaking follows Parts 1, 2, and 3
+- Fresh random mock simulations can also be generated without an attempt limit. The short Reading simulation has 30 questions, so it is shorter than the official 40-question Reading test.
 - Mock tasks are grouped under the four skill modules. Writing Task 1 continues to Task 2, and Speaking moves through Parts 1–3 with a clear next-step control
 - No student subscription or paywall
 
