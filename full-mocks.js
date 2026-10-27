@@ -335,8 +335,8 @@
         groupOrder = Object.keys(groups).sort(function (a, b) { return (a.indexOf("Academic")===0?0:1)-(b.indexOf("Academic")===0?0:1) || a.localeCompare(b); });
         content = groupOrder.map(function (key) { return groupedDetails(key, groups[key], skill, function (task) { return task.level || task.format || "Reading"; }); }).join("");
       } else {
-        tasks.forEach(function (task) { var match = String(task.level || "").match(/Task\s*(1|2)/i); var taskNo = match ? "Task " + match[1] : "Writing practice"; var key = (task.course || "Academic") + " · " + taskNo; (groups[key] = groups[key] || []).push(task); });
-        groupOrder = ["Academic · Task 1", "Academic · Task 2", "General Training · Task 1", "General Training · Task 2", "Academic · Writing practice", "General Training · Writing practice"].filter(function (key) { return groups[key]; });
+        tasks.forEach(function (task) { var match = String(task.level || "").match(/Task\s*(1|2)/i); var taskNo = match ? "Task " + match[1] : "Writing practice"; var visualGroup = task.visual ? ({bar:"Bar charts",line:"Line graphs",pie:"Pie charts",table:"Data tables",map:"Maps",process:"Process diagrams"})[task.visual.type] : ""; var key = (task.course || "Academic") + " · " + taskNo + (visualGroup ? " · " + visualGroup : ""); (groups[key] = groups[key] || []).push(task); });
+        groupOrder = ["Academic · Task 1", "Academic · Task 2", "General Training · Task 1", "General Training · Task 2", "Academic · Writing practice", "General Training · Writing practice"].filter(function (key) { return groups[key]; }).concat(Object.keys(groups).filter(function (key) { return key.indexOf(" · Task 1 · ") >= 0; }).sort());
         content = groupOrder.map(function (key) { return groupedDetails(key, groups[key], skill, function (task) { return task.format || task.level || "Writing"; }); }).join("");
       }
       var sectionCount = skill === "speaking" ? Object.keys(groups).length + " speaking topics" : tasks.length + " practice sets";
