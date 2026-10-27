@@ -253,62 +253,96 @@
       '</div><div class="runner-actions"><small>Question scores are self-marked. AI writing and speaking scores are practice estimates, not official IELTS results.</small><button class="button button-primary" data-action="finish-mock">Back to mock test library</button></div></article>';
   };
 
-  /* Practice library: keep modules together and guide related Speaking parts in sequence. */
+  /* One-page IELTS practice library, grouped by the task structure in each skill. */
   var kryptonPracticeSequence = null;
-  var priorRenderPracticeLibrary = renderLibrary;
   renderLibrary = function () {
-    var skills = selectedFilter === "all" ? SKILLS : [selectedFilter];
+    var skills = SKILLS;
+    var partNames = {1:"Interview",2:"Cue card",3:"Discussion"};
     function category(skill, task) {
       if (skill === "writing") {
         var match = String(task.level || "").match(/Task\s*(1|2)/i);
         return match ? "Task " + match[1] : "Writing practice";
       }
-      if (skill === "listening") {
-        var listenPart = String(task.format || task.level || "").match(/Part\s*([1-4])/i);
-        return listenPart ? "Part " + listenPart[1] + " · " + task.title : task.title;
-      }
       if (skill === "reading") return task.title;
-      return task.title.replace(/^Speaking practice\s*\d+\s*·\s*/i, "").replace(/^Speaking topic\s*·\s*/i, "");
+      return task.title.replace(/^Speaking practice\s*(?:\d+\s*)?·\s*/i, "").replace(/^Speaking topic\s*·\s*/i, "").trim().toLowerCase();
     }
     function startButton(skill, task, sequence) {
       return '<button class="button button-primary" data-start-skill="' + esc(skill) + '" data-task="' + esc(task.id) + '"' +
         (sequence ? ' data-topic-sequence="' + esc(sequence) + '"' : '') + '>Start practice</button>';
     }
+    function taskCard(skill, task, detail, sequence) {
+      var description = skill === "listening" ? "Listen to the recording, then answer and review the explanations." : skill === "reading" ? "Read the passage or text, answer the questions, then review the explanations." : task.hint || "Develop your answer and support it with relevant detail.";
+      var duration = task.questions && task.questions.length ? task.questions.length + " questions" : (task.time || 3) + " min";
+      return '<article class="lesson-card organized-task-card"><div class="lesson-meta"><span>' + esc(task.format || task.level || "Practice") + '</span><span class="tag">' + esc(task.course || "Both") + '</span></div><h3>' + esc(task.title) + '</h3><p>' + esc(description) + '</p><div class="lesson-bottom"><small>' + esc(detail || duration) + (detail ? " · " + duration : "") + '</small>' + startButton(skill, task, sequence || "") + '</div></article>';
+    }
+    function groupedDetails(title, tasks, skill, detailForTask, open) {
+      return '<details class="practice-group"' + (open ? ' open' : '') + '><summary><span><strong>' + esc(title) + '</strong><small>' + tasks.length + ' practice ' + (tasks.length === 1 ? 'set' : 'sets') + '</small></span><span class="topic-open-label">Open section →</span></summary><div class="topic-task-list">' + tasks.map(function (task) { return taskCard(skill, task, detailForTask ? detailForTask(task) : "", ""); }).join("") + '</div></details>';
+    }
+    function readingKey(task) {
+      var course = task.course || "Academic";
+      var format = String(task.format || "Reading practice").replace(/^Academic\s*·\s*|^General Training\s*·\s*/i, "").replace(/^Academic\s+passage/i, "Passage").replace(/^General Training\s+/i, "").trim();
+      return course + " · " + (format || (course === "Academic" ? "Passages" : "Everyday texts"));
+    }
+    function speakingPart(task) {
+      var match = String(task.level || task.format || "").match(/Part\s*([1-3])/i);
+      return match ? Number(match[1]) : 1;
+    }
+    function ensureSpeakingTopics(tasks) {
+      var groups = {};
+      tasks.forEach(function (task) { var topic = category("speaking", task); (groups[topic] = groups[topic] || []).push(task); });
+      Object.keys(groups).forEach(function (topic, index) {
+        var present = {};
+        groups[topic].forEach(function (task) { present[speakingPart(task)] = true; });
+        [1, 2, 3].forEach(function (part) {
+          if (present[part]) return;
+          var prompt = part === 1
+            ? "Answer these questions about " + topic + ": What comes to mind when you think about it? How often do you experience it? Has your experience changed over time?"
+            : part === 2
+              ? "Describe " + topic + ". You should say what it is, when or where you experienced it, who was involved, and explain why it was meaningful to you."
+              : "Why is " + topic + " important to people? How can experiences differ between generations? What changes might happen in the future?";
+          var fallback = {id:"topic-fallback-" + index + "-part-" + part,course:"Both",title:"Speaking practice · " + topic,level:"Part " + part + " · " + partNames[part],format:"Speaking · Part " + part,time:part===1?4:part===2?3:5,prompt:prompt,hint:part===1?"Answer naturally, add a reason, and give one short example.":part===2?"Use the one-minute preparation timer, then speak for up to two minutes.":"Explain your view, compare perspectives, and support your answer with an example."};
+          tasks.push(fallback);
+          groups[topic].push(fallback);
+          present[part] = true;
+        });
+      });
+      var existing = new Set(PACKS.speaking.map(function (task) { return task.id; }));
+      tasks.forEach(function (task) { if (!existing.has(task.id)) { PACKS.speaking.push(task); existing.add(task.id); } });
+      return groups;
+    }
     var sections = skills.map(function (skill) {
       var tasks = (PACKS[skill] || []);
       var heading = SKILL_META[skill].label;
-      var content = "";
+      var content = "", groups = {}, groupOrder = [];
       if (skill === "speaking") {
-        var groups = {};
-        tasks.forEach(function (task) {
-          var topic = category(skill, task);
-          (groups[topic] = groups[topic] || []).push(task);
-        });
-        content = Object.keys(groups).map(function (topic, index) {
-          var group = groups[topic].sort(function (a, b) {
-            var ap = Number((String(a.level || "").match(/Part\s*(\d)/i) || [0, 9])[1]);
-            var bp = Number((String(b.level || "").match(/Part\s*(\d)/i) || [0, 9])[1]);
-            return ap - bp;
-          });
+        groups = ensureSpeakingTopics(tasks);
+        content = Object.keys(groups).sort(function (a, b) { return a.localeCompare(b); }).map(function (topic, index) {
+          var group = groups[topic].slice().sort(function (a, b) { return speakingPart(a) - speakingPart(b); });
           var sequence = "speaking-topic-" + index;
-          var uniqueParts = group.filter(function (task, i, all) {
-            var p = (String(task.level || "").match(/Part\s*\d/i) || ["Part"])[0];
-            return all.findIndex(function (other) { return (String(other.level || "").match(/Part\s*\d/i) || ["Part"])[0] === p; }) === i;
-          });
-          return '<details class="topic-group"><summary><span><strong>' + esc(topic) + '</strong><small>' + uniqueParts.map(function (task) { return esc((String(task.level || "").match(/Part\s*\d/i) || ["Speaking practice"])[0]); }).join(" · ") + '</small></span><span class="topic-open-label">Open topic →</span></summary><div class="topic-task-list">' +
-            uniqueParts.map(function (task) {
-              return '<article class="lesson-card topic-task-card"><div class="lesson-meta"><span>' + esc(task.format || "Speaking practice") + '</span><span class="tag">' + esc(task.level || "Speaking") + '</span></div><h3>' + esc((String(task.level || "").match(/Part\s*\d/i) || ["Speaking"])[0]) + '</h3><p>' + esc(task.hint || "Answer with a reason and a specific example.") + '</p><div class="lesson-bottom"><small>' + (task.time || 3) + ' min</small>' + startButton(skill, task, sequence) + '</div></article>';
+          var uniqueParts = [];
+          [1, 2, 3].forEach(function (part) { var task = group.find(function (item) { return speakingPart(item) === part; }); if (task) uniqueParts.push(task); });
+          return '<details class="topic-group"><summary><span><strong>' + esc(topic) + '</strong><small>Part 1 · Interview &nbsp; Part 2 · Cue card &nbsp; Part 3 · Discussion</small></span><span class="topic-open-label">Open topic →</span></summary><div class="topic-task-list">' +
+            uniqueParts.map(function (task, partIndex) {
+              return '<article class="lesson-card topic-task-card"><div class="lesson-meta"><span>' + esc(partNames[partIndex + 1]) + '</span><span class="tag">Part ' + (partIndex + 1) + '</span></div><h3>Part ' + (partIndex + 1) + '</h3><p>' + esc(task.hint || "Answer with a reason and a specific example.") + '</p><div class="lesson-bottom"><small>' + (task.time || 3) + ' min</small>' + startButton(skill, task, sequence) + '</div></article>';
             }).join("") + '</div></details>';
         }).join("");
+      } else if (skill === "listening") {
+        tasks.forEach(function (task) { var match = String(task.format || task.level || "").match(/Part\s*([1-4])/i); var key = match ? "Part " + match[1] : "Other listening practice"; (groups[key] = groups[key] || []).push(task); });
+        groupOrder = ["Part 1", "Part 2", "Part 3", "Part 4", "Other listening practice"].filter(function (key) { return groups[key]; });
+        content = groupOrder.map(function (key) { return groupedDetails(key + " · " + ({"Part 1":"Everyday conversation","Part 2":"A speech or announcement","Part 3":"Academic discussion","Part 4":"Lecture"}[key] || "More practice"), groups[key], skill, function (task) { return task.format || "Listening"; }); }).join("");
+      } else if (skill === "reading") {
+        tasks.forEach(function (task) { var key = readingKey(task); (groups[key] = groups[key] || []).push(task); });
+        groupOrder = Object.keys(groups).sort(function (a, b) { return (a.indexOf("Academic")===0?0:1)-(b.indexOf("Academic")===0?0:1) || a.localeCompare(b); });
+        content = groupOrder.map(function (key) { return groupedDetails(key, groups[key], skill, function (task) { return task.level || task.format || "Reading"; }); }).join("");
       } else {
-        content = tasks.map(function (task) {
-          var label = category(skill, task);
-          return '<article class="lesson-card"><div class="lesson-meta"><span>' + esc(task.format || "Practice") + '</span><span class="tag">' + esc(task.level || "Practice") + '</span></div><h3>' + esc(task.title) + '</h3><p>' + esc(skill === "listening" ? "Listen to an original recording and answer detail questions." : skill === "reading" ? "Read the passage, answer the questions, then review the explanations." : task.hint || "Develop your answer and support it with relevant detail.") + '</p><div class="lesson-bottom"><small>' + esc(label) + ' · ' + ((task.questions && task.questions.length) ? task.questions.length + " questions" : (task.time || 3) + " min") + '</small>' + startButton(skill, task, "") + '</div></article>';
-        }).join("");
+        tasks.forEach(function (task) { var match = String(task.level || "").match(/Task\s*(1|2)/i); var taskNo = match ? "Task " + match[1] : "Writing practice"; var key = (task.course || "Academic") + " · " + taskNo; (groups[key] = groups[key] || []).push(task); });
+        groupOrder = ["Academic · Task 1", "Academic · Task 2", "General Training · Task 1", "General Training · Task 2", "Academic · Writing practice", "General Training · Writing practice"].filter(function (key) { return groups[key]; });
+        content = groupOrder.map(function (key) { return groupedDetails(key, groups[key], skill, function (task) { return task.format || task.level || "Writing"; }); }).join("");
       }
-      return '<section class="practice-module-section"><div class="section-head"><div><p class="eyebrow">MODULE ' + esc(heading.toUpperCase()) + '</p><h2>' + esc(heading) + '</h2></div><span class="tag">' + tasks.length + ' practice sets</span></div>' + (skill === "speaking" ? '<p class="card-subtitle">Open a topic to complete Speaking Parts 1, 2 and 3 in order, all within the same topic.</p>' : skill === "writing" ? '<p class="card-subtitle">Writing Tasks 1 and 2 are organized under the Writing module.</p>' : '<p class="card-subtitle">Choose a practice set to work through this module.</p>') + '<div class="' + (skill === "speaking" ? "topic-list" : "lesson-list") + '">' + content + '</div></section>';
+      var sectionCount = skill === "speaking" ? Object.keys(groups).length + " speaking topics" : tasks.length + " practice sets";
+      return '<section class="practice-module-section" id="module-' + skill + '"><div class="practice-module-heading"><div><p class="eyebrow">MODULE ' + esc(heading.toUpperCase()) + '</p><h2>' + esc(heading) + '</h2><p>' + (skill === "speaking" ? 'Open a topic to practise Parts 1, 2 and 3 in sequence.' : skill === "writing" ? 'Find Academic and General Training prompts under Tasks 1 and 2.' : skill === "listening" ? 'Choose a section of the test, then select a practice set.' : 'Browse Academic passages and General Training texts by task type.') + '</p></div><span class="tag">' + sectionCount + '</span></div><div class="topic-list organized-groups">' + content + '</div></section>';
     }).join("");
-    root.innerHTML = '<section class="page-intro"><p class="eyebrow">PRACTICE AT YOUR OWN PACE</p><h1>Practice modules</h1><p>Choose a skill, open a topic, and move through its tasks in order. All practice is free.</p></section><div class="filters"><button class="filter-pill ' + (selectedFilter === "all" ? "selected" : "") + '" data-filter="all">All modules</button>' + SKILLS.map(function (skill) { return '<button class="filter-pill ' + (selectedFilter === skill ? "selected" : "") + '" data-filter="' + skill + '">' + SKILL_META[skill].label + '</button>'; }).join("") + '</div>' + sections + '<div class="note-banner">Krypton practice uses original questions designed around public IELTS task formats. It does not reproduce official Cambridge, British Council, or IDP question banks.</div>';
+    root.innerHTML = '<section class="page-intro practice-intro"><p class="eyebrow">ALL FOUR SKILLS · FREE PRACTICE</p><h1>IELTS practice</h1><p>Listening, Reading, Writing and Speaking stay together on one page. Choose a skill to jump to its sections; every task remains available without a subscription.</p></section><nav class="module-jump" aria-label="Jump to a practice skill">' + SKILLS.map(function (skill) { return '<a class="filter-pill" href="#module-' + skill + '">' + SKILL_META[skill].label + '<span>↓</span></a>'; }).join("") + '</nav>' + sections + '<div class="note-banner">Krypton practice uses original questions designed around public IELTS task formats. It does not reproduce official Cambridge, British Council, or IDP question banks.</div>';
   };
 
   var priorRenderPracticeResult = renderResult;
@@ -354,3 +388,4 @@
   }, true);
 
 })();
+
