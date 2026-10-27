@@ -180,7 +180,7 @@
     var done = moduleDetails(mockState.index - 1);
     var next = moduleDetails(mockState.index);
     var saved = mockState.results[mockState.results.length - 1];
-    var moduleMarkup = mockModuleNav(done.number);
+    var moduleMarkup = mockModuleNav(next.number);
     var scoreMarkup = saved && saved.score !== null ? '<span class="score-chip">' + saved.score + '/' + saved.total + ' correct</span>' : '<span class="score-chip">Response saved</span>';
     root.innerHTML =
       '<section class="page-intro"><p class="eyebrow">' + esc(mockState.mock.type) + ' · MODULE ' + done.number + ' COMPLETE</p><h1>' + esc(done.task) + ' complete</h1><p>' + esc(done.title) + ' module · ' + esc(done.task) + ' is saved. Continue within the same mock test when you are ready.</p></section>' +
@@ -226,7 +226,7 @@
     var skillLabels = ["Listening", "Reading", "Writing Task 1", "Writing Task 2", "Speaking Part 1", "Speaking Part 2", "Speaking Part 3"];
     root.innerHTML =
       '<section class="page-intro"><p class="eyebrow">FULL MOCK TEST COMPLETE</p><h1>All four modules are complete.</h1><p>You finished the Listening, Reading, Writing, and Speaking modules. Each task result was saved in My progress.</p></section>' +
-      mockModuleNav(4) +
+      mockModuleNav(5) +
       '<article class="card"><div class="card-head"><div><p class="eyebrow">' + esc(mockState.mock.title) + '</p><h2 class="card-title">Full test results</h2></div></div><div class="recent-list">' +
       rows.map(function (result, index) {
         return '<div class="recent-item"><span class="recent-badge">' + (SKILL_META[result.skill]?.icon || "✓") + '</span><span class="recent-info"><strong>' + esc(skillLabels[index] || result.title) + '</strong><small>' + esc(result.title) + '</small></span>' +
