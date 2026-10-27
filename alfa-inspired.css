@@ -1,0 +1,67 @@
+/* Krypton exam workspace refresh: Alfa-inspired white header, red controls and calm test panels. */
+:root{--navy:#102b4e;--blue:#174b80;--red:#d94c53;--red-soft:#fff1f1;--ink:#20354d;--muted:#738196;--line:#e2e8ef;--paper:#fff;--canvas:#f2f5f7}
+body{background:#f3f6f8;color:#20354d;font-family:"DM Sans",sans-serif}
+.sidebar{position:fixed;inset:0 0 auto;width:100%;height:76px;padding:0 4.5%;background:#fff;color:#20354d;border-bottom:1px solid #e7ebf0;box-shadow:0 2px 8px #102b4e08;display:flex;flex-direction:row;align-items:center;gap:26px;z-index:20}
+.brand{flex:none;padding:0 12px 0 0;gap:0}
+.brand-logo{display:block;width:148px;height:52px;max-width:20vw;object-fit:contain;object-position:left center}
+.brand-tagline{display:none}
+.nav-label,.sidebar-spacer,.sidebar-note,.side-user{display:none!important}
+.side-nav{display:flex;align-items:center;gap:5px;margin-left:6px}
+.nav-link{width:auto;min-height:42px;padding:0 14px;border-radius:9px;color:#44546a;font-size:13px;white-space:nowrap}
+.nav-link>span{font-size:15px}
+.nav-link:hover,.nav-link.active{background:#fff1f1;color:#cf454d;box-shadow:none}
+.nav-link.active{font-weight:700}
+.free-tag{background:#d94c53}
+.main-content{margin:76px auto 0;padding:0 4.5% 26px;max-width:1680px;min-height:calc(100vh - 76px)}
+.topbar{height:53px;margin:0 -1px;border-bottom:1px solid #e7ebf0;background:#fff;position:sticky;top:76px;z-index:10;padding:0 17px}
+.breadcrumb{font-size:10px;letter-spacing:.1em}
+.top-actions{gap:9px}
+.sync-status{font-size:11px}
+.button{border-radius:8px;font-size:12px}
+.button-primary{background:#d94c53;box-shadow:none}
+.button-primary:hover{background:#c83e47}
+.button-outline{border-color:#d6dee7;color:#344e6c}
+.view-root{min-height:calc(100vh - 190px)}
+.hero-row{padding-top:30px}
+.hero-row h1,.page-title,.page-intro h1{color:#173454}
+.card,.metric-card,.module-card,.lesson-card,.mock-card,.practice-module-section,.practice-group,.org-module-card,.org-part-card,.org-topic-card,.org-mock-card{border-color:#e1e7ed;border-radius:12px;box-shadow:0 2px 8px #14304a08}
+.module-card:hover,.mock-card:hover,.org-module-card:hover,.org-part-card:hover,.org-topic-card:hover,.org-mock-card:hover{border-color:#edb4b7;box-shadow:0 8px 22px #14304a12}
+.module-icon,.today-focus-icon{border-radius:10px}
+.section-head h2,.card-title,.page-intro h1{color:#173454}
+.metric-card{background:#fff}
+.metric-value{color:#132f50}
+.progress-panel,.progress-panel .metric-card,.today-focus,.source-shelf{background:#fff}
+.overview-columns{gap:18px}
+.overview-columns .module-card{min-height:134px}
+.org-module-grid,.org-part-grid,.org-topic-grid,.org-mock-grid,.lesson-list,.mock-grid{gap:14px}
+.org-module-card,.org-part-card,.org-topic-card,.org-mock-card{padding:19px}
+.org-module-card strong,.org-topic-card strong,.org-mock-card strong,.org-part-card strong{font-size:17px}
+.org-full-practice,.org-full-mock{border-radius:13px;background:#fff;border-color:#e1e7ed;box-shadow:0 2px 8px #14304a08}
+.org-runner-back .text-button{color:#c9434d}
+#view-root:has(.runner-layout) .runner-layout{gap:0}
+#view-root:has(.runner-layout) .runner-layout>*,#view-root:has(.runner-layout) .reading-passage-panel,#view-root:has(.runner-layout) .question-panel{border-radius:0}
+.footer{color:#8c99a7}
+@media(max-width:900px){
+ .sidebar{height:auto;min-height:68px;padding:8px 16px;gap:12px;flex-wrap:wrap}
+ .brand{padding:0}
+ .brand-logo{height:42px;width:126px;max-width:32vw}
+ .side-nav{order:3;width:100%;overflow-x:auto;margin:0;padding:0 0 4px}
+ .nav-link{min-height:38px;padding:0 11px}
+ .main-content{margin-top:100px;padding-left:18px;padding-right:18px}
+ .topbar{top:100px}
+}
+@media(max-width:600px){
+ .sidebar{position:sticky;top:0;padding:7px 12px;min-height:58px}
+ .brand-logo{width:115px;height:40px;max-width:40vw}
+ .side-nav{gap:2px}
+ .nav-link{padding:0 9px;font-size:11px}
+ .nav-link>span{display:none}
+ .main-content{margin:0;padding:0 13px 20px}
+ .topbar{top:0;height:48px;padding:0 4px}
+ .breadcrumb{font-size:8px;gap:6px}
+ .sync-status{display:none}
+ .top-actions{gap:5px}
+ .button-small{padding:7px 9px;font-size:10px}
+ .hero-row{align-items:flex-start;flex-direction:column;padding:22px 0 17px}
+ .org-module-grid,.org-part-grid,.org-topic-grid,.org-mock-grid,.lesson-list,.mock-grid{grid-template-columns:1fr}
+}
