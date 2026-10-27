@@ -101,10 +101,23 @@
       var choices=[task.title].concat(decoys),offset=index%3;
       task.questions.push({q:"Choose the best title for this passage.",options:choices.map((_,i)=>choices[(i+offset)%choices.length]),answer:(choices.length-offset)%choices.length,why:"The best title captures the passage’s central subject and purpose.",questionType:"choosing-a-title"});
     }
+    var gt=task.course==="General Training";
+    task.questions.push(
+      {q:gt?"The next trial will last six weeks.":"The pilot involved three neighbourhoods.",options:["TRUE","FALSE","NOT GIVEN"],answer:0,why:gt?"The passage says the next trial will run for six weeks.":"The passage states that the pilot involved three neighbourhoods.",questionType:"true-false-not-given"},
+      {q:gt?"Participants need previous experience to join.":"The pilot represented every location equally.",options:["TRUE","FALSE","NOT GIVEN"],answer:1,why:gt?"The passage says no previous experience is required.":"The passage says the pilot did not represent every location.",questionType:"true-false-not-given"},
+      {q:gt?"The trial will be held at a university.":"Researchers studied exactly twenty locations.",options:["TRUE","FALSE","NOT GIVEN"],answer:2,why:"The passage does not provide this information.",questionType:"true-false-not-given"}
+    );
   });
   PACKS.listening.push(...listening);
   PACKS.listening.forEach(task => {
-    if (String(task.id).indexOf("bank-listen-")===0 && task.questions[4]) task.questions[4].questionType="form-note-completion";
+    if (String(task.id).indexOf("bank-listen-")===0 && task.questions[4]) {
+      task.questions[2].q="Complete the sentence: The session begins at ______.";
+      task.questions[2].questionType="sentence-completion";
+      task.questions[4].q="Complete the form: Meeting place: ______";
+      task.questions[4].questionType="form-note-completion";
+    }
+    if (task.id==="listen-campus") { task.questions[2].q="Complete the note: Available from: ______"; task.questions[2].questionType="sentence-completion"; }
+    if (task.id==="listen-research") { task.questions[2].q="Complete the sentence: By Thursday, Lina will ______."; task.questions[2].questionType="sentence-completion"; }
     if (task.questions.length<5) {
       if(task.id==="listen-campus")task.questions.push({q:"Complete the accommodation form: Room type: ______",options:["single","double","shared"],answer:0,why:"The owner describes it as a single room.",questionType:"form-note-completion"});
       else if(task.id==="listen-library")task.questions.push({q:"Complete the note: The café is beside the ______.",options:["main entrance","second floor","exit"],answer:0,why:"The café is beside the main entrance.",questionType:"sentence-completion"});
