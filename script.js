@@ -125,5 +125,5 @@ let speakingSeconds=60,speakingTimer=null;
 function startSpeakingTimer(){clearInterval(speakingTimer);speakingSeconds=60;const btn=document.querySelector('[data-action="start-speaking-timer"]'),face=document.querySelector("#speaking-timer");if(!face)return;btn.textContent="Timer running";speakingTimer=setInterval(()=>{speakingSeconds--;if(speakingSeconds<=0){clearInterval(speakingTimer);face.textContent="00:00 · Start speaking";btn.textContent="Restart preparation";toast("One minute is up. Begin speaking for up to two minutes.")}else face.textContent=String(Math.floor(speakingSeconds/60)).padStart(2,"0")+":"+String(speakingSeconds%60).padStart(2,"0")+" preparation"},1000)}
 function resetSpeakingTimer(){clearInterval(speakingTimer);speakingSeconds=60;const face=document.querySelector("#speaking-timer"),btn=document.querySelector('[data-action="start-speaking-timer"]');if(face)face.textContent="01:00 preparation";if(btn)btn.textContent="Start preparation"}
 bindEvents();
-if(db){db.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;setTimeout(refreshApp,0)})}
+if(db){db.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;if(session?.user)closeAuth();setTimeout(refreshApp,0)})}
 refreshApp();
