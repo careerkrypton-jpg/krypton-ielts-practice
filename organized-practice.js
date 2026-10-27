@@ -182,8 +182,8 @@
     if (skill === "speaking") {
       return '<section class="org-full-practice"><div><p class="eyebrow">COMPLETE SPEAKING INTERVIEW</p><h2>Practise all three parts together</h2><p>Choose a topic, then complete Part 1, the Part 2 cue card, and the connected Part 3 discussion in one interview.</p></div><div class="org-full-practice-controls"><label for="org-full-speaking-topic">Interview topic<select id="org-full-speaking-topic">' + speakingTopics().map(function(topic){return '<option value="' + esc(topic) + '">' + esc(topic) + '</option>';}).join("") + '</select></label><button class="button button-primary" type="button" data-org-full-module="speaking">Start full interview →</button></div></section>';
     }
-    var details = skill === "listening" ? "Complete Parts 1–4 in order · 40 questions · about 30 minutes."
-      : skill === "reading" ? "Complete all 3 passages in order · 40 questions · 60 minutes."
+    var details = skill === "listening" ? "Complete Parts 1–4 in order · 20 questions (5 each) · about 30 minutes."
+      : skill === "reading" ? "Complete all 3 passages in order · 15 questions (5 each) · 60 minutes."
       : "Complete Task 1 and Task 2 in order · 60 minutes total.";
     return '<section class="org-full-practice"><div><p class="eyebrow">COMPLETE ' + esc(label.toUpperCase()) + ' PRACTICE</p><h2>Practise the whole module</h2><p>' + esc(details) + ' Your responses and practice score are saved together.</p></div><button class="button button-primary" type="button" data-org-full-module="' + esc(skill) + '">Start full ' + esc(label) + ' practice →</button></section>';
   }
@@ -224,8 +224,8 @@
       '<section class="page-intro"><p class="eyebrow">STRUCTURED PRACTICE · FREE</p><h1>Mock test studio</h1><p>Choose a single-skill sectional mock or take a complete four-skill IELTS practice test. Every mock follows the module flow and keeps your results together.</p></section>' +
       courseSwitchMarkup() +
       '<section class="org-mock-block"><div class="section-head"><div><p class="eyebrow">SECTIONAL MOCKS</p><h2>Practise one module</h2><p>Choose Listening, Reading, Writing or Speaking. The mock follows that skill’s real test parts.</p></div></div><div class="org-mock-grid">' +
-      '<button class="org-mock-card" type="button" data-org-sectional="listening"><span class="eyebrow">4 PARTS · 40 QUESTIONS</span><strong>Listening mock</strong><small>Parts 1–4 · 30 minutes</small><b>Start full Listening mock →</b></button>' +
-      '<button class="org-mock-card" type="button" data-org-sectional="reading"><span class="eyebrow">3 PASSAGES · 40 QUESTIONS</span><strong>Reading mock</strong><small>' + esc(kryptonCourse) + ' · 60 minutes</small><b>Start full Reading mock →</b></button>' +
+      '<button class="org-mock-card" type="button" data-org-sectional="listening"><span class="eyebrow">4 PARTS · 20 QUESTIONS</span><strong>Listening mock</strong><small>Parts 1–4 · 5 questions each · 30 minutes</small><b>Start full Listening mock →</b></button>' +
+      '<button class="org-mock-card" type="button" data-org-sectional="reading"><span class="eyebrow">3 PASSAGES · 15 QUESTIONS</span><strong>Reading mock</strong><small>' + esc(kryptonCourse) + ' · 5 questions per passage · 60 minutes</small><b>Start full Reading mock →</b></button>' +
       '<button class="org-mock-card" type="button" data-org-sectional="writing"><span class="eyebrow">TASK 1 + TASK 2</span><strong>Writing mock</strong><small>20 minutes then 40 minutes</small><b>Start full Writing mock →</b></button>' +
       '<div class="org-mock-card org-speaking-mock"><span class="eyebrow">PARTS 1–3 · 11–14 MIN</span><strong>Speaking mock</strong><label for="org-mock-topic">Interview topic</label><select id="org-mock-topic">' + topics.map(function(topic){return '<option value="' + esc(topic) + '">' + esc(topic) + '</option>';}).join("") + '</select><button class="button button-primary" type="button" data-org-sectional="speaking">Start full Speaking mock →</button></div>' +
       '</div></section>' +
