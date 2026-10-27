@@ -86,7 +86,7 @@
     return {id:`bank-speak-${i+1}`,course:"Both",title:`Speaking practice ${String(i+1).padStart(3,"0")} · ${topic}`,level:`Part ${part===1?"2":part===2?"3":"1"} · ${part===1?"Cue card":part===2?"Discussion":"Interview"}`,format:"Speaking practice",time:3,prompt,hint:part===1?"Use the one-minute preparation timer, then speak for up to two minutes.":"Respond in complete thoughts and support your answers with a reason, comparison, or specific example."};
   });
 
-  PACKS.listening.push(...listening);
+
 
   PACKS.reading.push(...reading);
   PACKS.reading.forEach((task,index) => {
