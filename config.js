@@ -1,5 +1,6 @@
-// Public browser configuration only. Never put a Supabase service_role key here.
+// Public browser configuration for the Krypton IELTS Practice Supabase project.
+// This publishable key is intended for browser use; row-level security protects student data.
 window.KRYPTON_SUPABASE = {
-  url: "https://YOUR_PROJECT_REF.supabase.co",
-  anonKey: "YOUR_SUPABASE_ANON_OR_PUBLISHABLE_KEY"
+  url: "https://fbdfvlspndffvvminlat.supabase.co",
+  anonKey: "sb_publishable_SvjT0mzroP3RYuvL_rjZXA_dh9ktgCw"
 };
