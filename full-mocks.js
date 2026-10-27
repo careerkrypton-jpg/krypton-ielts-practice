@@ -35,8 +35,11 @@
   }
   function makeQuestionSection(skill, course, random, number) {
     if (typeof random !== "function") random = seededRandom(random);
+    var bankPrefix = skill === "listening" ? "bank-listen-" : "bank-read-";
     var eligible = PACKS[skill].filter(function (task) {
-      return Array.isArray(task.questions) && task.questions.length && (task.course === "Both" || task.course === course);
+      return String(task.id || "").indexOf(bankPrefix) === 0 &&
+        Array.isArray(task.questions) && task.questions.length >= 10 &&
+        (task.course === "Both" || task.course === course);
     });
     var targets = skill === "listening" ? [10, 10, 10, 10] : [10, 10, 10];
     var questions = [], sourceText = [], sectionData = [];
@@ -67,8 +70,8 @@
       if (sectionCount < target) {
         throw new Error("The original " + skill + " bank needs at least " + target + " questions for section " + sectionNumber + ".");
       }
-      var sectionTitle = sectionSources.map(function(source){return source.title;}).join(" · ");
-      var sectionBody = sectionSources.map(function(source){return source.text;}).join("\n\n");
+      var sectionTitle = sectionSources[0] ? sectionSources[0].title : label + " section " + sectionNumber;
+      var sectionBody = sectionSources[0] ? sectionSources[0].text : "";
       sourceText.push((skill === "listening" ? "PART " : "PASSAGE ") + sectionNumber + " · " + sectionTitle + "\n" + sectionBody);
       sectionData.push({number:sectionNumber,title:sectionTitle,text:sectionBody,start:sectionStart,end:questions.length});
     });
