@@ -33,7 +33,7 @@
       q("When does the session take place?",day,dayChoices.filter(x=>x!==day),i+1,"The day is stated in the schedule."),
       q("What time does it begin?",time,timeChoices.filter(x=>x!==time),i+2,"The start time is given in the announcement."),
       q("What should the participant bring?",item,itemChoices.filter(x=>x!==item),i+3,"The speaker names the item participants should bring."),
-      q("Where should participants meet or enter?",place,placeChoices.filter(x=>x!==place),i+4,"The recording states the meeting point or entrance.")
+      q("Complete the form: Meeting place: ______",place,placeChoices.filter(x=>x!==place),i+4,"The recording states the meeting point or entrance.")
     ]};
   });
 
