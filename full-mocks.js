@@ -296,7 +296,7 @@
             return all.findIndex(function (other) { return (String(other.level || "").match(/Part\s*\d/i) || ["Part"])[0] === p; }) === i;
           });
           return '<details class="topic-group"><summary><span><strong>' + esc(topic) + '</strong><small>' + uniqueParts.map(function (task) { return esc((String(task.level || "").match(/Part\s*\d/i) || ["Speaking practice"])[0]); }).join(" · ") + '</small></span><span class="topic-open-label">Open topic →</span></summary><div class="topic-task-list">' +
-            group.map(function (task) {
+            uniqueParts.map(function (task) {
               return '<article class="lesson-card topic-task-card"><div class="lesson-meta"><span>' + esc(task.format || "Speaking practice") + '</span><span class="tag">' + esc(task.level || "Speaking") + '</span></div><h3>' + esc((String(task.level || "").match(/Part\s*\d/i) || ["Speaking"])[0]) + '</h3><p>' + esc(task.hint || "Answer with a reason and a specific example.") + '</p><div class="lesson-bottom"><small>' + (task.time || 3) + ' min</small>' + startButton(skill, task, sequence) + '</div></article>';
             }).join("") + '</div></details>';
         }).join("");
