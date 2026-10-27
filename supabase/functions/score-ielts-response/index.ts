@@ -1,18 +1,31 @@
 // Authenticated IELTS practice feedback for Krypton students.
 // Audio is sent for transcription only on request and is never stored by this function.
 const allowedOrigin = "https://careerkrypton-jpg.github.io";
+const MAX_REQUEST_BYTES = 10_000_000;
 const corsHeaders = {
-  "Access-Control-Allow-Origin": allowedOrigin,
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Vary": "Origin",
 };
 
+type JsonBody = Record<string, unknown>;
+type JsonBodyResult =
+  | { ok: true; body: JsonBody }
+  | { ok: false; status: 400 | 413; error: string };
+
 Deno.serve(async (req: Request) => {
   const origin = req.headers.get("origin");
-  const headers = { ...corsHeaders, "Access-Control-Allow-Origin": origin === allowedOrigin ? allowedOrigin : allowedOrigin };
+  const headers: Record<string, string> = { ...corsHeaders };
+  if (origin === allowedOrigin) headers["Access-Control-Allow-Origin"] = allowedOrigin;
   if (req.method === "OPTIONS") return new Response("ok", { headers });
   if (req.method !== "POST") return json({ error: "Use POST." }, 405, headers);
+  if (!/^application\/json(?:\s*;|$)/i.test(req.headers.get("content-type") || "")) {
+    return json({ error: "Send a JSON request." }, 415, headers);
+  }
+  const contentLength = Number(req.headers.get("content-length") || 0);
+  if (Number.isFinite(contentLength) && contentLength > MAX_REQUEST_BYTES) {
+    return json({ error: "Request body is too large." }, 413, headers);
+  }
 
   const auth = req.headers.get("authorization") || "";
   if (!auth.startsWith("Bearer ")) return json({ error: "Sign in to use AI feedback." }, 401, headers);
@@ -30,9 +43,12 @@ Deno.serve(async (req: Request) => {
     const user = await userResponse.json();
     if (!user?.id) return json({ error: "Sign in to use AI feedback." }, 401, headers);
 
-    const body = await req.json();
+    const parsedBody = await readJsonBody(req, MAX_REQUEST_BYTES);
+    if (!parsedBody.ok) return json({ error: parsedBody.error }, parsedBody.status, headers);
+    const body = parsedBody.body;
     const allowedModules = ["listening", "reading", "writing", "speaking"];
-    const module = allowedModules.includes(body.module) ? body.module : "";
+    const moduleInput = typeof body.module === "string" ? body.module : "";
+    const module = allowedModules.includes(moduleInput) ? moduleInput : "";
     if (!module) return json({ error: "AI feedback is available for all four practice modules." }, 400, headers);
     const objectiveMode = module === "reading" || module === "listening";
     const objective = objectiveMode && body.objective && typeof body.objective === "object" ? body.objective : null;
@@ -125,7 +141,42 @@ Deno.serve(async (req: Request) => {
   }
 });
 
+async function readJsonBody(req: Request, maxBytes: number): Promise<JsonBodyResult> {
+  const reader = req.body?.getReader();
+  if (!reader) return { ok: false, status: 400, error: "A JSON request body is required." };
+
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > maxBytes) {
+      await reader.cancel().catch(() => {});
+      return { ok: false, status: 413, error: "Request body is too large." };
+    }
+    chunks.push(value);
+  }
+
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+  } catch {
+    return { ok: false, status: 400, error: "Request body must be valid JSON." };
+  }
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return { ok: false, status: 400, error: "Request body must be a JSON object." };
+  }
+  return { ok: true, body: parsed as JsonBody };
+}
+
 function json(payload: unknown, status: number, headers: Record<string, string>) {
-  return new Response(JSON.stringify(payload), { status, headers: { ...headers, "Content-Type": "application/json" } });
+  return new Response(JSON.stringify(payload), { status, headers: { ...headers, "Content-Type": "application/json", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } });
 }
 
