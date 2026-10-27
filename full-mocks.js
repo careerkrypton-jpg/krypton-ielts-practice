@@ -34,6 +34,7 @@
     return items[Math.floor(random() * items.length)];
   }
   function makeQuestionSection(skill, course, random, number) {
+    if (typeof random !== "function") random = seededRandom(random);
     var eligible = PACKS[skill].filter(function (task) {
       return Array.isArray(task.questions) && task.questions.length && (task.course === "Both" || task.course === course);
     });
@@ -272,7 +273,7 @@
       moduleMarkup +
       '<article class="card mock-checkpoint"><div class="card-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2 class="card-title">' + esc(done.title) + ' module</h2></div>' + scoreMarkup + '</div>' +
       '<div class="mock-checkpoint-body"><span class="mock-checkpoint-icon">✓</span><div><strong>' + esc(done.task) + ' saved</strong><p>Next in your full mock: <b>' + esc(nextTaskTitle(mockState.index)) + '</b>' + (next.number === done.number ? ' · continuing in the same ' + esc(done.title) + ' module' : ' · next module: ' + esc(next.title)) + '.</p></div></div>' +
-      '<div class="runner-actions"><small>Your answers are saved after each task.</small><button class="button button-primary" data-action="continue-full-mock">Continue to ' + esc(nextTaskTitle(mockState.index)) + ' →</button></div></article>';
+      '<div class="runner-actions"><small>Your answers are saved after each task.</small><button class="button button-outline" data-org-runner-back="mocks">Back to mock test studio</button><button class="button button-primary" data-action="continue-full-mock">Continue to ' + esc(nextTaskTitle(mockState.index)) + ' →</button></div></article>';
   };
 
   renderMockStep = function () {
