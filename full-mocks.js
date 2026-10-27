@@ -63,7 +63,7 @@
     task[skill === "listening" ? "transcript" : "passage"] = sourceText.join("\n\n");
     return { skill: skill, task: task };
   }
-  function makePerformanceSection(skill, course, part, random, number) {
+  function makePerformanceSection(skill, course, part, random, number, speakingTopic) {
     var pool = PACKS[skill].filter(function (task) {
       if (skill === "writing") {
         return (task.course === course || task.course === "Both") && String(task.level || "").indexOf("Task " + part) >= 0;
@@ -77,25 +77,43 @@
       level: skill === "writing" ? course + " · Task " + part : "Speaking · Part " + part,
       format: skill === "writing" ? "Full mock · Writing Task " + part : "Full mock · Speaking Part " + part
     });
-    if (skill === "writing") task.time = part === 1 ? 20 : 40;
+    if (skill === "writing") {
+      task.time = part === 1 ? 20 : 40;
+    } else {
+      task.title = "Speaking topic · " + speakingTopic;
+      task.prompt = part === 1
+        ? "Let’s talk about " + speakingTopic + ". What do you enjoy about it? How often does it come up in your life? Has your experience changed over time? Give a reason or example for each answer."
+        : part === 2
+        ? "Describe " + speakingTopic + ". You should say what it is or who is involved, when you experienced it, what happened, and explain why it is important to you."
+        : "Let’s discuss " + speakingTopic + " more broadly. Why do people have different experiences related to this? How might attitudes or access change in the future? What could communities or institutions do to help?";
+      task.hint = part === 2
+        ? "Use the one-minute preparation timer, then speak for up to two minutes. Keep this topic connected to your Part 1 and Part 3 discussion."
+        : "Answer the questions in complete thoughts and support your ideas with a reason, comparison, or specific example from the same topic.";
+      task.time = part === 2 ? 3 : 4;
+    }
     return { skill: skill, task: task };
   }
   function buildFullMock(course, number, seed, isRandom) {
     var random = seededRandom(seed);
+    var topicNames = Array.from(new Set(PACKS.speaking.map(function (task) {
+      var title = String(task.title || "");
+      var separator = title.indexOf(" · ");
+      return separator >= 0 ? title.slice(separator + 3) : title;
+    }).filter(Boolean)));
+    var speakingTopic = choose(topicNames, random);
     var tasks = [
       makeQuestionSection("listening", course, random, number),
       makeQuestionSection("reading", course, random, number),
       makePerformanceSection("writing", course, 1, random, number),
       makePerformanceSection("writing", course, 2, random, number),
-      makePerformanceSection("speaking", course, 1, random, number),
-      makePerformanceSection("speaking", course, 2, random, number),
-      makePerformanceSection("speaking", course, 3, random, number)
+      makePerformanceSection("speaking", course, 1, random, number, speakingTopic),
+      makePerformanceSection("speaking", course, 2, random, number, speakingTopic),
+      makePerformanceSection("speaking", course, 3, random, number, speakingTopic)
     ];
     var title = (course === "Academic" ? "Academic" : "General Training") +
       (isRandom ? " Fresh Full Mock" : " Full Mock Test " + String(number).padStart(3, "0"));
     return { id: "full-" + course.toLowerCase().replace(" ", "-") + "-" + seed, title: title, type: course, fullLength: true, extendedTasks: tasks };
   }
-
   renderMocks = function () {
     var options = Array.from({ length: 100 }, function (_, index) {
       var n = index + 1;
