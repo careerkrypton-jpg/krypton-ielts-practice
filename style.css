@@ -4,3 +4,107 @@
 @media(max-width:1100px){.main-content{padding:0 28px 22px}.sidebar{width:215px}.main-content{margin-left:215px}.metrics{grid-template-columns:repeat(2,1fr)}.module-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.sidebar{inset:0 auto 0 0;width:250px;transform:translateX(-102%);transition:transform .2s;box-shadow:8px 0 25px #142c4b22}.sidebar.open{transform:translateX(0)}.sidebar::after{content:"";position:fixed;inset:0 -100vw 0 100%;background:#10294a55;display:none}.sidebar.open::after{display:block}.main-content{margin:0;padding:0 16px 20px}.topbar{height:55px}.mobile-menu{display:block}.breadcrumb{margin-right:auto;font-size:7px}.breadcrumb span{display:none}.top-actions{gap:5px}.sync-status{display:none}.button-small{padding:7px 8px;font-size:8px}.hero-row{padding:23px 0 17px;align-items:flex-start;flex-direction:column}.hero-row h1{font-size:29px}.hero-actions{width:100%}.hero-note{max-width:none}.metrics{gap:8px}.metric-card{min-height:102px;padding:12px}.metric-value{font-size:20px}.module-grid{gap:8px}.module-card{min-height:142px;padding:12px}.dashboard-grid{grid-template-columns:1fr}.lesson-list,.mock-grid{grid-template-columns:1fr}.runner{padding:13px}.runner-layout{grid-template-columns:1fr}.runner h2{font-size:17px}.page-intro{padding:23px 0 14px}.page-intro h1{font-size:25px}.footer{flex-direction:column}.modal{padding:22px}.runner-actions{align-items:flex-start;flex-direction:column}.text-answer{min-height:170px}}
 @media(max-width:390px){.metrics{grid-template-columns:1fr 1fr}.module-grid{grid-template-columns:1fr}.module-card{min-height:128px}.breadcrumb{letter-spacing:.06em}.top-actions{gap:4px}.button-small{padding:7px 6px}}
+
+/* Krypton refresh: legible type, clearer controls and brand system */
+:root{--navy:#153e78;--blue:#2868b2;--red:#df3f4c;font-size:15px}
+body{font-size:15px}
+.sidebar{width:258px;padding:22px 16px 18px}
+.main-content{margin-left:258px;padding:0 42px 28px}
+.brand{display:grid;justify-items:start;gap:7px;padding:0 6px}
+.brand-logo{display:block;width:100%;max-width:205px;height:92px;object-fit:contain;object-position:left center;padding:5px 8px;background:#fff;border-radius:10px}
+.brand-tagline{margin-left:5px;color:#c9d8ec;font-size:11px;font-weight:800;letter-spacing:.16em}
+.nav-label{font-size:11px}
+.nav-link{font-size:13px;padding:12px}
+.breadcrumb{font-size:10px}
+.sync-status{font-size:11px}
+.button{font-size:12px;padding:11px 15px}
+.button-small{font-size:11px;padding:9px 13px}
+.eyebrow{font-size:10px}
+.hero-row{padding:35px 0 24px}
+.hero-row h1{font-size:clamp(30px,3vw,42px)}
+.hero-copy{font-size:14px;line-height:1.6}
+.hero-note{font-size:12px;max-width:300px}
+.metric-card{min-height:122px;padding:16px 18px}
+.metric-top{font-size:10px}
+.metric-value{font-size:25px}
+.metric-caption{font-size:11px}
+.section-head h2{font-size:21px}
+.section-hint{font-size:11px}
+.module-card{min-height:175px;padding:17px}
+.module-label{font-size:10px}
+.module-card strong{font-size:16px}
+.module-card small{font-size:12px;line-height:1.6}
+.module-enter{font-size:11px}
+.card{padding:19px}
+.card-title{font-size:17px}
+.card-subtitle{font-size:12px;line-height:1.7}
+.empty-state{font-size:12px}
+.resource-link{font-size:12px;padding:12px}
+.note-banner,.info-strip{font-size:12px;line-height:1.7}
+.page-intro h1{font-size:32px}
+.page-intro p{font-size:13px;line-height:1.7}
+.filter-pill{font-size:11px;padding:8px 14px}
+.lesson-meta,.mock-label{font-size:10px}
+.tag,.mock-type{font-size:10px}
+.lesson-card h3,.mock-card h3{font-size:16px}
+.lesson-card p,.mock-card p{font-size:12px;line-height:1.6}
+.lesson-bottom small{font-size:10px}
+.lesson-bottom .button{font-size:11px}
+.runner{padding:23px}
+.runner-step{font-size:11px}
+.timer-pill{font-size:14px}
+.runner h2{font-size:21px}
+.runner p,.reading-passage,.question-box,.prompt-box{font-size:13px;line-height:1.75}
+.option-label{font-size:12px;padding:10px}
+.runner-actions small{font-size:10px;line-height:1.5}
+.text-answer{font-size:14px;line-height:1.7;min-height:240px}
+.word-count{font-size:10px}
+.audio-btn{font-size:12px;padding:10px 13px}
+.modal{width:min(100%,500px);padding:30px}
+.modal-brand{font-size:10px}
+.auth-brand-logo{width:185px;height:90px;object-fit:contain;background:#fff;border-radius:9px;padding:5px}
+.modal h2{font-size:27px}
+.modal-copy{font-size:13px;line-height:1.65}
+.auth-modal label{font-size:12px}
+.auth-modal input,.auth-modal select{height:44px;padding:0 12px;border:1px solid #dfe6ee;border-radius:8px;background:#fff;color:var(--ink);font-size:13px}
+.auth-modal form{gap:14px}
+.auth-switch,.auth-switch button{font-size:12px}
+.fine-print{font-size:10px}
+.footer{font-size:9px;line-height:1.6}
+.onboarding-fields{display:grid;gap:12px;padding:14px;margin:4px 0 2px;border:1px solid #dbe7f5;border-radius:11px;background:#f8fbff}
+.onboarding-fields>.eyebrow{margin:0;color:#285f9f}
+.onboarding-fields label{display:grid;gap:6px}
+.onboarding-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.optional-label{font-weight:500;color:#98a5b2}
+.course-switch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding:6px;border:1px solid var(--line);border-radius:12px;background:#fff;width:max-content}
+.course-choice{border:0;border-radius:8px;background:transparent;color:#64758a;padding:9px 14px;font-size:12px;font-weight:700}
+.course-choice.active{background:#eaf2ff;color:#205da5;box-shadow:inset 0 0 0 1px #d5e4f5}
+.plan-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:17px 20px;border:1px solid #d8e6f5;border-radius:14px;background:linear-gradient(110deg,#edf5ff,#fff 78%);box-shadow:0 8px 22px #15365c08}
+.plan-banner h2{margin:3px 0;font:700 17px Manrope,sans-serif;color:var(--navy)}
+.plan-banner p{margin:3px 0;color:#687a8f;font-size:12px;line-height:1.5}
+.plan-target{display:grid;justify-items:end;color:#526780;font-size:11px}
+.plan-target strong{font:800 24px Manrope,sans-serif;color:var(--red)}
+.plan-progress{height:7px;max-width:300px;margin-top:10px;background:#dce8f5;border-radius:9px;overflow:hidden}
+.plan-progress span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--red));border-radius:inherit}
+.mock-generator{padding:24px;margin:4px 0 16px;border:1px solid #d9e5f2;border-radius:16px;background:linear-gradient(115deg,#153e78,#225f9e);color:#fff;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;box-shadow:0 12px 28px #173f7520}
+.mock-generator h2{margin:5px 0;font:700 22px Manrope,sans-serif}
+.mock-generator p{max-width:580px;margin:5px 0;color:#d8e6f6;font-size:12px;line-height:1.6}
+.mock-generator .eyebrow{color:#b8d1ed}
+.mock-generator-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.mock-generator .button-outline{background:#fff;color:#214b80;border-color:#fff}
+.ai-consent{margin:12px 0;padding:12px 14px;border:1px solid #dce7f3;border-radius:9px;background:#f7faff;color:#596e87;font-size:11px;line-height:1.6}
+.recording-panel{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.recording-status{font-size:11px;color:#64758a}
+.ai-feedback{margin-top:17px;padding:20px;border:1px solid #d7e5f5;border-radius:13px;background:linear-gradient(125deg,#f5f9ff,#fff)}
+.ai-feedback h2{margin:4px 0 10px;font:700 20px Manrope,sans-serif;color:var(--navy)}
+.ai-band{display:flex;align-items:center;gap:12px;margin:10px 0}
+.ai-band strong{font:800 28px Manrope,sans-serif;color:var(--red)}
+.ai-criteria{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0}
+.ai-criterion{padding:12px;border:1px solid #e0e8f0;border-radius:9px;background:#fff}
+.ai-criterion strong{display:block;color:#294765;font-size:12px}
+.ai-criterion span{display:block;margin:5px 0;color:#2866b2;font-weight:800}
+.ai-criterion p,.ai-feedback p,.ai-feedback li{font-size:12px;line-height:1.65;color:#63748a}
+.ai-feedback ul{padding-left:19px}
+.ai-disclaimer{padding-top:10px;border-top:1px solid #e0e8f0;color:#8a97a5!important;font-size:10px!important}
+@media(max-width:1100px){.sidebar{width:230px}.main-content{margin-left:230px;padding:0 24px 22px}.brand-logo{max-width:185px}}
+@media(max-width:700px){.sidebar{width:258px}.main-content{margin:0;padding:0 16px 20px}.brand-logo{max-width:200px}.hero-row h1{font-size:30px}.page-intro h1{font-size:28px}.mock-generator{grid-template-columns:1fr;padding:20px}.mock-generator-actions{justify-content:flex-start}.plan-banner{align-items:flex-start;flex-direction:column}.plan-target{justify-items:start}.ai-criteria{grid-template-columns:1fr}.onboarding-grid{grid-template-columns:1fr 1fr}}
