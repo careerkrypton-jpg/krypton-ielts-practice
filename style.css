@@ -152,3 +152,24 @@ button,.button{min-height:44px}
 /* Group full test tasks under four skill modules */
 .mock-module-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 16px}.mock-module-step{display:flex;align-items:center;gap:8px;min-height:44px;padding:9px 12px;border:1px solid #e1e9f2;border-radius:9px;background:#fff;color:#7d8ca0;font-size:13px;font-weight:700}.mock-module-step b{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#eef2f7;color:#60738b;font-size:12px}.mock-module-step.active{border-color:#9dbce0;background:#edf5ff;color:#1d5798}.mock-module-step.active b{background:#2868b2;color:#fff}.mock-module-step.complete{border-color:#cfe7dc;background:#f0faf5;color:#21805f}.mock-module-step.complete b{background:#28966f;color:#fff}.mock-subtask-progress{display:flex;justify-content:space-between;gap:10px;margin:0 0 14px;padding:10px 13px;border-radius:8px;background:#f3f7fc;color:#516a85;font-size:13px;font-weight:700}.mock-checkpoint{padding:22px}.mock-checkpoint-body{display:flex;align-items:center;gap:14px;margin:18px 0;padding:16px;border:1px solid #dce8f4;border-radius:11px;background:#f8fbff}.mock-checkpoint-icon{display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:50%;background:#e6f7ee;color:#19855f;font-size:20px;font-weight:800}.mock-checkpoint-body strong{color:#203c5c;font-size:16px}.mock-checkpoint-body p{margin:5px 0 0;color:#657991;font-size:14px;line-height:1.6}.mock-checkpoint .runner-actions{margin-top:18px}
 @media(max-width:700px){.mock-module-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.mock-module-step{font-size:12px}.mock-subtask-progress{flex-direction:column}.mock-checkpoint{padding:16px}}
+
+
+.practice-module-section { margin: 28px 0; }
+.practice-module-section > .section-head { margin-bottom: 8px; }
+.topic-list { display: grid; gap: 12px; margin-top: 14px; }
+.topic-group { border: 1px solid var(--line, #dce4ef); border-radius: 18px; background: #fff; overflow: hidden; }
+.topic-group > summary { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 20px; cursor:pointer; list-style:none; }
+.topic-group > summary::-webkit-details-marker { display:none; }
+.topic-group > summary span:first-child { display:grid; gap:5px; }
+.topic-group > summary strong { color:var(--ink,#172b4d); font-size:1.05rem; text-transform:capitalize; }
+.topic-group > summary small { color:var(--muted,#68778d); font-size:.92rem; }
+.topic-open-label { color:var(--blue,#245a9a); font-weight:700; white-space:nowrap; }
+.topic-group[open] > summary { background:#f5f8fc; border-bottom:1px solid var(--line,#dce4ef); }
+.topic-task-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; padding:14px; }
+.topic-task-card { margin:0; }
+.topic-next-card { margin-top:16px; }
+@media (max-width:620px) {
+  .topic-group > summary { align-items:flex-start; padding:16px; }
+  .topic-open-label { font-size:.88rem; }
+  .topic-task-list { grid-template-columns:1fr; padding:10px; }
+}
