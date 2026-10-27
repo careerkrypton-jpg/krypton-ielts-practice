@@ -20,7 +20,7 @@
     "true-false-not-given":"True / False / Not Given",
     "yes-no-not-given":"Yes / No / Not Given"
   };
-  var timerStates = Object.create(null);
+  var visualStyle = document.createElement("style");\n  visualStyle.textContent = ".ielts-timer{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1rem 0;padding:1rem 1.2rem;border:1px solid #dbe5f2;border-radius:16px;background:#f5f9ff}.ielts-timer-face{display:block;font-size:1.55rem;font-variant-numeric:tabular-nums;color:#102b52}.ielts-timer-status{display:block;color:#64748b}.ielts-timer-controls{display:flex;gap:.5rem}.ielts-q-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.65rem}.ielts-q-number{display:grid;place-items:center;width:1.8rem;height:1.8rem;border-radius:50%;background:#e9f2ff;color:#1456a0;font-weight:700}.ielts-q-type{padding:.25rem .6rem;border-radius:99px;background:#eef2f7;color:#45546a;font-size:.76rem;font-weight:700}.ielts-question-prompt{display:block;margin-bottom:.8rem}.ielts-text-answer,.ielts-select-answer{width:100%;max-width:32rem;min-height:2.8rem;padding:.7rem .8rem;border:1px solid #b9c8dc;border-radius:10px;background:#fff;font:inherit}.ielts-format-guide{margin:.6rem 0;color:#58677d;font-size:.9rem}.ielts-legacy-answer{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:560px){.ielts-timer{align-items:flex-start;flex-direction:column}.ielts-timer-controls{width:100%}.ielts-timer-controls button{flex:1}}";\n  document.head.appendChild(visualStyle);\n  var timerStates = Object.create(null);
   var timerInterval = null;
   var activeTimerKey = null;
   var timerMessageShown = Object.create(null);
@@ -44,7 +44,7 @@
       (task.questionTypes && task.questionTypes[index]) || task.questionType || task.question_type;
     if (explicit) return normalizedType(explicit);
     var format = String(task.format || "");
-    var match = format.match(/multiple choice|short answer|sentence completion|summary completion|table completion|flow.chart completion|true.false.not.given|matching headings|matching information/i);
+    var match = format.match(/short answer|sentence completion|summary completion|table completion|flow.chart completion|true.false.not.given|matching headings|matching information/i);
     if (match) return normalizedType(match[0]);
     // Existing original Reading and Listening banks contain MC answer keys. Mix in
     // short-answer items so learners practise both response styles with those keys.
