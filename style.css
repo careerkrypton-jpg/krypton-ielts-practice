@@ -216,3 +216,32 @@ button,.button{min-height:44px}
   .practice-group > summary strong { font-size:12px; }
 }
 
+
+/* Illustrated Task 1 practice visuals */
+.writing-visual{margin:14px 0 17px;padding:14px;border:1px solid #dce6f1;border-radius:14px;background:#fff}
+.writing-visual-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;color:#264663}
+.writing-visual-head strong{font-size:14px}.writing-visual-head span,.visual-kind-badge{padding:5px 8px;border-radius:999px;background:#edf4fc;color:#2865a8;font-size:10px;font-weight:800}
+.writing-visual figcaption{margin-top:9px;color:#748397;font-size:11px;line-height:1.5}
+.chart-wrap{overflow-x:auto}.chart-wrap svg{display:block;width:100%;min-width:430px;height:auto}
+.visual-legend{display:flex;flex-wrap:wrap;gap:7px 14px;list-style:none;margin:10px 0 0;padding:0}
+.visual-legend li{display:flex;align-items:center;gap:6px;color:#5e7084;font-size:11px}
+.visual-legend i{width:9px;height:9px;flex:none;border-radius:3px;background:var(--swatch)}
+.visual-legend b{color:#294762}
+.pie-layout{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:14px}
+.pie-layout svg{width:145px;max-width:100%}.pie-layout .visual-legend{display:grid}
+.writing-table-wrap{overflow:auto}.writing-table-wrap table{width:100%;border-collapse:collapse;font-size:12px}
+.writing-table-wrap caption{padding:7px;color:#738298;text-align:left;font-size:11px}
+.writing-table-wrap th,.writing-table-wrap td{padding:10px 12px;border-bottom:1px solid #e6ebf1;text-align:left}
+.writing-table-wrap thead th{background:#f2f6fb;color:#38536f}.writing-table-wrap tbody th{color:#334d68}
+.map-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.map-panel{margin:0;padding:11px;border:1px solid #e4eaf1;border-radius:10px;background:#f8fafc}
+.map-panel h4{margin:0 0 8px;color:#35526f;font-size:11px}
+.schematic-map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;min-height:125px;padding:10px;border:1px dashed #b9cbdd;border-radius:8px;background:linear-gradient(90deg,transparent 48%,#e1e9f1 49%,#e1e9f1 51%,transparent 52%),linear-gradient(transparent 48%,#e1e9f1 49%,#e1e9f1 51%,transparent 52%),#f1f6f2}
+.schematic-map span{display:grid;place-items:center;min-height:38px;padding:5px;border:1px solid #c8d8e7;border-radius:6px;background:#fff;color:#49637c;text-align:center;font-size:10px;font-weight:700}
+.process-steps{display:grid;grid-template-columns:repeat(6,minmax(95px,1fr));gap:17px;overflow-x:auto;margin:12px 0;padding:3px 0 8px;list-style:none;counter-reset:stage}
+.process-steps li{position:relative;display:grid;place-items:center;min-height:64px;padding:9px;border:1px solid #d9e6f3;border-radius:9px;background:#f5f9fe;color:#315574;text-align:center;font-size:11px;font-weight:700;counter-increment:stage}
+.process-steps li:before{content:counter(stage);position:absolute;top:-8px;left:-7px;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#2868b2;color:#fff;font-size:10px}
+.process-steps li:not(:last-child):after{content:"→";position:absolute;right:-16px;color:#df4854;font-size:17px}
+.organized-task-card .visual-kind-badge{margin-left:5px}
+@media(max-width:600px){.writing-visual{padding:10px}.map-pair{grid-template-columns:1fr}.pie-layout{grid-template-columns:110px 1fr;gap:8px}.pie-layout svg{width:105px}.visual-legend li{font-size:10px}.process-steps{grid-template-columns:repeat(6,110px)}}
+
