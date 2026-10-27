@@ -18,9 +18,9 @@ Deno.serve(async (req: Request) => {
   if (!auth.startsWith("Bearer ")) return json({ error: "Sign in to use AI feedback." }, 401, headers);
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
-  const openaiKey = Deno.env.get("OPENAI_API_KEY");
+  const groqKey = Deno.env.get("GROQ_API_KEY");
   if (!supabaseUrl || !supabaseKey) return json({ error: "Student authentication is not configured." }, 503, headers);
-  if (!openaiKey) return json({ error: "AI scoring is awaiting secure provider setup." }, 503, headers);
+  if (!groqKey) return json({ error: "Free AI scoring is awaiting secure Groq setup. Please type your answer or save it for now." }, 503, headers);
 
   try {
     const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
@@ -46,11 +46,11 @@ Deno.serve(async (req: Request) => {
       const mime = String(body.audio_mime_type || "audio/webm").split(";")[0];
       const ext = mime.includes("mp4") ? "mp4" : mime.includes("ogg") ? "ogg" : "webm";
       const form = new FormData();
-      form.append("model", "gpt-transcribe");
+      form.append("model", "whisper-large-v3-turbo");
       form.append("response_format", "json");
       form.append("file", new File([bytes], `answer.${ext}`, { type: mime }));
-      const transcription = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-        method: "POST", headers: { authorization: `Bearer ${openaiKey}` }, body: form,
+      const transcription = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+        method: "POST", headers: { authorization: `Bearer ${groqKey}` }, body: form,
       });
       if (!transcription.ok) return json({ error: "Could not transcribe this recording. Try again or type your answer." }, 502, headers);
       transcript = String((await transcription.json()).text || "").slice(0, 12000);
@@ -80,17 +80,20 @@ Deno.serve(async (req: Request) => {
     const rubric = writing
       ? "Assess an IELTS Writing practice response using the four public IELTS writing criteria: task response/achievement appropriate to task type, coherence and cohesion, lexical resource, grammatical range and accuracy."
       : "Assess IELTS Speaking practice from transcript only using fluency and coherence, lexical resource, grammatical range and accuracy. Do not score pronunciation, accent, voice, or vocal delivery because only transcript text is available.";
-    const request = await fetch("https://api.openai.com/v1/responses", {
+    const request = await fetch("https://api.groq.com/openai/v1/responses", {
       method: "POST",
-      headers: { authorization: `Bearer ${openaiKey}`, "content-type": "application/json" },
+      headers: { authorization: `Bearer ${groqKey}`, "content-type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-6-luna", store: false,
+        model: "openai/gpt-oss-120b", store: false,
         instructions: `You are a careful IELTS practice tutor. Give constructive, specific, encouraging feedback. ${rubric} The result is an indicative learning estimate, never an official IELTS score. Use whole or half band estimates from 0 to 9. Include exactly ${criteria.length} criterion items named: ${criteria.join(", ")}. Keep strengths and next steps concise, grounded in the student's work, and avoid inventing errors. Return transcript exactly as provided; for writing it should be an empty string.`,
         input: `Test type: ${String(body.course || "Academic").slice(0, 40)}\nTask: ${String(body.task_type || module).slice(0, 100)}\nPrompt: ${prompt}\nStudent response: ${responseText}`,
         text: { format: { type: "json_schema", name: "ielts_practice_feedback", strict: true, schema } },
       }),
     });
-    if (!request.ok) return json({ error: "AI feedback is temporarily unavailable. Your response can still be saved." }, 502, headers);
+    if (!request.ok) {
+      console.error("Groq scoring request failed", request.status);
+      return json({ error: "Free AI feedback is temporarily unavailable or its free-tier limit was reached. Your response can still be saved." }, 502, headers);
+    }
     const result = await request.json();
     const outputText = result.output?.flatMap((item: any) => item.content || []).find((item: any) => item.type === "output_text")?.text;
     if (!outputText) return json({ error: "AI feedback returned an empty result." }, 502, headers);
@@ -106,3 +109,4 @@ Deno.serve(async (req: Request) => {
 function json(payload: unknown, status: number, headers: Record<string, string>) {
   return new Response(JSON.stringify(payload), { status, headers: { ...headers, "Content-Type": "application/json" } });
 }
+
