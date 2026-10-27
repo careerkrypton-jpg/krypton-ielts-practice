@@ -1,0 +1,65 @@
+
+/* Krypton dashboard refresh: branded progress-led home and readable responsive layout. */
+.overview-search{display:flex;gap:10px;align-items:center;margin:0 0 16px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px #18385b08}
+.overview-search .search-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#edf4ff;color:#1d4c89;font-size:18px;flex:none}
+.overview-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;font:500 14px "DM Sans",sans-serif;color:var(--ink)}
+.overview-search button{padding:10px 15px;border:0;border-radius:9px;background:var(--red);color:#fff;font:700 12px "DM Sans",sans-serif;cursor:pointer}
+.overview-results{display:grid;gap:7px;margin:-7px 0 16px}
+.overview-results button{display:flex;justify-content:space-between;gap:12px;align-items:center;text-align:left;padding:11px 14px;background:#fff;border:1px solid var(--line);border-radius:10px;color:var(--ink);cursor:pointer}
+.overview-results button:hover{border-color:#9eb8d4;background:#f8fbff}
+.overview-results small{display:block;margin-top:4px;color:#7b8999}
+.overview-columns{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.overview-main,.overview-aside{display:grid;gap:15px;min-width:0}
+.progress-panel{padding:15px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.progress-panel-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.progress-tabs{display:flex;gap:5px;padding:4px;background:#f1f4f8;border-radius:10px}
+.progress-tabs button{border:0;padding:8px 12px;border-radius:7px;background:transparent;color:#68798e;font:700 11px "DM Sans",sans-serif;cursor:pointer}
+.progress-tabs button.active{background:#fff;color:#bc3540;box-shadow:0 1px 4px #0c234012}
+.progress-note{color:#8390a0;font-size:11px}
+.progress-panel .metrics{gap:9px}
+.progress-panel .metric-card{min-height:92px;padding:12px;border-radius:10px}
+.progress-panel .metric-value{font-size:20px}
+.performance-snapshot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.performance-skill{min-height:92px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
+.performance-skill span{display:block;color:#718197;font-size:11px;font-weight:700}
+.performance-skill strong{display:block;margin:9px 0 3px;color:#193859;font:700 20px Manrope,sans-serif}
+.performance-skill small{color:#8794a3;font-size:10px}
+.overview-columns .section-head{margin:4px 0 0}
+.overview-columns .section-head h2{font-size:20px}
+.overview-columns .module-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.overview-columns .module-card{min-height:146px;padding:16px}
+.overview-columns .module-card strong{font-size:15px}
+.overview-columns .module-card small{font-size:12px}
+.overview-columns .module-label{font-size:10px}
+.overview-columns .module-enter{font-size:11px}
+.overview-columns .card{padding:16px}
+.overview-aside .plan-banner{margin:0}
+.overview-aside .today-focus{padding:16px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.today-focus-head{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.today-focus-head h2{margin:0;color:#1b3451;font:700 17px Manrope,sans-serif}
+.today-focus-list{display:grid;gap:8px;margin-top:12px}
+.today-focus-item{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e8edf3;border-radius:10px;background:#fbfcfe}
+.today-focus-icon{display:grid;place-items:center;width:31px;height:31px;flex:none;border-radius:9px;background:#fff0f1;color:#c33f49;font-size:15px}
+.today-focus-item:nth-child(2) .today-focus-icon{background:#edf4ff;color:#2866b2}
+.today-focus-item:nth-child(3) .today-focus-icon{background:#f1edff;color:#7059b8}
+.today-focus-item:nth-child(4) .today-focus-icon{background:#eaf8f2;color:#188666}
+.today-focus-item span{min-width:0;flex:1}
+.today-focus-item strong{display:block;color:#243c58;font-size:12px}
+.today-focus-item small{display:block;margin-top:3px;color:#8390a0;font-size:10px}
+.today-focus-item button{border:0;background:transparent;color:#2460a0;font:700 11px "DM Sans",sans-serif;cursor:pointer}
+.source-shelf{padding:16px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.source-shelf summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none}
+.source-shelf summary::-webkit-details-marker{display:none}
+.source-shelf-title{color:#1b3451;font:700 16px Manrope,sans-serif}
+.source-shelf-hint{color:#7d8b9a;font-size:11px}
+.source-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.source-group{padding:12px;border-radius:10px;background:#f7f9fc}
+.source-group strong{display:block;margin-bottom:7px;color:#244363;font-size:12px}
+.source-group p{margin:0;color:#77879a;font-size:11px;line-height:1.6}
+.source-note{margin:12px 0 0;color:#8995a3;font-size:10px;line-height:1.55}
+.overview-columns .dashboard-grid{display:contents}
+.overview-columns .card-subtitle,.overview-columns .resource-link{font-size:12px}
+@media(max-width:1180px){.overview-columns{grid-template-columns:minmax(0,1fr) 300px}.performance-snapshot{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.overview-columns{grid-template-columns:1fr}.overview-aside{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.overview-aside .plan-banner{grid-column:1/-1}.source-groups{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.overview-search{gap:7px}.overview-search button{padding:10px}.overview-search .search-mark{width:32px;height:32px}.overview-columns .module-grid{grid-template-columns:1fr}.overview-aside{grid-template-columns:1fr}.overview-aside .plan-banner{grid-column:auto}.source-groups{grid-template-columns:1fr}.progress-panel-top{align-items:start;flex-direction:column}.progress-panel .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.performance-snapshot{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.hero-copy{font-size:13px}.eyebrow{font-size:10px}.button{font-size:12px}.metric-top{font-size:10px}.metric-caption{font-size:11px}.section-hint,.link-button{font-size:11px}
