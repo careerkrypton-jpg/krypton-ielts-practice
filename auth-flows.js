@@ -50,7 +50,6 @@
 
   document.querySelector("#google-auth").addEventListener("click",async function(){
     if(!db){setAuthError("Student accounts are not connected to Supabase.");return}
-    if(!window.KRYPTON_GOOGLE_AUTH_ENABLED){setAuthError("Google sign-in is not enabled in Supabase yet. Use email for now; an admin must add Google OAuth credentials, then enable this option.");return}
     const button=this;button.disabled=true;button.textContent="Opening Google…";setAuthError("");
     try{
       const result=await db.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin+window.location.pathname}});
