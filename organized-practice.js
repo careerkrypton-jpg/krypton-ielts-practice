@@ -136,6 +136,17 @@
     orgState.skill = "speaking"; orgState.topic = topic; orgState.section = null;
     startActivity("speaking", task.id);
   }
+  function fullModuleCTA(skill) {
+    var label = SKILL_META[skill].label;
+    if (skill === "speaking") {
+      return '<section class="org-full-practice"><div><p class="eyebrow">COMPLETE SPEAKING INTERVIEW</p><h2>Practise all three parts together</h2><p>Choose a topic, then complete Part 1, the Part 2 cue card, and the connected Part 3 discussion in one interview.</p></div><div class="org-full-practice-controls"><label for="org-full-speaking-topic">Interview topic<select id="org-full-speaking-topic">' + speakingTopics().map(function(topic){return '<option value="' + esc(topic) + '">' + esc(topic) + '</option>';}).join("") + '</select></label><button class="button button-primary" type="button" data-org-full-module="speaking">Start full interview →</button></div></section>';
+    }
+    var details = skill === "listening" ? "Complete Parts 1–4 in order · 40 questions · about 30 minutes."
+      : skill === "reading" ? "Complete all 3 passages in order · 40 questions · 60 minutes."
+      : "Complete Task 1 and Task 2 in order · 60 minutes total.";
+    return '<section class="org-full-practice"><div><p class="eyebrow">COMPLETE ' + esc(label.toUpperCase()) + ' PRACTICE</p><h2>Practise the whole module</h2><p>' + esc(details) + ' Your responses and practice score are saved together.</p></div><button class="button button-primary" type="button" data-org-full-module="' + esc(skill) + '">Start full ' + esc(label) + ' practice →</button></section>';
+  }
+
   renderLibrary = function () {
     if (!orgState.skill) {
       root.innerHTML = '<section class="page-intro"><p class="eyebrow">ALL FOUR SKILLS · FREE</p><h1>IELTS practice</h1><p>Choose a module, then select the part, passage or topic you want to practise. Your Academic or General Training pathway stays in one place.</p></section>' + courseSwitchMarkup() + '<section class="org-module-grid">' + SKILLS.map(moduleCard).join("") + '</section><div class="note-banner">Krypton questions are original practice content based on public IELTS formats. Practice estimates are not official IELTS results.</div>';
@@ -162,7 +173,7 @@
       root.innerHTML = '<section class="page-intro"><p class="eyebrow">' + esc(label.toUpperCase()) + ' · PRACTICE SETS</p><h1>' + esc(title) + '</h1><p>Choose a topic below to start a focused practice set.</p></section>' + courseSwitchMarkup() + backBar(label + " sections","skill") + renderSectionTopics(skill,orgState.section);
       return;
     }
-    root.innerHTML = '<section class="page-intro"><p class="eyebrow">PRACTICE MODULE</p><h1>' + esc(label) + '</h1><p>' + esc(SKILL_META[skill].description) + '</p></section>' + courseSwitchMarkup() + backBar("All four modules","modules") + renderSkillHome(skill);
+    root.innerHTML = '<section class="page-intro"><p class="eyebrow">PRACTICE MODULE</p><h1>' + esc(label) + '</h1><p>' + esc(SKILL_META[skill].description) + '</p></section>' + courseSwitchMarkup() + backBar("All four modules","modules") + fullModuleCTA(skill) + renderSkillHome(skill);
   };
 
   function renderOrgMocks() {
@@ -172,10 +183,10 @@
       '<section class="page-intro"><p class="eyebrow">STRUCTURED PRACTICE · FREE</p><h1>Mock test studio</h1><p>Choose a single-skill sectional mock or take a complete four-skill IELTS practice test. Every mock follows the module flow and keeps your results together.</p></section>' +
       courseSwitchMarkup() +
       '<section class="org-mock-block"><div class="section-head"><div><p class="eyebrow">SECTIONAL MOCKS</p><h2>Practise one module</h2><p>Choose Listening, Reading, Writing or Speaking. The mock follows that skill’s real test parts.</p></div></div><div class="org-mock-grid">' +
-      '<button class="org-mock-card" type="button" data-org-sectional="listening"><span class="eyebrow">4 PARTS · 40 QUESTIONS</span><strong>Listening mock</strong><small>Parts 1–4 · 30 minutes</small><b>Start Listening →</b></button>' +
-      '<button class="org-mock-card" type="button" data-org-sectional="reading"><span class="eyebrow">3 PASSAGES · 40 QUESTIONS</span><strong>Reading mock</strong><small>' + esc(kryptonCourse) + ' · 60 minutes</small><b>Start Reading →</b></button>' +
-      '<button class="org-mock-card" type="button" data-org-sectional="writing"><span class="eyebrow">TASK 1 + TASK 2</span><strong>Writing mock</strong><small>20 minutes then 40 minutes</small><b>Start Writing →</b></button>' +
-      '<div class="org-mock-card org-speaking-mock"><span class="eyebrow">PARTS 1–3 · 11–14 MIN</span><strong>Speaking mock</strong><label for="org-mock-topic">Interview topic</label><select id="org-mock-topic">' + topics.map(function(topic){return '<option value="' + esc(topic) + '">' + esc(topic) + '</option>';}).join("") + '</select><button class="button button-primary" type="button" data-org-sectional="speaking">Start Speaking →</button></div>' +
+      '<button class="org-mock-card" type="button" data-org-sectional="listening"><span class="eyebrow">4 PARTS · 40 QUESTIONS</span><strong>Listening mock</strong><small>Parts 1–4 · 30 minutes</small><b>Start full Listening mock →</b></button>' +
+      '<button class="org-mock-card" type="button" data-org-sectional="reading"><span class="eyebrow">3 PASSAGES · 40 QUESTIONS</span><strong>Reading mock</strong><small>' + esc(kryptonCourse) + ' · 60 minutes</small><b>Start full Reading mock →</b></button>' +
+      '<button class="org-mock-card" type="button" data-org-sectional="writing"><span class="eyebrow">TASK 1 + TASK 2</span><strong>Writing mock</strong><small>20 minutes then 40 minutes</small><b>Start full Writing mock →</b></button>' +
+      '<div class="org-mock-card org-speaking-mock"><span class="eyebrow">PARTS 1–3 · 11–14 MIN</span><strong>Speaking mock</strong><label for="org-mock-topic">Interview topic</label><select id="org-mock-topic">' + topics.map(function(topic){return '<option value="' + esc(topic) + '">' + esc(topic) + '</option>';}).join("") + '</select><button class="button button-primary" type="button" data-org-sectional="speaking">Start full Speaking mock →</button></div>' +
       '</div></section>' +
       '<section class="org-full-mock"><div><p class="eyebrow">COMPLETE IELTS FORMAT</p><h2>Full mock test</h2><p>Listening 4 parts · Reading 3 passages · Writing Tasks 1 and 2 · Speaking Parts 1, 2 and 3. Estimated bands and AI feedback are practice guidance, not official IELTS scores.</p></div><div class="org-full-mock-controls"><label for="full-mock-number">Choose a test<select id="full-mock-number">' + options + '</select></label><button class="button button-outline" type="button" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-selected">Start selected full mock →</button><button class="button button-primary" type="button" data-start-mock="complete-' + (kryptonCourse === "General Training" ? "general" : "academic") + '-random">Create fresh mock →</button></div></section>' +
       '<div class="info-strip"><strong>IELTS practice timings:</strong> Listening 30 minutes · Reading 60 minutes · Writing 60 minutes · Speaking 11–14 minutes. Content is original Krypton practice material.</div>';
@@ -273,6 +284,18 @@
       if (back.dataset.orgBack === "modules") orgState = {skill:null,section:null,topic:null,visual:"all"};
       else {orgState.section=null;orgState.topic=null;orgState.visual="all";}
       renderLibrary(); return;
+    }
+    var fullModule = event.target.closest("[data-org-full-module]");
+    if (fullModule) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      var fullSkill = fullModule.dataset.orgFullModule;
+      if (fullSkill === "speaking") {
+        var fullTopic = document.querySelector("#org-full-speaking-topic")?.value || speakingTopics()[0];
+        startSpeaking(fullTopic,0);
+      } else {
+        try { beginSectionalMock(fullSkill); } catch(error) { console.error(error); toast(error.message || "This full practice is not ready yet."); }
+      }
+      return;
     }
     var visual = event.target.closest("[data-org-visual]");
     if (visual) { event.preventDefault();event.stopImmediatePropagation();orgState.visual=visual.dataset.orgVisual;renderLibrary();return; }
