@@ -20,6 +20,9 @@
   const listening=Array.from({length:100},(_,i)=>{
     const name=choose(people,i),topic=choose(topics,i*3+1),place=choose(places,i*5+2),day=choose(days,i*2+3),time=choose(times,i*7+4),price=choose(prices,i*3+5),item=choose(items,i*5+6);
     const fees=prices,dayChoices=days,timeChoices=times,placeChoices=places,itemChoices=items;
+    const followUp=i%4===0?"collect a welcome pack when they arrive":i%4===1?"ask staff at the information desk if they have questions":i%4===2?"share the notes with the group":"receive a summary after the session";
+    const speakerType=i%4===0?"a staff member and a participant":i%4===1?"a public announcer":i%4===2?"a tutor and a student":"a lecturer";
+    const speakerChoices=["a staff member and a participant","a public announcer","a tutor and a student","a lecturer"];
     const transcript=i%4===0
       ? `STAFF: Hello, ${topic}. How can I help?\n${name.toUpperCase()}: I would like to register.\nSTAFF: The fee is ${price}, and the next session is on ${day} at ${time}. Please meet at ${place}.\n${name.toUpperCase()}: Is there anything I should bring?\nSTAFF: Yes, please bring ${item}. You can collect your welcome pack when you arrive.`
       : i%4===1
@@ -33,7 +36,10 @@
       q("When does the session take place?",day,dayChoices.filter(x=>x!==day),i+1,"The day is stated in the schedule."),
       q("What time does it begin?",time,timeChoices.filter(x=>x!==time),i+2,"The start time is given in the announcement."),
       q("What should the participant bring?",item,itemChoices.filter(x=>x!==item),i+3,"The speaker names the item participants should bring."),
-      q("Complete the form: Meeting place: ______",place,placeChoices.filter(x=>x!==place),i+4,"The recording states the meeting point or entrance.")
+      q("Complete the form: Meeting place: ______",place,placeChoices.filter(x=>x!==place),i+4,"The recording states the meeting point or entrance."),
+      q("What is the recording mainly about?",topic,topics.filter(x=>x!==topic),i+5,"The speakers introduce this topic at the start of the recording."),
+      q("Complete the note: The speaker says attendees should ______.",followUp,["ask for a refund","leave immediately","bring another person"],i+6,"The recording gives this instruction or follow-up."),
+      q("Who is speaking or providing the information?",speakerType,speakerChoices.filter(x=>x!==speakerType),i+7,"The speaker roles identify this kind of exchange.")
     ]};
   });
 
