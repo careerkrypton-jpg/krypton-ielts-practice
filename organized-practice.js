@@ -305,8 +305,9 @@
       event.preventDefault(); event.stopImmediatePropagation();
       var destination = runnerBack.dataset.orgRunnerBack;
       if (destination === "practice") {
-        orgState = activityReturnContext && activityReturnContext.view === "practice"
-          ? activityReturnContext.state
+        var returnContext = mockState ? mockReturnContext : activityReturnContext;
+        orgState = returnContext && returnContext.view === "practice"
+          ? returnContext.state
           : {skill:null,section:null,topic:null,visual:"all"};
         setView("practice");
       } else {
