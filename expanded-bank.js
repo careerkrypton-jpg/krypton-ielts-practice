@@ -87,7 +87,30 @@
   });
 
   PACKS.listening.push(...listening);
+
   PACKS.reading.push(...reading);
+  PACKS.reading.forEach((task,index) => {
+    if (String(task.id).indexOf("bank-read-")===0 && task.questions.length>=5) {
+      task.questions[2].q="Complete the sentence: The earlier trial showed that ______.";
+      task.questions[2].questionType="sentence-completion";
+      task.questions[3].q="Complete the summary: The recommended next step is to ______.";
+      task.questions[3].questionType="summary-completion";
+    }
+    if (task.questions.length<5) {
+      var decoys=PACKS.reading.filter(other=>other.id!==task.id).slice(0,2).map(other=>other.title);
+      var choices=[task.title].concat(decoys),offset=index%3;
+      task.questions.push({q:"Choose the best title for this passage.",options:choices.map((_,i)=>choices[(i+offset)%choices.length]),answer:(choices.length-offset)%choices.length,why:"The best title captures the passage’s central subject and purpose.",questionType:"choosing-a-title"});
+    }
+  });
+  PACKS.listening.push(...listening);
+  PACKS.listening.forEach(task => {
+    if (String(task.id).indexOf("bank-listen-")===0 && task.questions[4]) task.questions[4].questionType="form-note-completion";
+    if (task.questions.length<5) {
+      if(task.id==="listen-campus")task.questions.push({q:"Complete the accommodation form: Room type: ______",options:["single","double","shared"],answer:0,why:"The owner describes it as a single room.",questionType:"form-note-completion"});
+      else if(task.id==="listen-library")task.questions.push({q:"Complete the note: The café is beside the ______.",options:["main entrance","second floor","exit"],answer:0,why:"The café is beside the main entrance.",questionType:"sentence-completion"});
+      else if(task.id==="listen-research")task.questions.push({q:"What will the report compare?",options:["the responses","the questions","the shop owners"],answer:0,why:"The tutor says the report should compare the responses.",questionType:"short-answer"});
+    }
+  });
   PACKS.writing.push(...writeAcademic,...writeGeneral);
   PACKS.speaking.push(...speaking);
   for(const skill of ["listening","reading","writing","speaking"]){
