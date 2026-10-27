@@ -43,7 +43,25 @@ var R=[
 ])}
 ];
 L.forEach(function(t,i){t.id="curated-listening-"+(i+1);t.time=8;t.level="Original listening practice"});
-R.forEach(function(t,i){t.id="curated-reading-"+(i+1);t.time=12});
+R.forEach(function(t,i){
+  t.id="curated-reading-"+(i+1);t.time=12;
+  if(t.questions[1])t.questions[1].questionType="short-answer";
+  if(t.questions[2]){
+    t.questions[2].q="Complete the sentence: The passage says that ______.";
+    t.questions[2].questionType="sentence-completion";
+  }
+  if(t.questions[3]){
+    var supported=t.questions[3].options[t.questions[3].answer];
+    t.questions[3].q="The passage states that "+supported+".";
+    t.questions[3].options=["TRUE","FALSE","NOT GIVEN"];
+    t.questions[3].answer=0;
+    t.questions[3].questionType="true-false-not-given";
+  }
+  if(t.questions[4]){
+    t.questions[4].q="Match the passage detail: "+t.questions[4].q;
+    t.questions[4].questionType="matching-features";
+  }
+});
 PACKS.listening.push.apply(PACKS.listening,L);PACKS.reading.push.apply(PACKS.reading,R);
 var W=[
 {id:"visual-bar-commute",title:"Commuting methods in Brookdale",format:"Bar chart report",v:{type:"bar",title:"How people travelled to work",caption:"Percentage of commuters in 2010 and 2025.",labels:["Car","Bus","Cycling","Walking"],series:[{name:"2010",values:[58,24,8,10],color:"#3478c7"},{name:"2025",values:[42,29,17,12],color:"#e34b56"}]},data:"Car use was 58%, bus 24%, cycling 8% and walking 10% in 2010. In 2025 the figures were 42%, 29%, 17% and 12%."},
