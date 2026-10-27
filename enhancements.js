@@ -306,8 +306,8 @@ async function scoreKryptonResponse(button){
     kryptonAiError="AI scoring is not connected yet. Your response can still be saved; the scoring service needs its secure provider setup.";
     showScoringError(kryptonAiError);
     button.disabled=false;button.textContent=skill==="writing"||skill==="speaking"?"Save response":"Save response";
-    const continueWithoutAi=confirm("AI scoring could not run. Save your response without an AI score?");
-    if(continueWithoutAi){kryptonAiError="Your response was saved without an AI score. AI scoring will appear when the service is configured.";await kryptonOriginalSubmitActivity()}
+    kryptonAiError="AI scoring is not connected yet. Your response will be saved without an AI score.";
+    await kryptonOriginalSubmitActivity();
   }finally{
     clearTimeout(kryptonAudioTimer);
     kryptonAudioBlob=null;
