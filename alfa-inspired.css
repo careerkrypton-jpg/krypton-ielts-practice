@@ -65,3 +65,27 @@ body{background:#f3f6f8;color:#20354d;font-family:"DM Sans",sans-serif}
  .hero-row{align-items:flex-start;flex-direction:column;padding:22px 0 17px}
  .org-module-grid,.org-part-grid,.org-topic-grid,.org-mock-grid,.lesson-list,.mock-grid{grid-template-columns:1fr}
 }
+
+/* Krypton IELTS welcome page, inspired by clear IELTS preparation landing pages. */
+.hero-row.krypton-welcome-card{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.8fr);align-items:stretch;gap:28px;position:relative;overflow:hidden;margin:26px 0 20px;padding:clamp(24px,4vw,42px);border:1px solid #dce5ef;border-radius:20px;background:radial-gradient(ellipse at 82% 4%,#e8f2ff 0,transparent 37%),linear-gradient(118deg,#fff 0%,#f8fbff 70%,#eef5fc 100%);box-shadow:0 12px 32px rgba(20,48,78,.055)}
+.krypton-welcome-copy{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-width:0}
+.krypton-welcome-card .eyebrow{color:#bd454d;font-size:10px;letter-spacing:.14em}
+.krypton-welcome-card h1{max-width:670px;margin:5px 0 10px;color:#163457;font:800 clamp(32px,4.6vw,56px)/1.06 Manrope,sans-serif;letter-spacing:-.055em}
+.krypton-welcome-card .hero-copy{max-width:610px;margin:4px 0 21px;color:#66778b;font-size:15px;line-height:1.7}
+.krypton-welcome-card .hero-actions{flex-wrap:wrap;gap:10px}
+.krypton-welcome-card .button{min-height:44px;padding:12px 17px;font-size:12px}
+.krypton-welcome-facts{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:22px;color:#65768a;font-size:11px}
+.krypton-welcome-facts span{display:inline-flex;align-items:center;gap:6px}
+.krypton-welcome-facts span:before{content:"✓";display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#e7f5ef;color:#208368;font-size:10px;font-weight:800}
+.krypton-welcome-side{align-self:stretch;display:flex;flex-direction:column;justify-content:center;min-width:0;padding:22px;border:1px solid #e0e8f1;border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 8px 24px rgba(24,51,84,.045)}
+.krypton-welcome-side-top{display:flex;align-items:center;gap:12px;margin-bottom:17px}
+.krypton-welcome-orbit{display:grid;place-items:center;width:42px;height:42px;border-radius:14px 14px 14px 5px;background:#173b63;color:#fff;font:800 20px Manrope,sans-serif}
+.krypton-welcome-side-top>span:last-child{display:grid;gap:3px}
+.krypton-welcome-side-top small{color:#bd454d;font-size:9px;font-weight:800;letter-spacing:.12em}
+.krypton-welcome-side-top strong{color:#1d3958;font:700 16px Manrope,sans-serif}
+.krypton-welcome-skill-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.krypton-welcome-skill-grid span{display:flex;align-items:center;gap:9px;padding:12px 10px;border:1px solid #e7edf3;border-radius:10px;background:#fbfcfe;color:#314b67;font-size:12px;font-weight:700}
+.krypton-welcome-skill-grid b{color:#ba4650;font-size:9px;letter-spacing:.05em}
+.krypton-welcome-side>p{margin:15px 0 0;color:#75849a;font-size:11px;line-height:1.65}
+@media(max-width:850px){.hero-row.krypton-welcome-card{grid-template-columns:1fr;gap:20px}.krypton-welcome-side{max-width:none}}
+@media(max-width:600px){.hero-row.krypton-welcome-card{margin:18px 0;padding:21px;border-radius:15px}.krypton-welcome-card h1{font-size:34px}.krypton-welcome-card .hero-copy{font-size:13px}.krypton-welcome-card .hero-actions{width:100%}.krypton-welcome-card .hero-actions .button{flex:1 1 100%}.krypton-welcome-facts{display:grid;gap:8px;margin-top:17px}.krypton-welcome-side{padding:16px}.krypton-welcome-skill-grid span{padding:10px 8px;font-size:11px}}
