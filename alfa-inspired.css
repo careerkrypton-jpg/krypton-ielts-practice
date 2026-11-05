@@ -89,3 +89,64 @@ body{background:#f3f6f8;color:#20354d;font-family:"DM Sans",sans-serif}
 .krypton-welcome-side>p{margin:15px 0 0;color:#75849a;font-size:11px;line-height:1.65}
 @media(max-width:850px){.hero-row.krypton-welcome-card{grid-template-columns:1fr;gap:20px}.krypton-welcome-side{max-width:none}}
 @media(max-width:600px){.hero-row.krypton-welcome-card{margin:18px 0;padding:21px;border-radius:15px}.krypton-welcome-card h1{font-size:34px}.krypton-welcome-card .hero-copy{font-size:13px}.krypton-welcome-card .hero-actions{width:100%}.krypton-welcome-card .hero-actions .button{flex:1 1 100%}.krypton-welcome-facts{display:grid;gap:8px;margin-top:17px}.krypton-welcome-side{padding:16px}.krypton-welcome-skill-grid span{padding:10px 8px;font-size:11px}}
+
+/* Krypton IELTS product-wide learning experience */
+:root{--navy:#15395f;--blue:#2869ad;--red:#d84b53;--ink:#1b314a;--muted:#718198;--line:#e0e7ef;--paper:#fff;--canvas:#f4f7fa}
+body{background:var(--canvas);color:var(--ink)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #77a9de;outline-offset:3px}
+.page-intro{padding:30px 0 20px}
+.page-intro .eyebrow{color:#bf4650}
+.page-intro h1{font-size:clamp(28px,3.2vw,38px);line-height:1.15;letter-spacing:-.045em}
+.page-intro>p:not(.eyebrow){max-width:800px;font-size:14px;line-height:1.7;color:#687b91}
+.card,.metric-card,.lesson-card,.mock-card,.practice-module-section,.practice-group,.org-module-card,.org-part-card,.org-topic-card,.org-mock-card,.coach-panel,.ai-feedback{border-color:#e0e7ef;border-radius:15px;box-shadow:0 5px 18px rgba(20,48,78,.045)}
+.card,.coach-panel,.ai-feedback{background:#fff}
+.section-head{margin:32px 0 15px}
+.section-head h2,.card-title{color:#183958}
+.button{transition:transform .16s ease,background-color .16s ease,border-color .16s ease,box-shadow .16s ease}
+.button-primary{background:#d84b53;color:#fff;box-shadow:0 5px 13px rgba(216,75,83,.16)}
+.button-primary:hover{background:#c63e47;box-shadow:0 7px 17px rgba(216,75,83,.22)}
+.button-outline{border-color:#d8e1eb;background:#fff;color:#365675}
+.org-module-card,.org-part-card,.org-topic-card,.org-mock-card{min-height:154px}
+.org-module-card:hover,.org-part-card:hover,.org-topic-card:hover,.org-mock-card:hover{transform:translateY(-2px);border-color:#b6cce2;box-shadow:0 10px 25px rgba(20,48,78,.09)}
+.org-full-practice,.org-full-mock{border:1px solid #d8e3ee;border-radius:16px;background:linear-gradient(130deg,#f7fbff,#fff 66%);box-shadow:0 5px 20px rgba(20,48,78,.045)}
+.runner{padding:clamp(17px,2.5vw,26px);border:1px solid #dfe7ef;border-radius:18px;background:#fff;box-shadow:0 8px 26px rgba(20,48,78,.055)}
+.runner-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.runner-layout>*,.runner-layout .reading-passage-panel,.runner-layout .question-panel{min-width:0;border:1px solid #e2e8ef;border-radius:14px;background:#fff}
+.reading-passage,.prompt-box{border-radius:12px;line-height:1.8}
+.question-box{border:1px solid #e5ebf2;border-radius:12px;background:#fff;padding:15px}
+.option-label{border-radius:9px}
+.text-answer{border-radius:12px;line-height:1.7}
+.ai-feedback{margin:22px 0;padding:clamp(18px,3vw,28px);background:linear-gradient(145deg,#fff,#f8fbff)}
+.ai-feedback h2{color:#183958;font-size:24px}
+.ai-feedback h3{margin-top:20px;color:#213b5a}
+.ai-band{display:inline-flex;align-items:center;gap:10px;margin:5px 0 18px;padding:10px 14px;border-radius:12px;background:#eff5fc;color:#214e7c}
+.ai-band strong{font-size:34px;color:#17395f}
+.ai-criteria{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ai-criterion{padding:15px;border:1px solid #e1e8f0;border-radius:12px;background:#fff}
+.ai-criterion strong{display:block;color:#203b5c}
+.ai-criterion span{display:inline-block;margin:6px 0 2px;color:#ba4650;font-size:12px;font-weight:700}
+.ai-criterion p{margin:5px 0 0;color:#60738a;font-size:13px;line-height:1.65}
+.ai-feedback>ul{padding-left:20px;color:#52677e;line-height:1.75}
+.krypton-product-guide{margin:26px 0 24px}
+.krypton-guide-heading{max-width:760px;margin:0 auto 20px;text-align:center}
+.krypton-guide-heading .eyebrow{color:#bd4650}
+.krypton-guide-heading h2,.krypton-faq h2{margin:3px 0 9px;color:#173958;font:800 clamp(24px,3vw,34px)/1.2 Manrope,sans-serif;letter-spacing:-.04em}
+.krypton-guide-heading>p:last-child{margin:0 auto;color:#718198;font-size:14px;line-height:1.7}
+.krypton-guide-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.krypton-guide-steps article{display:flex;gap:13px;align-items:flex-start;min-height:128px;padding:18px;border:1px solid #e0e7ef;border-radius:14px;background:#fff}
+.krypton-guide-steps article>span{display:grid;place-items:center;flex:none;width:33px;height:33px;border-radius:10px;background:#fff0f1;color:#bb414a;font-size:11px;font-weight:800}
+.krypton-guide-steps strong,.krypton-feature-grid strong{display:block;color:#203b5a;font:700 15px/1.4 Manrope,sans-serif}
+.krypton-guide-steps p,.krypton-feature-grid p{margin:6px 0 0;color:#6f7f93;font-size:12px;line-height:1.65}
+.krypton-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.krypton-feature-grid article{padding:19px;border:1px solid #e0e7ef;border-radius:14px;background:linear-gradient(150deg,#fff,#f8fbff)}
+.krypton-feature-icon{display:grid;place-items:center;width:34px;height:34px;margin-bottom:13px;border-radius:10px;background:#edf4fc;color:#2869ad;font-size:17px}
+.krypton-faq{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:10px 28px;margin-top:26px;padding:23px;border:1px solid #e0e7ef;border-radius:16px;background:#fff}
+.krypton-faq>div{grid-row:span 4;align-self:start}
+.krypton-faq .eyebrow{color:#bd4650}
+.krypton-faq details{padding:12px 0;border-bottom:1px solid #edf1f5}
+.krypton-faq summary{cursor:pointer;color:#274462;font-size:13px;font-weight:700}
+.krypton-faq details p{margin:8px 0 0;color:#6f7f93;font-size:12px;line-height:1.65}
+.krypton-guide-actions{grid-column:2;display:flex;flex-wrap:wrap;gap:9px;padding-top:5px}
+.source-shelf{margin:16px 0}
+@media(max-width:850px){.krypton-guide-steps,.krypton-feature-grid{grid-template-columns:1fr}.krypton-guide-steps article{min-height:0}.krypton-faq{grid-template-columns:1fr;gap:4px}.krypton-faq>div{grid-row:auto}.krypton-guide-actions{grid-column:1}.runner-layout{grid-template-columns:1fr}}
+@media(max-width:600px){.page-intro{padding:22px 0 16px}.page-intro h1{font-size:28px}.ai-criteria{grid-template-columns:1fr}.krypton-faq{padding:17px}.krypton-guide-actions .button{width:100%}}
